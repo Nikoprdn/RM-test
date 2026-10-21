@@ -207,6 +207,54 @@ html{scroll-behavior:auto}
 .dprog i{display:block;height:100%;background:var(--c);transition:width .5s linear}
 @media (max-width: 1000px){.pzg{grid-template-columns:1fr}.pzf{max-height:none;aspect-ratio:4 / 5}}
 
+
+/* ===== podcasts — version C (un écran) ===== */
+.pzs{position:relative;min-height:calc(100vh - 84px);display:flex;align-items:center;padding:clamp(28px,5vh,56px) 0 clamp(96px,12vh,118px)}
+.pzw{width:100%;max-width:1400px;margin:0 auto;padding:0 clamp(24px,4vw,56px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(32px,4vw,64px);align-items:start}
+.pzleft{min-width:0;display:flex;flex-direction:column}
+.pzh{margin:0;font-size:clamp(38px,4vw,58px);line-height:1;letter-spacing:-0.03em;font-weight:300}
+.pzfc{margin-top:clamp(22px,3.4vh,36px);display:grid;grid-template-columns:clamp(200px,30vh,300px) minmax(0,1fr);gap:28px;align-items:end}
+.pzfcv{position:relative;aspect-ratio:1 / 1;padding:0;border:0;border-radius:24px;overflow:hidden;background:#E4032E;cursor:pointer;box-shadow:0 30px 60px -30px rgba(20,18,24,.6)}
+.pzfcv img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.4s cubic-bezier(.16,.84,.12,1)}
+.pzfcv:hover img{transform:scale(1.05)}
+.pzfcp{position:absolute;left:50%;top:50%;width:68px;height:68px;margin:-34px 0 0 -34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.92);color:#141218;opacity:0;transform:scale(.7);transition:opacity .4s,transform .5s cubic-bezier(.16,.84,.12,1)}
+.pzfcv:hover .pzfcp,.pzfcv:focus-visible .pzfcp{opacity:1;transform:none}
+.pzfct{min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding-bottom:4px}
+.pzfck{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--c)}
+.pzfctt{font-size:clamp(22px,2.1vw,30px);font-weight:500;letter-spacing:-.02em;line-height:1.12;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.pzfcm{font-size:14px;color:#6A6570}
+.pzfcb{margin-top:8px;display:inline-flex;align-items:center;gap:12px;height:50px;padding:0 22px 0 5px;border:0;border-radius:999px;background:#141218;color:#fff;font:inherit;font-size:15px;font-weight:600;cursor:pointer;transition:transform .45s cubic-bezier(.2,.8,.1,1),box-shadow .45s}
+.pzfcb:hover{transform:translateY(-2px);box-shadow:0 16px 30px -14px rgba(20,18,24,.5)}
+.pzchw{margin-top:clamp(20px,3vh,30px);display:flex;align-items:center;gap:8px}
+.pzchn{flex:0 0 auto;width:42px;height:42px;border-radius:50%;border:1px solid rgba(20,18,24,.18);background:transparent;color:#141218;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:background .3s,color .3s}
+.pzchn:hover{background:#141218;color:#fff}
+.pzchips{flex:1 1 auto;min-width:0;scroll-behavior:smooth;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:4px 2px 8px;-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}
+.pzchips::-webkit-scrollbar{display:none}
+.pzchip2{flex:0 0 auto;display:inline-flex;align-items:center;gap:9px;height:42px;padding:0 15px 0 5px;border:0;border-radius:999px;background:#fff;color:#141218;font:inherit;font-size:13.5px;font-weight:500;white-space:nowrap;cursor:pointer;box-shadow:0 6px 18px -12px rgba(20,18,24,.45);transition:box-shadow .4s,transform .4s cubic-bezier(.16,.84,.12,1)}
+.pzchip2:hover{transform:translateY(-2px)}
+.pzchip2 img{width:32px;height:32px;border-radius:50%;object-fit:cover}
+.pzchip2.on{box-shadow:0 0 0 2px var(--c),0 10px 22px -14px var(--c)}
+.pzright{min-width:0;display:flex;flex-direction:column}
+.pzrh{display:flex;flex-direction:column;align-items:flex-start;gap:14px;margin-bottom:6px}
+.pzrh .pzls{font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#6A6570}
+.pztb{white-space:nowrap}
+@media (max-height: 860px) and (min-width: 1001px){.pzr2:nth-child(n+7){display:none}}
+@media (max-height: 760px) and (min-width: 1001px){.pzr2:nth-child(n+6){display:none}}
+.pzlist{display:flex;flex-direction:column}
+.pzr2{position:relative;display:flex;align-items:center;gap:16px;width:100%;padding:clamp(7px,1.1vh,11px) 10px clamp(7px,1.1vh,11px) 0;border:0;border-bottom:1px solid rgba(20,18,24,.08);background:transparent;color:#141218;text-align:left;font:inherit;cursor:pointer;border-radius:0;transition:padding .5s cubic-bezier(.16,.84,.12,1),background .35s,border-radius .35s}
+.pzr2:hover{padding-left:10px;background:rgba(255,255,255,.6);border-radius:14px}
+.pzr2.on{padding-left:10px;background:#fff;border-radius:14px;border-bottom-color:transparent}
+.pzr2c{flex:0 0 auto;width:56px;height:56px;border-radius:12px;overflow:hidden;background:#E4032E}
+.pzr2c img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .8s cubic-bezier(.16,.84,.12,1)}
+.pzr2:hover .pzr2c img{transform:scale(1.08)}
+.pzr2x{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px}
+.pzr2t{font-size:15px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pzr2p{flex:0 0 auto;width:38px;height:38px;border-radius:50%;border:1px solid rgba(20,18,24,.15);display:inline-flex;align-items:center;justify-content:center;color:#141218;transition:background .3s,color .3s,border-color .3s,transform .4s}
+.pzr2:hover .pzr2p{background:#141218;border-color:#141218;color:#fff;transform:scale(1.06)}
+.pzr2.on .pzr2p{background:var(--c);border-color:var(--c);color:#fff}
+.pzr2.on .pzrbar{opacity:1}
+@media (max-width: 1000px){.pzs{min-height:0;padding:100px 0 40px}.pzw{grid-template-columns:1fr}.pzfc{grid-template-columns:150px minmax(0,1fr)}}
+
 /* fréquences / modes de diffusion */
 .uxf{display:flex;flex-wrap:wrap;align-content:flex-start;gap:6px;margin-top:-4px;min-height:90px;max-height:160px;overflow:hidden;transition:opacity .45s ease,min-height .9s cubic-bezier(.65,0,.12,1),max-height .9s cubic-bezier(.65,0,.12,1),margin .9s cubic-bezier(.65,0,.12,1)}
 .bd{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:400;letter-spacing:.02em;white-space:nowrap;color:rgba(255,255,255,.86);background:rgba(20,18,24,.32);border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
@@ -398,66 +446,55 @@ html{scroll-behavior:auto}
 </div>
 </section>
 
-<!-- 02 · PODCASTS (Ausha) -->
-<section id="podcasts" ref="{{secRef.podcasts}}" class="{{sec.podcasts}}" style="padding: 140px 0 0">
-<div style="max-width: 1400px; margin: 0 auto; padding: 0 clamp(24px,4vw,56px)">
-<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 24px 40px; margin-bottom: 44px">
-<div>
+<!-- 02 · PODCASTS (Ausha) — tient dans un écran -->
+<section id="podcasts" data-full="1" ref="{{secRef.podcasts}}" class="pzs {{sec.podcasts}}">
+<div class="pzw">
+<div class="pzleft">
 <p class="eb" style="margin: 0 0 18px; font-size: 12px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: #6A6570">02 — Podcasts</p>
-<h2 style="margin: 0; font-size: clamp(40px, 4.8vw, 68px); line-height: 1; letter-spacing: -0.03em; font-weight: 300"><span class="m"><span>Vos rendez-vous préférés,</span></span> <span class="m"><span style="font-weight: 600">à la demande.</span></span></h2>
-</div>
-<div class="pzt rise" role="tablist" aria-label="Filtrer les podcasts" style="--d: .3s">
-<sc-for list="{{podTabs}}" as="t" hint-placeholder-count="4"><button role="tab" class="pztb {{t.cls}}" aria-selected="{{t.sel}}" onClick="{{t.pick}}">{{t.label}}</button></sc-for>
-</div>
-</div>
-
-<div class="pzg">
-<button class="pzf unv" onClick="{{feat.play}}" aria-label="{{feat.aria}}" style="--c: {{feat.color}}; --d: .1s">
-<span class="pzfw zm"><img class="pzfi" src="{{feat.img}}" alt=""></span>
-<span class="pzfs" aria-hidden="true"></span>
-<span class="pzftop"><span class="pzchip"><span class="live-dot" style="background: {{feat.color}}"></span>{{feat.badge}}</span></span>
-<span class="pzfb">
-<span class="pzfsh">{{feat.show}}</span>
-<span class="pzftt">{{feat.title}}</span>
-<span class="pzfm">{{feat.meta}}</span>
-<span class="pzfp"><span class="pzfpi">
+<h2 class="pzh"><span class="m"><span>Vos rendez-vous préférés,</span></span> <span class="m"><span style="font-weight: 600">à la demande.</span></span></h2>
+<div class="pzfc rise" style="--c: {{feat.color}}; --d: .2s">
+<button class="pzfcv" onClick="{{feat.play}}" aria-label="{{feat.aria}}"><img src="{{feat.img}}" alt=""><span class="pzfcp">
+<sc-if value="{{feat.on}}" hint-placeholder-val="{{ false }}"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span></sc-if>
+<sc-if value="{{feat.off}}" hint-placeholder-val="{{ true }}"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></sc-if>
+</span><span class="pzfbar" aria-hidden="true"><i style="width: {{feat.pct}}%"></i></span></button>
+<div class="pzfct">
+<span class="pzfck"><span class="live-dot" style="background: {{feat.color}}"></span>{{feat.badge}} · {{feat.show}}</span>
+<span class="pzfctt">{{feat.title}}</span>
+<span class="pzfcm">{{feat.meta}}</span>
+<button class="pzfcb" onClick="{{feat.play}}"><span class="pzfpi">
 <sc-if value="{{feat.on}}" hint-placeholder-val="{{ false }}"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor"></path></svg></sc-if>
 <sc-if value="{{feat.off}}" hint-placeholder-val="{{ true }}"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></sc-if>
-</span>{{feat.cta}}</span>
-</span>
-<span class="pzfbar" aria-hidden="true"><i style="width: {{feat.pct}}%"></i></span>
-</button>
-
-<div class="pzl rise" style="--d: .25s">
-<div class="pzlh"><span class="pzlt">{{podList.title}}</span><span class="pzls">{{podList.sub}}</span></div>
-<sc-for list="{{podList.eps}}" as="e" hint-placeholder-count="6">
-<button class="pzr {{e.cls}}" onClick="{{e.play}}" aria-label="{{e.aria}}" style="--c: {{e.color}}">
-<span class="pzrc"><img src="{{e.img}}" alt="" loading="lazy"><span class="pzrp">
+</span>{{feat.cta}}</button>
+</div>
+</div>
+<div class="pzchw rise" style="--d: .35s"><div class="pzchips" ref="{{chips.ref}}" aria-label="Nos émissions">
+<sc-for list="{{podShows}}" as="p" hint-placeholder-count="8"><button class="pzchip2 {{p.cls}}" onClick="{{p.pick}}" aria-pressed="{{p.sel}}" aria-label="{{p.aria}}" style="--c: {{p.color}}"><img src="{{p.cover}}" alt="" loading="lazy">{{p.name}}</button></sc-for>
+</div>
+<button class="pzchn" onClick="{{chips.prev}}" aria-label="Émissions précédentes"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg></button>
+<button class="pzchn" onClick="{{chips.next}}" aria-label="Émissions suivantes"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+</div>
+</div>
+<div class="pzright rise" style="--d: .25s">
+<div class="pzrh">
+<div class="pzt" role="tablist" aria-label="Filtrer les podcasts">
+<sc-for list="{{podTabs}}" as="t" hint-placeholder-count="4"><button role="tab" class="pztb {{t.cls}}" aria-selected="{{t.sel}}" onClick="{{t.pick}}">{{t.label}}</button></sc-for>
+</div>
+<span class="pzls">{{podList.title}}</span>
+</div>
+<div class="pzlist">
+<sc-for list="{{podList.eps}}" as="e" hint-placeholder-count="7">
+<button class="pzr2 {{e.cls}}" onClick="{{e.play}}" aria-label="{{e.aria}}" style="--c: {{e.color}}">
+<span class="pzr2c"><img src="{{e.img}}" alt="" loading="lazy"></span>
+<span class="pzr2x"><span class="pzrs">{{e.show}}</span><span class="pzr2t">{{e.title}}</span><span class="pzrm">{{e.meta}}</span></span>
+<span class="pzr2p">
 <sc-if value="{{e.on}}" hint-placeholder-val="{{ false }}"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span></sc-if>
-<sc-if value="{{e.off}}" hint-placeholder-val="{{ true }}"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></sc-if>
-</span></span>
-<span class="pzrx"><span class="pzrs">{{e.show}}</span><span class="pzrt">{{e.title}}</span><span class="pzrm">{{e.meta}}</span></span>
+<sc-if value="{{e.off}}" hint-placeholder-val="{{ true }}"><svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></sc-if>
+</span>
 <span class="pzrbar" aria-hidden="true"><i style="width: {{e.pct}}%"></i></span>
 </button>
 </sc-for>
 </div>
 </div>
-
-<div style="margin-top: 72px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px 32px; margin-bottom: 24px">
-<div><p style="margin: 0; font-size: 26px; font-weight: 500; letter-spacing: -0.015em">Toutes nos émissions</p><p style="margin: 6px 0 0; font-size: 15px; color: #6A6570">{{podShowsLabel}}</p></div>
-<div style="display: flex; align-items: center; gap: 10px">
-<button class="nb" onClick="{{pods.prev}}" aria-label="Émissions précédentes" style="width: 50px; height: 50px; border-radius: 50%; border: 1px solid rgba(20,18,24,.2); background: transparent; color: #141218; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg class="ic" viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg></button>
-<button class="nb" onClick="{{pods.next}}" aria-label="Émissions suivantes" style="width: 50px; height: 50px; border-radius: 50%; border: 1px solid rgba(20,18,24,.2); background: transparent; color: #141218; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg class="ic" viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
-</div>
-</div>
-</div>
-<div class="scroller" ref="{{pods.ref}}" onMouseEnter="{{pods.hold}}" onMouseLeave="{{pods.free}}" style="display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px max(clamp(24px,4vw,56px), calc((100% - 1400px) / 2 + 56px)) 12px; scroll-padding-left: max(clamp(24px,4vw,56px), calc((100% - 1400px) / 2 + 56px))">
-<sc-for list="{{podShows}}" as="p" hint-placeholder-count="8">
-<button data-card="1" class="pzc tile rise {{p.cls}}" onClick="{{p.pick}}" aria-pressed="{{p.sel}}" aria-label="{{p.aria}}" style="--d: {{p.d}}; --c: {{p.color}}">
-<span class="pzci"><img class="ph zm" src="{{p.cover}}" alt="" loading="lazy"><span class="pzcn">{{p.count}}</span></span>
-<span class="pzcx"><span class="pzcf">{{p.feedLabel}}</span><span class="pzct">{{p.name}}</span><span class="pzcs">{{p.sub}}</span><span class="pzcl">{{p.last}}</span></span>
-</button>
-</sc-for>
 </div>
 </section>
 
@@ -1242,8 +1279,9 @@ class Component extends DCLogic {
       cta: featOn ? 'Pause' : (curEp === featId ? 'Reprendre l’écoute' : 'Écouter l’épisode'), on: featOn, off: !featOn, pct: prog(featId).toFixed(1),
       aria: (featOn ? 'Mettre en pause : ' : 'Écouter : ') + featE.sh.name, play: () => this.playEpisode(featE.sh.k, featE.i)
     } : {};
-    const listSrc = selShow ? selShow.eps.map((e, i) => ({ sh: selShow, e, i })).slice(0, 6) : all.filter((x) => !(featE && x.sh.k === featE.sh.k && x.i === featE.i)).slice(0, 6);
+    const listSrc = selShow ? selShow.eps.map((e, i) => ({ sh: selShow, e, i })).slice(0, 7) : [featE].concat(all.filter((x) => !(featE && x.sh.k === featE.sh.k && x.i === featE.i))).filter(Boolean).slice(0, 7);
     const podList = { title: selShow ? selShow.name : 'Derniers épisodes', sub: selShow ? selShow.sub : (filt === 'all' ? 'Toutes émissions' : FL[filt]), eps: listSrc.map(mkEp) };
+    podList.title = selShow ? selShow.name + ' · ' + selShow.sub : (filt === 'all' ? 'Derniers épisodes' : FL[filt]);
     const podShows = shownShows.map((sh, i) => ({
       name: sh.name, sub: sh.sub, color: PC[sh.feed], feedLabel: FL[sh.feed], cover: img(sh.eps[0].img), count: sh.eps.length + (sh.eps.length > 1 ? ' épisodes' : ' épisode'),
       last: 'Dernier épisode : ' + when(sh.eps[0].d).toLowerCase(), cls: selK === sh.k ? 'on' : '', sel: selK === sh.k ? 'true' : 'false', d: (0.2 + Math.min(i, 5) * 0.08).toFixed(2) + 's',
@@ -1312,7 +1350,7 @@ class Component extends DCLogic {
       hdr: Object.assign({ prog: scrolled ? 1 : 0 }, hdr), now, hero, news, headlines, team, teamThumbs, radios, pl,
       reelList: stg(reelList, 0.2), djs: stg(djs, 0.2), podList, podShows, podTabs, podShowsLabel, feat,
       sec, nav, navRef, secRef, ind,
-      reels: this.slider('reels'), djsS: this.slider('djs'), pods: this.slider('pods'),
+      reels: this.slider('reels'), chips: this.slider('chips'), djsS: this.slider('djs'), pods: this.slider('pods'),
       playing, notPlaying: !playing,
       eqState: playing ? 'running' : 'paused',
       togglePlay: () => (podMode ? this.playEpisode(...(st.ep || ':').split(':').map((v, n) => (n ? +v : v))) : this.playStation(station, !playing)),
