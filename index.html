@@ -151,6 +151,10 @@ html{scroll-behavior:auto}
 .uxt0{position:absolute;inset:0;background:var(--c);mix-blend-mode:color;opacity:.32;transition:opacity 1.1s ease}
 .ux.on .uxp{filter:grayscale(.2)}
 .ux.on .uxt0{opacity:.2}
+/* fréquences / modes de diffusion */
+.uxf{display:flex;flex-wrap:wrap;align-content:flex-start;gap:6px;margin-top:-4px;min-height:90px;max-height:160px;overflow:hidden;transition:opacity .45s ease,min-height .9s cubic-bezier(.65,0,.12,1),max-height .9s cubic-bezier(.65,0,.12,1),margin .9s cubic-bezier(.65,0,.12,1)}
+.bd{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:400;letter-spacing:.02em;white-space:nowrap;color:rgba(255,255,255,.86);background:rgba(20,18,24,.32);border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.bd b{font-weight:600;color:#fff}
 /* liseré de la couleur de l'univers en pied de bannière */
 .uxbar{position:absolute;left:0;right:0;bottom:0;height:6px;background:var(--c);z-index:2;transition:height .9s cubic-bezier(.65,0,.12,1)}
 .ux.on .uxbar{height:10px}
@@ -187,6 +191,7 @@ html{scroll-behavior:auto}
 .ux:hover .uxp{filter:none}
 .ux:hover .uxt0{opacity:.08}
 .ux:hover .uxbar{height:10px}
+.uvrow:hover .ux:not(:hover) .uxf{opacity:0;min-height:0;max-height:0;margin-top:-16px}
 .uvrow:hover .ux.on:not(:hover) .uxbar{height:6px}
 .ux:hover .uxw{opacity:.55}
 .ux:hover .uxpl{transform:scale(1.12);background:#fff;color:#141218}
@@ -314,6 +319,9 @@ html{scroll-behavior:auto}
 </span>
 <span class="uxr" aria-hidden="true"></span>
 <span class="uxlv"><span class="live-dot" style="background: {{r.color}}"></span>{{r.status}}</span>
+<span class="uxf" aria-label="{{r.bandsLabel}}">
+<sc-for list="{{r.bands}}" as="b" hint-placeholder-count="2"><span class="bd">{{b.city}}<b>{{b.f}}</b></span></sc-for>
+</span>
 <span class="uxi"><span>
 <span class="uxn">
 <span class="uxc">
@@ -997,10 +1005,10 @@ class Component extends DCLogic {
     }));
 
     const R = [
-      { name: 'Monte-Carlo', aria: 'Écouter Radio Monaco Monte-Carlo', alt: 'Radio Monaco Monte Carlo', logo: 'assets/wr-montecarlo-ink.png', wlogo: 'assets/wr-montecarlo-allwhite.png', photo: 'assets/rm-casino.jpg', pos: '50% 30%', washC: 'rgba(228,3,46,.55)', sig: 'assets/rm-mark.png', color: '#E4032E', soft: '#F6E2E5', tint: '#FFF4F5', glowC: 'rgba(228,3,46,.55)', ink: '#FFFFFF', line: now.name },
-      { name: 'Paris', aria: 'Écouter Radio Monaco Paris', alt: 'Radio Monaco Paris', logo: 'assets/wr-paris-ink.png', wlogo: 'assets/wr-paris-allwhite.png', photo: 'assets/rm-paris.jpg', pos: '50% 40%', washC: 'rgba(228,3,46,.5)', sig: 'assets/rm-mark.png', color: '#E4032E', soft: '#F3E7E6', tint: '#FFF4F5', glowC: 'rgba(228,3,46,.55)', ink: '#FFFFFF', line: 'La webradio Radio Monaco' },
-      { name: '100 % Mix DJ', aria: 'Écouter Radio Monaco 100 % Mix DJ', alt: 'Radio Monaco 100 % Mix DJ', logo: 'assets/wr-mixdj-ink.png', wlogo: 'assets/wr-mixdj-allwhite.png', photo: 'assets/rm-dj.jpg', pos: '40% 50%', washC: 'rgba(245,156,0,.55)', sig: 'assets/sig-mixdj-color.png', color: '#F59C00', soft: '#FBEBD0', tint: '#FFF8EC', glowC: 'rgba(245,156,0,.6)', ink: '#141218', line: 'DJ sets non-stop' },
-      { name: 'Night Mood', aria: 'Écouter Radio Monaco Night Mood', alt: 'Radio Monaco Night Mood', logo: 'assets/wr-nightmood-ink.png', wlogo: 'assets/wr-nightmood-allwhite.png', photo: 'assets/rm-night.jpg', pos: '35% 50%', washC: 'rgba(138,90,161,.6)', sig: 'assets/sig-nightmood-color.png', color: '#8A5AA1', soft: '#EDE3F2', tint: '#F8F3FA', glowC: 'rgba(138,90,161,.6)', ink: '#FFFFFF', line: 'La playlist de Pampa' }
+      { bands: [{ city: 'Monaco', f: '98,2 FM' }, { city: 'Nice', f: '95,4 FM' }, { city: 'Cannes & Grasse', f: '103,2 FM' }, { city: 'Saint-Tropez', f: '95,4 FM' }, { city: '', f: 'DAB+' }], name: 'Monte-Carlo', aria: 'Écouter Radio Monaco Monte-Carlo', alt: 'Radio Monaco Monte Carlo', logo: 'assets/wr-montecarlo-ink.png', wlogo: 'assets/wr-montecarlo-allwhite.png', photo: 'assets/rm-casino.jpg', pos: '50% 30%', washC: 'rgba(228,3,46,.55)', sig: 'assets/rm-mark.png', color: '#E4032E', soft: '#F6E2E5', tint: '#FFF4F5', glowC: 'rgba(228,3,46,.55)', ink: '#FFFFFF', line: now.name },
+      { bands: [{ city: '', f: 'DAB+' }], name: 'Paris', aria: 'Écouter Radio Monaco Paris', alt: 'Radio Monaco Paris', logo: 'assets/wr-paris-ink.png', wlogo: 'assets/wr-paris-allwhite.png', photo: 'assets/rm-paris.jpg', pos: '50% 40%', washC: 'rgba(228,3,46,.5)', sig: 'assets/rm-mark.png', color: '#E4032E', soft: '#F3E7E6', tint: '#FFF4F5', glowC: 'rgba(228,3,46,.55)', ink: '#FFFFFF', line: 'La webradio Radio Monaco' },
+      { bands: [{ city: '', f: 'Web' }], name: '100 % Mix DJ', aria: 'Écouter Radio Monaco 100 % Mix DJ', alt: 'Radio Monaco 100 % Mix DJ', logo: 'assets/wr-mixdj-ink.png', wlogo: 'assets/wr-mixdj-allwhite.png', photo: 'assets/rm-dj.jpg', pos: '40% 50%', washC: 'rgba(245,156,0,.55)', sig: 'assets/sig-mixdj-color.png', color: '#F59C00', soft: '#FBEBD0', tint: '#FFF8EC', glowC: 'rgba(245,156,0,.6)', ink: '#141218', line: 'DJ sets non-stop' },
+      { bands: [{ city: '', f: 'Web' }], name: 'Night Mood', aria: 'Écouter Radio Monaco Night Mood', alt: 'Radio Monaco Night Mood', logo: 'assets/wr-nightmood-ink.png', wlogo: 'assets/wr-nightmood-allwhite.png', photo: 'assets/rm-night.jpg', pos: '35% 50%', washC: 'rgba(138,90,161,.6)', sig: 'assets/sig-nightmood-color.png', color: '#8A5AA1', soft: '#EDE3F2', tint: '#F8F3FA', glowC: 'rgba(138,90,161,.6)', ink: '#FFFFFF', line: 'La playlist de Pampa' }
     ];
     const meta = st.meta || {};
     const np = (i) => {
@@ -1027,6 +1035,7 @@ class Component extends DCLogic {
         status: on ? 'En écoute' : 'En direct',
         onCls: on ? 'on' : '',
         inkCls: r.ink === '#141218' ? 'dk' : '',
+        bandsLabel: 'Diffusion : ' + r.bands.map((b) => (b.city ? b.city + ' ' : '') + b.f).join(', '),
         eqRun: on ? 'running' : 'paused',
         washO: sel ? 0.7 : 0,
         uvShadow: sel ? '0 0 0 2px ' + r.color + ', 0 30px 60px -28px ' + r.glowC : '0 24px 50px -30px rgba(20,18,24,.45)',
