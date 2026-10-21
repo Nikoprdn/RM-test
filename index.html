@@ -82,7 +82,7 @@ a:hover{color:inherit}
 .rc .pl{transition:transform .5s cubic-bezier(.16,.84,.12,1),background .3s,color .3s}
 .rc:hover .pl{transform:scale(1.08)}
 @keyframes wave{0%,100%{transform:scaleY(.25)}50%{transform:scaleY(1)}}
-.wave{display:flex;align-items:flex-end;gap:3px;height:16px;overflow:hidden}
+.wave{display:flex;align-items:flex-end;gap:3px;height:14px;overflow:hidden}
 .wave i{flex:1 1 0;min-width:2px;height:100%;border-radius:2px;background:currentColor;transform-origin:bottom;animation:wave 1.2s ease-in-out infinite}
 .wave.idle i{animation:none;transform:scaleY(.14);opacity:.3}
 
@@ -186,25 +186,25 @@ a:hover{color:inherit}
 </div>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 16px">
 <sc-for list="{{radios}}" as="r" hint-placeholder-count="4">
-<button class="rc reveal" onClick="{{r.pick}}" aria-pressed="{{r.pressed}}" aria-label="{{r.aria}}" style="display: flex; flex-direction: column; gap: 14px; padding: 14px 14px 16px; border: 0; border-radius: 26px; background: {{r.a1bg}}; box-shadow: {{r.a1shadow}}; text-align: left; font-family: inherit; color: #141218; cursor: pointer; overflow: hidden">
-<span style="display: flex; align-items: center; gap: 14px; width: 100%">
-<span style="position: relative; flex: 0 0 auto; width: 84px; height: 84px; border-radius: 18px; overflow: hidden; background: {{r.soft}}; box-shadow: {{r.glow}}; display: inline-flex; align-items: center; justify-content: center">
-<sc-if value="{{r.hasCover}}" hint-placeholder-val="{{ false }}"><img class="cv" src="{{r.cover}}" alt="Pochette du titre en cours" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover"></sc-if>
-<sc-if value="{{r.noCover}}" hint-placeholder-val="{{ true }}"><img src="{{r.sig}}" alt="" style="width: 38px; height: 38px"></sc-if>
-</span>
-<span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 5px">
-<img src="{{r.logo}}" alt="{{r.alt}}" style="height: 27px; width: auto; align-self: flex-start">
-<span style="font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.np1}}</span>
-<span style="font-size: 13px; color: #6A6570; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.np2}}</span>
+<button class="rc reveal" onClick="{{r.pick}}" aria-pressed="{{r.pressed}}" aria-label="{{r.aria}}" style="display: flex; flex-direction: column; gap: 18px; padding: 22px 18px 18px 20px; border: 0; border-radius: 26px; background: {{r.a1bg}}; box-shadow: {{r.a1shadow}}; text-align: left; font-family: inherit; color: #141218; cursor: pointer; overflow: hidden">
+<span style="display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%">
+<img src="{{r.logo}}" alt="{{r.alt}}" style="height: 56px; width: auto; max-width: 78%; display: block">
+<span class="pl" style="flex: 0 0 auto; width: 44px; height: 44px; border-radius: 50%; background: {{r.btnBg}}; color: {{r.btnFg}}; display: inline-flex; align-items: center; justify-content: center">
+<sc-if value="{{r.eq}}" hint-placeholder-val="{{ false }}"><svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor"></path></svg></sc-if>
+<sc-if value="{{r.play}}" hint-placeholder-val="{{ true }}"><svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></sc-if>
 </span>
 </span>
 <span style="display: flex; align-items: center; gap: 12px; width: 100%">
-<span class="wave {{r.waveCls}}" aria-hidden="true" style="flex: 1 1 auto; color: {{r.color}}"><i></i><i style="animation-delay:-.2s"></i><i style="animation-delay:-.5s"></i><i style="animation-delay:-.1s"></i><i style="animation-delay:-.7s"></i><i style="animation-delay:-.3s"></i><i style="animation-delay:-.9s"></i><i style="animation-delay:-.4s"></i><i style="animation-delay:-.6s"></i><i style="animation-delay:-.15s"></i><i style="animation-delay:-.8s"></i><i style="animation-delay:-.35s"></i><i style="animation-delay:-.55s"></i><i style="animation-delay:-.05s"></i><i style="animation-delay:-.75s"></i><i style="animation-delay:-.25s"></i><i style="animation-delay:-.65s"></i><i style="animation-delay:-.45s"></i></span>
-<span class="pl" style="flex: 0 0 auto; width: 40px; height: 40px; border-radius: 50%; background: {{r.btnBg}}; color: {{r.btnFg}}; display: inline-flex; align-items: center; justify-content: center">
-<sc-if value="{{r.eq}}" hint-placeholder-val="{{ false }}"><svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor"></path></svg></sc-if>
-<sc-if value="{{r.play}}" hint-placeholder-val="{{ true }}"><svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></sc-if>
+<span style="position: relative; flex: 0 0 auto; width: 56px; height: 56px; border-radius: 14px; overflow: hidden; background: {{r.soft}}; box-shadow: {{r.glow}}; display: inline-flex; align-items: center; justify-content: center">
+<sc-if value="{{r.hasCover}}" hint-placeholder-val="{{ false }}"><img class="cv" src="{{r.cover}}" alt="Pochette du titre en cours" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover"></sc-if>
+<sc-if value="{{r.noCover}}" hint-placeholder-val="{{ true }}"><img src="{{r.sig}}" alt="" style="width: 26px; height: 26px"></sc-if>
+</span>
+<span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 3px">
+<span style="font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.np1}}</span>
+<span style="font-size: 13px; color: #6A6570; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.np2}}</span>
 </span>
 </span>
+<span class="wave {{r.waveCls}}" aria-hidden="true" style="width: 100%; color: {{r.color}}"><i></i><i style="animation-delay:-.2s"></i><i style="animation-delay:-.5s"></i><i style="animation-delay:-.1s"></i><i style="animation-delay:-.7s"></i><i style="animation-delay:-.3s"></i><i style="animation-delay:-.9s"></i><i style="animation-delay:-.4s"></i><i style="animation-delay:-.6s"></i><i style="animation-delay:-.15s"></i><i style="animation-delay:-.8s"></i><i style="animation-delay:-.35s"></i><i style="animation-delay:-.55s"></i><i style="animation-delay:-.05s"></i><i style="animation-delay:-.75s"></i><i style="animation-delay:-.25s"></i><i style="animation-delay:-.65s"></i><i style="animation-delay:-.45s"></i><i style="animation-delay:-.12s"></i><i style="animation-delay:-.58s"></i><i style="animation-delay:-.33s"></i><i style="animation-delay:-.82s"></i></span>
 </button>
 </sc-for>
 </div>
