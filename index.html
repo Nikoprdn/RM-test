@@ -173,22 +173,22 @@ a:hover{color:inherit}
 </div>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr)); gap: 12px">
 <sc-for list="{{radios}}" as="r" hint-placeholder-count="4">
-<button class="radio tile reveal" onClick="{{r.pick}}" aria-pressed="{{r.pressed}}" aria-label="{{r.aria}}" style="position: relative; height: 172px; border: 0; padding: 0; border-radius: 18px; overflow: hidden; cursor: pointer; text-align: left; color: #fff; background: {{r.panel}}; box-shadow: {{r.ring}}">
-<img class="ph" src="{{r.photo}}" alt="" style="position: absolute; top: 0; right: 0; width: 64%; height: 100%; object-fit: cover; object-position: {{r.pos}}; filter: brightness(.86); -webkit-mask-image: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.5) 38%, #000 78%); mask-image: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.5) 38%, #000 78%)">
-<span style="position: absolute; inset: 0; padding: 18px 16px 14px 20px; display: flex; flex-direction: column; justify-content: space-between; gap: 10px">
-<span style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px">
-<img src="{{r.logo}}" alt="{{r.alt}}" style="width: min(150px, 58%); height: auto; display: block; filter: drop-shadow(0 1px 10px rgba(0,0,0,.22))">
-<span class="pb" style="flex: 0 0 auto; width: 44px; height: 44px; border-radius: 50%; background: #FFFFFF; color: {{r.btnInk}}; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px -8px rgba(0,0,0,.5)">
-<sc-if value="{{r.eq}}" hint-placeholder-val="{{ false }}"><span class="eq"><i></i><i></i><i></i><i></i></span></sc-if>
-<sc-if value="{{r.play}}" hint-placeholder-val="{{ true }}"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></sc-if>
+<button class="radio tile reveal" onClick="{{r.pick}}" aria-pressed="{{r.pressed}}" aria-label="{{r.aria}}" style="position: relative; display: flex; height: 136px; border: 0; padding: 0; border-radius: 20px; overflow: hidden; cursor: pointer; text-align: left; color: #FFFFFF; background: #16141B; box-shadow: {{r.ring}}">
+<span style="position: relative; flex: 0 0 136px; height: 100%; overflow: hidden; background: {{r.tint}}; display: flex; align-items: center; justify-content: center">
+<sc-if value="{{r.hasCover}}" hint-placeholder-val="{{ false }}"><img class="ph" src="{{r.cover}}" alt="Pochette du titre en cours" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover"></sc-if>
+<sc-if value="{{r.noCover}}" hint-placeholder-val="{{ true }}"><img src="{{r.sig}}" alt="" style="width: 52px; height: 52px; display: block"></sc-if>
 </span>
+<span style="flex: 1 1 auto; min-width: 0; padding: 16px 14px 14px 18px; display: flex; flex-direction: column; justify-content: space-between">
+<img src="{{r.logo}}" alt="{{r.alt}}" style="height: 30px; width: auto; max-width: 100%; display: block; align-self: flex-start">
+<span style="min-width: 0; display: flex; flex-direction: column; gap: 2px; line-height: 1.25">
+<span style="font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.np1}}</span>
+<span style="font-size: 13px; color: rgba(255,255,255,.58); white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.np2}}</span>
 </span>
-<span style="display: flex; align-items: center; gap: 10px; min-width: 0; max-width: 100%; padding: 6px 12px 6px 6px; border-radius: 12px; background: rgba(12,10,16,.34); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px)">
-<sc-if value="{{r.hasCover}}" hint-placeholder-val="{{ false }}"><img src="{{r.cover}}" alt="" style="flex: 0 0 auto; width: 36px; height: 36px; border-radius: 8px; object-fit: cover; display: block"></sc-if>
-<sc-if value="{{r.noCover}}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="flex: 0 0 auto; width: 36px; height: 36px; border-radius: 8px; background: rgba(255,255,255,.16); display: inline-flex; align-items: center; justify-content: center"><span class="eq" style="height: 12px; --eq: running"><i></i><i></i><i></i></span></span></sc-if>
-<span style="min-width: 0; display: flex; flex-direction: column; gap: 1px; line-height: 1.25">
-<span style="font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.np1}}</span>
-<span style="font-size: 12px; opacity: .82; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.np2}}</span>
+<span style="display: flex; align-items: center; justify-content: space-between; gap: 10px">
+<span style="display: inline-flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: rgba(255,255,255,.55)"><span class="live-dot" style="background: {{r.color}}"></span>Direct</span>
+<span class="pb" style="flex: 0 0 auto; width: 34px; height: 34px; border-radius: 50%; background: #FFFFFF; color: #16141B; display: inline-flex; align-items: center; justify-content: center">
+<sc-if value="{{r.eq}}" hint-placeholder-val="{{ false }}"><span class="eq" style="height: 11px; gap: 2px"><i></i><i></i><i></i><i></i></span></sc-if>
+<sc-if value="{{r.play}}" hint-placeholder-val="{{ true }}"><svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></sc-if>
 </span>
 </span>
 </span>
@@ -737,10 +737,10 @@ class Component extends DCLogic {
     }));
 
     const R = [
-      { name: 'Monte-Carlo', aria: 'Écouter Radio Monaco Monte-Carlo', alt: 'Radio Monaco Monte Carlo', photo: 'assets/rm-monaco-baie.jpg', pos: '30% 60%', logo: 'assets/wr-montecarlo-allwhite.png', panel: '#E4032E', color: '#E4032E', ink: '#FFFFFF', btnInk: '#E4032E', line: now.name },
-      { name: 'Paris', aria: 'Écouter Radio Monaco Paris', alt: 'Radio Monaco Paris', photo: 'assets/rm-paris.jpg', pos: '50% 45%', logo: 'assets/wr-paris-allwhite.png', panel: '#1C1A22', color: '#1C1A22', ink: '#FFFFFF', btnInk: '#1C1A22', line: 'La webradio Radio Monaco' },
-      { name: '100 % Mix DJ', aria: 'Écouter Radio Monaco 100 % Mix DJ', alt: 'Radio Monaco 100 % Mix DJ', photo: 'assets/rm-dj.jpg', pos: '62% 50%', logo: 'assets/wr-mixdj-allwhite.png', panel: '#F59C00', color: '#F59C00', ink: '#141218', btnInk: '#C77F00', line: 'DJ sets non-stop' },
-      { name: 'Night Mood', aria: 'Écouter Radio Monaco Night Mood', alt: 'Radio Monaco Night Mood', photo: 'assets/rm-night.jpg', pos: '48% 50%', logo: 'assets/wr-nightmood-allwhite.png', panel: '#8A5AA1', color: '#8A5AA1', ink: '#FFFFFF', btnInk: '#8A5AA1', line: 'La playlist de Pampa' }
+      { name: 'Monte-Carlo', aria: 'Écouter Radio Monaco Monte-Carlo', alt: 'Radio Monaco Monte Carlo', logo: 'assets/wr-montecarlo-white.png', sig: 'assets/rm-mark.png', tint: 'rgba(228,3,46,.14)', color: '#E4032E', ink: '#FFFFFF', line: now.name },
+      { name: 'Paris', aria: 'Écouter Radio Monaco Paris', alt: 'Radio Monaco Paris', logo: 'assets/wr-paris-white.png', sig: 'assets/rm-mark.png', tint: 'rgba(255,255,255,.06)', color: '#E4032E', ink: '#FFFFFF', line: 'La webradio Radio Monaco' },
+      { name: '100 % Mix DJ', aria: 'Écouter Radio Monaco 100 % Mix DJ', alt: 'Radio Monaco 100 % Mix DJ', logo: 'assets/wr-mixdj-white.png', sig: 'assets/sig-mixdj-color.png', tint: 'rgba(245,156,0,.14)', color: '#F59C00', ink: '#141218', line: 'DJ sets non-stop' },
+      { name: 'Night Mood', aria: 'Écouter Radio Monaco Night Mood', alt: 'Radio Monaco Night Mood', logo: 'assets/wr-nightmood-white.png', sig: 'assets/sig-nightmood-color.png', tint: 'rgba(138,90,161,.2)', color: '#8A5AA1', ink: '#FFFFFF', line: 'La playlist de Pampa' }
     ];
     const meta = st.meta || {};
     const np = (i) => {
