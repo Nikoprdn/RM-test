@@ -151,6 +151,62 @@ html{scroll-behavior:auto}
 .uxt0{position:absolute;inset:0;background:var(--c);mix-blend-mode:color;opacity:.32;transition:opacity 1.1s ease}
 .ux.on .uxp{filter:grayscale(.2)}
 .ux.on .uxt0{opacity:.2}
+
+/* ===== podcasts ===== */
+.pzt{display:flex;flex-wrap:wrap;gap:6px;padding:5px;border-radius:999px;background:rgba(20,18,24,.05)}
+.pztb{height:40px;padding:0 18px;border:0;border-radius:999px;background:transparent;color:#141218;font:inherit;font-size:14px;font-weight:500;cursor:pointer;transition:background .4s,color .4s,box-shadow .4s}
+.pztb:hover{background:rgba(255,255,255,.7)}
+.pztb.on{background:#141218;color:#fff;box-shadow:0 10px 24px -14px rgba(20,18,24,.7)}
+.pzg{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,1fr);gap:48px;align-items:stretch}
+.pzf{position:relative;display:block;width:100%;aspect-ratio:1 / 1;max-height:640px;padding:0;border:0;border-radius:28px;overflow:hidden;background:#141218;color:#fff;text-align:left;font:inherit;cursor:pointer}
+.pzfw{position:absolute;inset:0}
+.pzfi{width:100%;height:100%;object-fit:cover;display:block;transition:transform 1.6s cubic-bezier(.16,.84,.12,1)}
+.pzf:hover .pzfi{transform:scale(1.04)}
+.pzfs{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,16,.35) 0%,rgba(10,10,16,0) 30%,rgba(10,10,16,.1) 50%,rgba(10,10,16,.88) 100%)}
+.pzftop{position:absolute;left:28px;top:26px}
+.pzchip{display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 13px;border-radius:999px;background:rgba(20,18,24,.4);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.18);font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase}
+.pzfb{position:absolute;left:32px;right:32px;bottom:34px;display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+.pzfsh{display:inline-flex;align-items:center;gap:10px;font-size:12px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.9)}
+.pzfsh::before{content:"";width:22px;height:2px;border-radius:2px;background:var(--c)}
+.pzftt{font-size:clamp(26px,2.6vw,40px);line-height:1.08;font-weight:500;letter-spacing:-.025em;max-width:22ch;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.pzfm{font-size:15px;color:rgba(255,255,255,.75)}
+.pzfp{margin-top:8px;display:inline-flex;align-items:center;gap:12px;height:52px;padding:0 24px 0 6px;border-radius:999px;background:#fff;color:#141218;font-size:15px;font-weight:600;transition:transform .5s cubic-bezier(.16,.84,.12,1),box-shadow .5s}
+.pzf:hover .pzfp{transform:translateY(-2px);box-shadow:0 18px 36px -16px rgba(0,0,0,.6)}
+.pzfpi{width:40px;height:40px;border-radius:50%;background:var(--c);color:#fff;display:inline-flex;align-items:center;justify-content:center}
+.pzfbar{position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(255,255,255,.12)}
+.pzfbar i,.pzrbar i{display:block;height:100%;background:var(--c);transition:width .5s linear}
+.pzl{display:flex;flex-direction:column;min-width:0}
+.pzlh{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding-bottom:16px;border-bottom:1px solid rgba(20,18,24,.12)}
+.pzlt{font-size:22px;font-weight:500;letter-spacing:-.01em}
+.pzls{font-size:13px;color:#6A6570;white-space:nowrap}
+.pzr{position:relative;display:flex;align-items:center;gap:18px;width:100%;padding:14px 12px 14px 0;border:0;border-bottom:1px solid rgba(20,18,24,.08);background:transparent;color:#141218;text-align:left;font:inherit;cursor:pointer;transition:padding .55s cubic-bezier(.16,.84,.12,1),background .4s}
+.pzr:hover{padding-left:10px;background:rgba(255,255,255,.55)}
+.pzr.on{padding-left:10px;background:#fff}
+.pzrc{position:relative;flex:0 0 auto;width:72px;height:72px;border-radius:14px;overflow:hidden;background:#E4032E;box-shadow:0 12px 24px -16px rgba(20,18,24,.6)}
+.pzrc img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .8s cubic-bezier(.16,.84,.12,1)}
+.pzr:hover .pzrc img{transform:scale(1.08)}
+.pzrp{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(20,18,24,.38);color:#fff;opacity:0;transition:opacity .35s}
+.pzr:hover .pzrp,.pzr.on .pzrp{opacity:1}
+.pzrx{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:4px}
+.pzrs{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--c)}
+.pzrt{font-size:16px;font-weight:500;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pzrm{font-size:13px;color:#6A6570}
+.pzrbar{position:absolute;left:0;right:0;bottom:-1px;height:2px;opacity:0;transition:opacity .4s}
+.pzr.on .pzrbar{opacity:1}
+.pzc{flex:0 0 232px;scroll-snap-align:start;display:flex;flex-direction:column;gap:14px;padding:0;border:0;background:transparent;color:#141218;text-align:left;font:inherit;cursor:pointer;transition:opacity 1.2s cubic-bezier(.19,1,.22,1) var(--d,0s),translate 1.6s cubic-bezier(.19,1,.22,1) var(--d,0s)}
+.pzci{position:relative;display:block;aspect-ratio:1 / 1;border-radius:22px;overflow:hidden;background:#E4032E;box-shadow:0 0 0 0 var(--c);transition:box-shadow .5s cubic-bezier(.16,.84,.12,1)}
+.pzci img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pzc.on .pzci{box-shadow:0 0 0 3px var(--c),0 24px 44px -24px var(--c)}
+.pzcn{position:absolute;left:12px;bottom:12px;height:26px;padding:0 11px;border-radius:999px;display:inline-flex;align-items:center;background:rgba(255,255,255,.92);font-size:12px;font-weight:600}
+.pzcx{display:flex;flex-direction:column;gap:3px}
+.pzcf{font-size:10.5px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--c)}
+.pzct{font-size:19px;font-weight:600;letter-spacing:-.01em}
+.pzcs{font-size:14px;color:#6A6570}
+.pzcl{margin-top:4px;font-size:12.5px;color:#6A6570}
+.dprog{position:absolute;left:28px;right:28px;bottom:3px;height:2px;border-radius:2px;background:rgba(20,18,24,.08);overflow:hidden;transition:opacity .4s}
+.dprog i{display:block;height:100%;background:var(--c);transition:width .5s linear}
+@media (max-width: 1000px){.pzg{grid-template-columns:1fr}.pzf{max-height:none;aspect-ratio:4 / 5}}
+
 /* fréquences / modes de diffusion */
 .uxf{display:flex;flex-wrap:wrap;align-content:flex-start;gap:6px;margin-top:-4px;min-height:90px;max-height:160px;overflow:hidden;transition:opacity .45s ease,min-height .9s cubic-bezier(.65,0,.12,1),max-height .9s cubic-bezier(.65,0,.12,1),margin .9s cubic-bezier(.65,0,.12,1)}
 .bd{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:400;letter-spacing:.02em;white-space:nowrap;color:rgba(255,255,255,.86);background:rgba(20,18,24,.32);border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
@@ -237,11 +293,11 @@ html{scroll-behavior:auto}
 </a>
 <nav class="nav" aria-label="Navigation principale" style="display: flex; align-items: center; gap: 34px; font-size: 13px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase">
 <a href="#radios" class="{{nav.radios}}" aria-current="{{nav.radiosCur}}" ref="{{navRef.radios}}">Radios</a>
+<a href="#podcasts" class="{{nav.podcasts}}" aria-current="{{nav.podcastsCur}}" ref="{{navRef.podcasts}}">Podcasts</a>
 <a href="#actualites" class="{{nav.actualites}}" aria-current="{{nav.actualitesCur}}" ref="{{navRef.actualites}}">Actualités</a>
 <a href="#reseaux" class="{{nav.reseaux}}" aria-current="{{nav.reseauxCur}}" ref="{{navRef.reseaux}}">Réseaux</a>
 <a href="#equipes" class="{{nav.equipes}}" aria-current="{{nav.equipesCur}}" ref="{{navRef.equipes}}">Équipes</a>
 <a href="#djs" class="{{nav.djs}}" aria-current="{{nav.djsCur}}" ref="{{navRef.djs}}">DJs</a>
-<a href="#podcasts" class="{{nav.podcasts}}" aria-current="{{nav.podcastsCur}}" ref="{{navRef.podcasts}}">Podcasts</a>
 <span class="ind" aria-hidden="true" style="width: {{ind.w}}px; transform: translateX({{ind.x}}px); opacity: {{ind.o}}"></span>
 </nav>
 <button class="btn" onClick="{{togglePlay}}" style="display: inline-flex; align-items: center; gap: 11px; height: 44px; padding: 0 20px 0 17px; border: 0; border-radius: 999px; background: {{hdr.btnBg}}; color: {{hdr.btnFg}}; font-size: 14px; font-weight: 500; cursor: pointer">
@@ -342,12 +398,75 @@ html{scroll-behavior:auto}
 </div>
 </section>
 
+<!-- 02 · PODCASTS (Ausha) -->
+<section id="podcasts" ref="{{secRef.podcasts}}" class="{{sec.podcasts}}" style="padding: 140px 0 0">
+<div style="max-width: 1400px; margin: 0 auto; padding: 0 clamp(24px,4vw,56px)">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 24px 40px; margin-bottom: 44px">
+<div>
+<p class="eb" style="margin: 0 0 18px; font-size: 12px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: #6A6570">02 — Podcasts</p>
+<h2 style="margin: 0; font-size: clamp(40px, 4.8vw, 68px); line-height: 1; letter-spacing: -0.03em; font-weight: 300"><span class="m"><span>Vos rendez-vous préférés,</span></span> <span class="m"><span style="font-weight: 600">à la demande.</span></span></h2>
+</div>
+<div class="pzt rise" role="tablist" aria-label="Filtrer les podcasts" style="--d: .3s">
+<sc-for list="{{podTabs}}" as="t" hint-placeholder-count="4"><button role="tab" class="pztb {{t.cls}}" aria-selected="{{t.sel}}" onClick="{{t.pick}}">{{t.label}}</button></sc-for>
+</div>
+</div>
+
+<div class="pzg">
+<button class="pzf unv" onClick="{{feat.play}}" aria-label="{{feat.aria}}" style="--c: {{feat.color}}; --d: .1s">
+<span class="pzfw zm"><img class="pzfi" src="{{feat.img}}" alt=""></span>
+<span class="pzfs" aria-hidden="true"></span>
+<span class="pzftop"><span class="pzchip"><span class="live-dot" style="background: {{feat.color}}"></span>{{feat.badge}}</span></span>
+<span class="pzfb">
+<span class="pzfsh">{{feat.show}}</span>
+<span class="pzftt">{{feat.title}}</span>
+<span class="pzfm">{{feat.meta}}</span>
+<span class="pzfp"><span class="pzfpi">
+<sc-if value="{{feat.on}}" hint-placeholder-val="{{ false }}"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor"></path></svg></sc-if>
+<sc-if value="{{feat.off}}" hint-placeholder-val="{{ true }}"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></sc-if>
+</span>{{feat.cta}}</span>
+</span>
+<span class="pzfbar" aria-hidden="true"><i style="width: {{feat.pct}}%"></i></span>
+</button>
+
+<div class="pzl rise" style="--d: .25s">
+<div class="pzlh"><span class="pzlt">{{podList.title}}</span><span class="pzls">{{podList.sub}}</span></div>
+<sc-for list="{{podList.eps}}" as="e" hint-placeholder-count="6">
+<button class="pzr {{e.cls}}" onClick="{{e.play}}" aria-label="{{e.aria}}" style="--c: {{e.color}}">
+<span class="pzrc"><img src="{{e.img}}" alt="" loading="lazy"><span class="pzrp">
+<sc-if value="{{e.on}}" hint-placeholder-val="{{ false }}"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span></sc-if>
+<sc-if value="{{e.off}}" hint-placeholder-val="{{ true }}"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></sc-if>
+</span></span>
+<span class="pzrx"><span class="pzrs">{{e.show}}</span><span class="pzrt">{{e.title}}</span><span class="pzrm">{{e.meta}}</span></span>
+<span class="pzrbar" aria-hidden="true"><i style="width: {{e.pct}}%"></i></span>
+</button>
+</sc-for>
+</div>
+</div>
+
+<div style="margin-top: 72px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px 32px; margin-bottom: 24px">
+<div><p style="margin: 0; font-size: 26px; font-weight: 500; letter-spacing: -0.015em">Toutes nos émissions</p><p style="margin: 6px 0 0; font-size: 15px; color: #6A6570">{{podShowsLabel}}</p></div>
+<div style="display: flex; align-items: center; gap: 10px">
+<button class="nb" onClick="{{pods.prev}}" aria-label="Émissions précédentes" style="width: 50px; height: 50px; border-radius: 50%; border: 1px solid rgba(20,18,24,.2); background: transparent; color: #141218; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg class="ic" viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg></button>
+<button class="nb" onClick="{{pods.next}}" aria-label="Émissions suivantes" style="width: 50px; height: 50px; border-radius: 50%; border: 1px solid rgba(20,18,24,.2); background: transparent; color: #141218; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg class="ic" viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+</div>
+</div>
+</div>
+<div class="scroller" ref="{{pods.ref}}" onMouseEnter="{{pods.hold}}" onMouseLeave="{{pods.free}}" style="display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px max(clamp(24px,4vw,56px), calc((100% - 1400px) / 2 + 56px)) 12px; scroll-padding-left: max(clamp(24px,4vw,56px), calc((100% - 1400px) / 2 + 56px))">
+<sc-for list="{{podShows}}" as="p" hint-placeholder-count="8">
+<button data-card="1" class="pzc tile rise {{p.cls}}" onClick="{{p.pick}}" aria-pressed="{{p.sel}}" aria-label="{{p.aria}}" style="--d: {{p.d}}; --c: {{p.color}}">
+<span class="pzci"><img class="ph zm" src="{{p.cover}}" alt="" loading="lazy"><span class="pzcn">{{p.count}}</span></span>
+<span class="pzcx"><span class="pzcf">{{p.feedLabel}}</span><span class="pzct">{{p.name}}</span><span class="pzcs">{{p.sub}}</span><span class="pzcl">{{p.last}}</span></span>
+</button>
+</sc-for>
+</div>
+</section>
+
 <!-- 02 · ACTUALITÉS (slider) -->
 <section id="actualites" ref="{{secRef.actualites}}" class="{{sec.actualites}}" style="padding: 140px 0 0">
 <div style="max-width: 1400px; margin: 0 auto; padding: 0 clamp(24px,4vw,56px)">
 <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 20px 40px; margin-bottom: 44px">
 <div>
-<p class="eb" style="margin: 0 0 18px; font-size: 12px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: #6A6570">02 — Actualités</p>
+<p class="eb" style="margin: 0 0 18px; font-size: 12px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: #6A6570">03 — Actualités</p>
 <h2 style="margin: 0; font-size: clamp(40px, 4.8vw, 68px); line-height: 1; letter-spacing: -0.03em; font-weight: 300"><span class="m"><span>À la</span></span> <span class="m"><span style="font-weight: 600">une.</span></span></h2>
 </div>
 <div class="rise" style="display: flex; align-items: center; gap: 10px; --d: .35s">
@@ -406,7 +525,7 @@ html{scroll-behavior:auto}
 <div style="max-width: 1400px; margin: 0 auto; padding: 0 clamp(24px,4vw,56px)">
 <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 20px 40px; margin-bottom: 44px">
 <div>
-<p class="eb" style="margin: 0 0 18px; font-size: 12px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: #6A6570">03 — Sur nos réseaux</p>
+<p class="eb" style="margin: 0 0 18px; font-size: 12px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: #6A6570">04 — Sur nos réseaux</p>
 <h2 style="margin: 0; font-size: clamp(40px, 4.8vw, 68px); line-height: 1; letter-spacing: -0.03em; font-weight: 300"><span class="m"><span>Sur nos</span></span> <span class="m"><span style="font-weight: 600">réseaux.</span></span></h2>
 </div>
 <div class="rise" style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; --d: .35s">
@@ -423,8 +542,6 @@ html{scroll-behavior:auto}
 <a href="{{v.href}}" data-card="1" class="reel tile rise" style="--d: {{v.d}}; position: relative; flex: 0 0 260px; aspect-ratio: 9 / 16; scroll-snap-align: start; border-radius: 20px; overflow: hidden; background: #141218; color: #fff">
 <img class="ph zm" src="{{v.img}}" alt="{{v.alt}}" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover">
 <span class="ov" aria-hidden="true" style="position: absolute; inset: 0; background: rgba(20,18,24,.25); opacity: 0; display: flex; align-items: center; justify-content: center"><span style="width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,.92); color: #141218; display: inline-flex; align-items: center; justify-content: center"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></span></span>
-<span style="position: absolute; left: 12px; bottom: 12px; display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px; background: rgba(20,18,24,.55); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); font-size: 12px; font-weight: 600">
-<svg viewBox="0 0 24 24" width="11" height="11" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg>{{v.views}}</span>
 </a>
 </sc-for>
 </div>
@@ -443,7 +560,7 @@ html{scroll-behavior:auto}
 </div>
 </div>
 <div>
-<p class="eb" style="margin: 0 0 18px; font-size: 12px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: #6A6570">04 — Nos équipes</p>
+<p class="eb" style="margin: 0 0 18px; font-size: 12px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: #6A6570">05 — Nos équipes</p>
 <div class="rise" style="position: relative; min-height: 230px; --d: .25s">
 <div class="slide" style="position: absolute; inset: 0; opacity: {{team.o0}}; transform: translateY({{team.t0}}px)"><h2 style="margin: 0; font-size: clamp(44px, 5.4vw, 80px); line-height: .98; letter-spacing: -0.035em; font-weight: 300">Léo <span style="font-weight: 600">Barraband</span></h2><p style="margin: 18px 0 0; font-size: 17px; color: #6A6570">Animateur · Le Morning « Made in Monte-Carlo » et Le Morning +</p></div>
 <div class="slide" style="position: absolute; inset: 0; opacity: {{team.o1}}; transform: translateY({{team.t1}}px)"><h2 style="margin: 0; font-size: clamp(44px, 5.4vw, 80px); line-height: .98; letter-spacing: -0.035em; font-weight: 300">Giulia <span style="font-weight: 600">Testaverde</span></h2><p style="margin: 18px 0 0; font-size: 17px; color: #6A6570">Animatrice · Le Morning « Made in Monte-Carlo » et Le Morning +</p></div>
@@ -468,7 +585,7 @@ html{scroll-behavior:auto}
 <div style="max-width: 1400px; margin: 0 auto; padding: 0 clamp(24px,4vw,56px)">
 <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 20px 40px; margin-bottom: 44px">
 <div>
-<p class="eb" style="margin: 0 0 18px; font-size: 12px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: #6A6570">05 — Nos DJs</p>
+<p class="eb" style="margin: 0 0 18px; font-size: 12px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: #6A6570">06 — Nos DJs</p>
 <h2 style="margin: 0; font-size: clamp(40px, 4.8vw, 68px); line-height: 1; letter-spacing: -0.03em; font-weight: 300"><span class="m"><span>Les DJ</span></span> <span class="m"><span style="font-weight: 600">sets.</span></span></h2>
 </div>
 <div class="rise" style="display: flex; align-items: center; gap: 10px; --d: .35s">
@@ -485,34 +602,6 @@ html{scroll-behavior:auto}
 <span class="pb" style="position: absolute; right: 14px; bottom: 14px; width: 44px; height: 44px; border-radius: 50%; background: #FFFFFF; color: #141218; display: inline-flex; align-items: center; justify-content: center"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></span>
 </span>
 <span style="display: flex; flex-direction: column; gap: 3px"><span style="font-size: 20px; font-weight: 500">{{d.name}}</span><span style="font-size: 14px; color: #6A6570">{{d.show}}</span></span>
-</a>
-</sc-for>
-</div>
-</section>
-
-<!-- 06 · PODCASTS (slider) -->
-<section id="podcasts" ref="{{secRef.podcasts}}" class="{{sec.podcasts}}" style="padding: 140px 0 0">
-<div style="max-width: 1400px; margin: 0 auto; padding: 0 clamp(24px,4vw,56px)">
-<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 20px 40px; margin-bottom: 44px">
-<div>
-<p class="eb" style="margin: 0 0 18px; font-size: 12px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: #6A6570">06 — Nos podcasts</p>
-<h2 style="margin: 0; font-size: clamp(40px, 4.8vw, 68px); line-height: 1; letter-spacing: -0.03em; font-weight: 300"><span class="m"><span>À réécouter,</span></span> <span class="m"><span style="font-weight: 600">à tout</span></span> <span class="m"><span style="font-weight: 600">moment.</span></span></h2>
-</div>
-<div class="rise" style="display: flex; align-items: center; gap: 10px; --d: .35s">
-<button class="nb" onClick="{{pods.prev}}" aria-label="Podcasts précédents" style="width: 50px; height: 50px; border-radius: 50%; border: 1px solid rgba(20,18,24,.2); background: transparent; color: #141218; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg class="ic" viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg></button>
-<button class="nb" onClick="{{pods.next}}" aria-label="Podcasts suivants" style="width: 50px; height: 50px; border-radius: 50%; border: 1px solid rgba(20,18,24,.2); background: transparent; color: #141218; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg class="ic" viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
-</div>
-</div>
-</div>
-<div class="scroller" ref="{{pods.ref}}" onMouseEnter="{{pods.hold}}" onMouseLeave="{{pods.free}}" style="display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px max(clamp(24px,4vw,56px), calc((100% - 1400px) / 2 + 56px)) 12px; scroll-padding-left: max(clamp(24px,4vw,56px), calc((100% - 1400px) / 2 + 56px))">
-<sc-for list="{{podList}}" as="p" hint-placeholder-count="7">
-<a href="#" data-card="1" class="tile rise" style="--d: {{p.d}}; flex: 0 0 380px; max-width: 86vw; scroll-snap-align: start; display: flex; flex-direction: column; gap: 16px">
-<span style="position: relative; display: block; aspect-ratio: 1500 / 945; border-radius: 20px; overflow: hidden; background: #141218">
-<img class="ph zm" src="{{p.img}}" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: {{p.pos}}">
-<span style="position: absolute; left: 14px; top: 14px; padding: 5px 11px; border-radius: 999px; background: rgba(255,255,255,.9); color: #141218; font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase">{{p.tag}}</span>
-<span class="pb" style="position: absolute; right: 14px; bottom: 14px; width: 44px; height: 44px; border-radius: 50%; background: #FFFFFF; color: #141218; display: inline-flex; align-items: center; justify-content: center"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></span>
-</span>
-<span style="display: flex; flex-direction: column; gap: 3px"><span style="font-size: 20px; font-weight: 500">{{p.title}}</span><span style="font-size: 14px; color: #6A6570">{{p.sub}}</span></span>
 </a>
 </sc-for>
 </div>
@@ -537,13 +626,13 @@ html{scroll-behavior:auto}
 </footer>
 
 <!-- PLAYER -->
-<div role="region" aria-label="Lecteur" style="position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 80; width: min(600px, calc(100% - 24px)); display: flex; align-items: center; gap: 12px; padding: 7px 8px 7px 7px; border-radius: 999px; background: rgba(255,255,255,.9); backdrop-filter: blur(24px) saturate(1.5); -webkit-backdrop-filter: blur(24px) saturate(1.5); border: 1px solid rgba(20,18,24,.08); box-shadow: 0 20px 50px -20px rgba(20,18,24,.3)">
+<div role="region" aria-label="Lecteur" style="--c: {{pl.color}}; position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 80; width: min(600px, calc(100% - 24px)); display: flex; align-items: center; gap: 12px; padding: 7px 8px 7px 7px; border-radius: 999px; background: rgba(255,255,255,.9); backdrop-filter: blur(24px) saturate(1.5); -webkit-backdrop-filter: blur(24px) saturate(1.5); border: 1px solid rgba(20,18,24,.08); box-shadow: 0 20px 50px -20px rgba(20,18,24,.3)">
 <span style="flex: 0 0 auto; position: relative; width: 46px; height: 46px; border-radius: 50%; overflow: hidden; background: {{pl.color}}; display: inline-flex; align-items: center; justify-content: center">
 <sc-if value="{{pl.hasCover}}" hint-placeholder-val="{{ false }}"><img src="{{pl.cover}}" alt="Pochette du titre en cours" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover"></sc-if>
 <sc-if value="{{pl.noCover}}" hint-placeholder-val="{{ true }}"><span class="eq" aria-hidden="true" style="color: {{pl.ink}}"><i></i><i></i><i></i><i></i></span></sc-if>
 </span>
 <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 1px; line-height: 1.25">
-<span style="display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: #6A6570"><span class="live-dot" style="background: {{pl.color}}"></span><span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Direct · {{pl.name}}</span></span>
+<span style="display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: #6A6570"><span class="live-dot" style="background: {{pl.color}}"></span><span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{pl.kind}} · {{pl.name}}</span></span>
 <span style="font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="font-weight: 600">{{pl.np1}}</span><span style="color: #6A6570"> · {{pl.np2}}</span></span>
 </span>
 <span class="eq hide-sm" aria-hidden="true" style="color: {{pl.color}}"><i></i><i></i><i></i><i></i></span>
@@ -551,6 +640,7 @@ html{scroll-behavior:auto}
 <sc-if value="{{notPlaying}}" hint-placeholder-val="{{ true }}"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></sc-if>
 <sc-if value="{{playing}}" hint-placeholder-val="{{ false }}"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor"></path></svg></sc-if>
 </button>
+<span class="dprog" aria-hidden="true" style="opacity: {{pl.progO}}"><i style="width: {{pl.pct}}%"></i></span>
 </div>
 
 </div>
@@ -688,6 +778,76 @@ function DCRender(Comp, tpl, mount, props) {
 
 
 class Component extends DCLogic {
+  podShowsMeta() {
+    return [
+      { k: 'morning', feed: 'emissions', name: 'Le Morning', sub: 'Made in Monte-Carlo · Léo, Giulia & Marie' },
+      { k: 'echo', feed: 'emissions', name: 'L’Écho du Rocher', sub: 'L’actualité de la Principauté' },
+      { k: 'feelgood', feed: 'emissions', name: 'La Feel Good News', sub: 'La bonne nouvelle du jour' },
+      { k: 'switchon', feed: 'emissions', name: 'Switch On', sub: 'Nos vies connectées, décryptées' },
+      { k: 'completez', feed: 'emissions', name: 'Complétez l’info', sub: 'Le quiz de l’actu' },
+      { k: 'feed', feed: 'emissions', name: 'Le Feed', sub: 'Ce qui fait parler sur la Riviera' },
+      { k: 'agenda', feed: 'emissions', name: 'L’Agenda', sub: 'Les sorties à ne pas manquer' },
+      { k: 'curious', feed: 'emissions', name: 'Be Curious', sub: 'Culture, séries & tendances' },
+      { k: 'business', feed: 'emissions', name: 'Monaco Business', sub: 'Les entrepreneurs de la Principauté' },
+      { k: 'etoiles', feed: 'horoscope', name: 'Les Étoilés', sub: 'L’horoscope du jour' },
+      { k: 'sunny', feed: 'mixdj', name: 'Sunny Time', sub: 'by Rhum G' },
+      { k: 'goodvibes', feed: 'mixdj', name: 'Good Vibes', sub: 'by Matt Forti' },
+      { k: 'golden', feed: 'mixdj', name: 'Golden Hour', sub: 'by Mynarya' },
+      { k: 'deelighted', feed: 'mixdj', name: 'Deelighted', sub: 'by La Cartoucherie' },
+      { k: 'house', feed: 'mixdj', name: 'House Therapy', sub: 'by DJ Eight & Gil Martin' },
+      { k: 'afterchic', feed: 'mixdj', name: 'After Chic', sub: 'by Yann One' },
+      { k: 'bemyguest', feed: 'mixdj', name: 'Be My Guest', sub: 'Les invités du week-end' },
+      { k: 'sidekick', feed: 'mixdj', name: 'Sidekick Radio Show', sub: 'by Jem’S' },
+      { k: 'timeless', feed: 'mixdj', name: 'Timeless', sub: 'by Adore' },
+      { k: 'weekend', feed: 'mixdj', name: 'Week-End Change', sub: 'by Pampa' }
+    ];
+  }
+  // Instantané des flux Ausha (remplacé au chargement par podcasts.json s’il est disponible)
+  podSnapshot() {
+    return "morning|2026-10-21T07:49|1158|lao7qSVnLOO93PHeQpoBSXdZKXo4aWalXK3KQPSU|ypaYZUAXEAja|Le Replay du 21 Octobre\nmorning|2026-10-20T08:01|1163|Ro6d0oNK8MCr8PDqYmCtpLHqY8AoRTF3KCp2klrN|blGp2UdNe6lG|Le Replay du 20 Octobre\nmorning|2026-10-19T07:57|1203|eejOSIJhOiQNorD0SjXhHX0JbdDZopOw3XsUXBrf|Bxl0AcPdkJv7|Le Replay du 19 Octobre\nmorning|2026-10-16T08:02|1219|cA0S4xgPdYxkZ8GqPgzqNqfor8719EOiPzENmrwE|y0460FXEAkVx|Le Replay du 16 Octobre\nmorning|2026-10-15T08:10|3|173Kd5PjM08Nplqb0EUgN4nBTDJjaU3kaT3ch7PM|yevkwF68MDV6|Le Replay du 15 octobre\nmorning|2026-10-14T07:59|1318|jSeYpar4Vjd8X3IAuCcs7EbLKVpb0A1KlBMb3edh|bW5OqHV2nnxz|Le Replay du 14 Octobre\necho|2026-10-21T06:46|67|UpYu0wVAWoPW8VZpAYNE4JlybErktpUluHoffBBu|yAOr8TqEwvOR|La Mairie de Monaco dévoile son programme gratuit pour la Fête Nationale\necho|2026-10-20T07:17|64|XnamdMa0aMVfNPFKZJCbkf7TSo1VXVIglXmKtdz9|b3aMmUl5ZK1E|Monaco accueille la 19e Conférence des Ministres du Sport du Conseil de l’Europe\necho|2026-10-19T06:58|63|S3ksRlfAVfoiOxT7HLL9TKm7l5VzCPJx4ElNRv8f|y869PcOxjkMd|Rencontre économique entre entrepreneurs monégasques et allemands\necho|2026-10-16T06:36|66|KrxXWVaTBL3cawehY3AQzp6vwqB1VPY0RaKwC6ga|bYJADiEdL8KB|Trois jeunes talents monégasques sacrés au Lycée Rainier III\necho|2026-10-15T06:34|71|yChhI09vYxyM8aw3mdwuLsUApowsdNmCyOoon60U|b5a2AUnNmmGg|La Principauté renforce son soutien à la jeunesse méditerranéenne via J-MED\necho|2026-10-14T06:30|67|vK5uDIOxIeputkeoKgDCNefjhSecs7U6qYVpHDPY|bYJADiww92G3|Finale européenne du Tennis Europe Junior Masters à Monaco\nfeelgood|2026-10-21T07:45|116|V11GENYHFqcpFuPm90pXLILnDWvTZam151oi6SGE|b7aRPUvGXdaW|Miracle à Nice pour une petite fille de 3 ans\nfeelgood|2026-10-20T07:58|114|uAP3abZRB2Td8ybdzL3MaH5F8tCAH3aabeC2vn65|omxZwcG3RKWe|Marathon sous chimiothérapie, baisse de la déforestation et 20 ans de la Fondation Prince Albert II\nfeelgood|2026-10-19T07:56|109|fJcN0otruC0g26EypnvPvIfaYWIIJZ2zjFS6koIL|oKxgjcR6Xn7y|École de médecine axée sur le bien-être, agrivoltaïsme suisse et chiens au bureau à Mougins\nfeelgood|2026-10-16T08:02|118|GyS7cDH4rFLVYz1eT84sp9NB98FOfmqutEVaeiz3|oLO7jTE8d5W4|Première médecin sourdaveugle au Royaume-Uni, filtre à eau biodégradable et engagement pour la cause animale\nfeelgood|2026-10-15T08:06|100|IHkGRwnSiXl3dZrRCAX7AEmu5K6M8SwyZ2k0HHVY|BQ1zDhXl6RjO|Exploit de randonnée à 91 ans, chaîne de solidarité animale et éco-citoyenneté à Menton\nfeelgood|2026-10-14T07:41|103|LdC2CfeaN2OghVTt2PwVmsjbfVJjzTXWz8gxahGJ|oZ26RcGkrGqA|Loutres protectrices de l'océan, acte de bravoure et chaîne de solidarité dans le Var\nswitchon|2026-10-21T07:45|83|Yi2AMiCRaoXbKQqg4ENAlRlWaL7VsMPjXQLM5Yol|ypaYZUP38a1r|Pourquoi on a du mal à supprimer nos photos et nos mails de nos téléphones?\nswitchon|2026-10-20T07:59|83|Qc0XbBAMtMTkvlKtPFQxHxSb0L4Vxl7kw6LYOSYP|yO8lqCzgEzda|La prosodie de réassurance ou pourquoi le ton apaisant de l'IA désarme notre esprit critique\nswitchon|2026-10-19T07:56|105|eRvQH4PFu44LQm1lTButai3zi0K0AfVCb505aV10|bYJADiGxYDzp|Pourquoi rejetons-nous les restaurants notés 3,9 sur Google Maps ?\nswitchon|2026-10-16T08:01|78|6gcRXO4mdXWkjkv0sfoinT4jPd27mQdXCMHGaciC|BDOxeTkaAPVY|Le syndrome de la vibration fantôme et l'hyper-vigilance cérébrale\nswitchon|2026-10-15T08:05|106|Cf1qIN85lHR8m4vfvSCgIFqmwt4re52nFXefvsGf|BnLxZUDYMWPK|La fatigue Zoom et la pression du regard artificiel en visioconférence\nswitchon|2026-10-14T07:41|98|4LzSjbeUkhe25dePBPjAg8ppXUroZnsyE8OpOaPx|oZ26Rcpmq2g9|Pourquoi relativisons-nous les alertes de temps d'écran hebdomadaires ?\ncurious|2026-10-19T06:50|192|klQCGkmmHHkW3ZaO4niXOCcN7cY3zhMJUUpFYLct|ygxVgcjz8dMb|YouTube Shopping débarque officiellement en France\ncurious|2026-10-16T06:30|204|4C2BivQ4SomORTOiglm9WO7GBLYHNX7Tx8VnRIuS|oamROuxRKkV7|L'Oréal devient le partenaire beauté officiel du Paris Saint-Germain\ncurious|2026-10-15T06:34|178|IDiFAR2QJBIRNFMY7ghFhoqvuNfVUR6QTc65KiSS|b2a5rUKdRR4p|Greta Gerwig réunit un casting d'exception pour Le Monde de Narnia sur Netflix\ncurious|2026-10-12T07:51|171|RwERylqcBrdFSNOD0LKgIs02zEdpM5FBocY6Xb3H|b5a2AUmLw1rN|La série Carrie réinvente le chef-d'œuvre de Stephen King à l'ère du cyberharcèlement\ncurious|2026-10-07T06:58|168|E1jpPiz23HGdV6IjKEo06sjJC78Z3K8bt5AVXIzD|b3aMmUMwKLGa|Le Venice Simplon-Orient-Express ajoute Monaco à son parcours mythique\ncurious|2026-10-06T07:25|175|dLa3bMwvVqH2VgUsx0ZGCnxtBQfWvyoxrV2CPLZG|b5a2AUqjrVnO|Sabrina Carpenter tiendra le premier rôle au côté de Tom Holland\nfeed|2026-10-21T06:48|74|XBe1igTV49Pgjc4aO9KDUrXijVbIKBNA2XCQUHQI|Bxl0AcqGg3DL|Le « Don de sang Rouge & Noir » lance sa 20e édition place Masséna à Nice\nfeed|2026-10-20T07:13|72|JGeE1MyliRS6obT73cE1IngFazURKVQ0l8G6xAIp|ygxVgcqmQp7W|Monaco couronnée meilleure destination mondiale où s'installer par Nomad Capitalist\nfeed|2026-10-19T06:50|71|RD4yBdJ5r4RTXX084sMeICJDUc6Gags67vZ3RK4X|B4aJ0Uz6kVgX|Anthony Salsi publie son guide pour explorer l'Univers depuis son balcon\nfeed|2026-10-16T05:31|65|uRm1Iqdpod02Cwrh7H2ZLVTYh3x0m0IB7WsOhqnj|yO8lqC3w1DvX|Vintage, cocktails et vinyles ce soir au Babel Babel à Nice\nfeed|2026-10-15T06:31|78|hu6y6AoD4Vo9IeoWwwIx8n7nTu5o7dqACruQ8mw1|bjxDncWg0vZP|La Diacosmie à Nice rouvre ses portes pour des visites guidées exceptionnelles\nfeed|2026-10-14T05:27|82|kpm6FcmbYBN3fHk2On7PakghvWJOE378S7YVJCq7|BDOxeTw5p9JN|Le festival street art Coul'Heures d'Automne fait son retour à Antibes\nagenda|2026-10-21T06:33|70|yyHcGw5n1zAbBeNIOtca81kZAQnN8p7RI2V7Q1JN|BqlQxcPKADEd|Stages jeunesse d'Halloween et saison culturelle au Théâtre des Muses à Monaco\nagenda|2026-10-20T07:16|74|HChuLUcqtoUOAgJxzS1WTRRnMXrypIknYsf2SEyt|blGp2UlLQk9R|Ouverture de la billetterie pour la 21e édition du festival C'est pas classique\nagenda|2026-10-19T07:55|66|5IsTWKajnqMebYLJndqdLesjf69DQfr1ANfiGjWn|brlWecavDW6v|Rétrospective sur quarante ans de concerts mythiques aux Arènes de Fréjus\nagenda|2026-10-16T06:33|68|IcVRsxufVz9aqIDGBfykBXIjX1QkEXkbfqOqDfq1|B6aXwUKj4JOb|Les 400 ans de la Marine nationale célébrés à Saint-Jean-Cap-Ferrat\nagenda|2026-10-15T08:06|72|F10vZj1QBgU48G1R19gMixj0ql0eK6z9Gce7gqKu|bzl3rcYN13jW|La Fête de la Courge conjugue terroir et solidarité ce dimanche à Châteauneuf-Grasse\nagenda|2026-10-14T05:24|74|YIUYZMeKQ5jHLna8rdUznXAgpZOyLnrtQSDAplYM|B1aEqUpKYqAv|Gala gastronomique au profit de la faune marine à Saint-Jean-Cap-Ferrat\ncompletez|2026-10-21T06:46|89|eyF9ddR6hiG0osGQBPiVEQWHUaz5n8ZZMY7TkfWz|o9OjGT869nV2|Quel cadeau d'une valeur de 130 000 euros met en jeu le créateur de contenu GMK ?\ncompletez|2026-10-20T07:16|86|yyMmbBGccVfpofOk6bgjzkhPX2ZvEY0g3d0GAdEM|oLO7jTgV1z59|Quel nouvelle destination est accessible dès aujourd'hui depuis l'aéroport Nice Côte d'Azur ?\ncompletez|2026-10-19T06:59|125|JDSwvaWek2cgifkhR5hTeChQeRnnhyE2u83xY4qA|B1aEqUXqwg97|Quel champion niçois a été ému aux larmes par sa fille à Los Angeles ?\ncompletez|2026-10-16T06:35|78|vs4NY1Ic2XPQKOOLoRND03YpP7XEz8TkHGHKWadi|brlWec0jMn98|Quel nouveau lieu dédié aux jeunes parents vient d'ouvrir à Fontvieille ?\ncompletez|2026-10-15T06:35|130|ICeBwIoxpJTX070ZE1h9EjWnVTwNG6rB3IqInBkO|yO8lqCW7nZaK|Qui sont les deux icônes de l'AS Monaco à l'honneur aujourd'hui ?\ncompletez|2026-10-14T06:00|97|FKbus3EFm6dpy2XMabImgzOZ939EGI3dxerpayoc|bPGvqUjZA237|Quel élément historique s'apprête à disparaître de La Condamine ?\nbusiness|2026-09-18T10:00|359|nAagDOg7PBh4ZgbT89MXNlX9Qxdl3NWM615NgXTB|brlWecKL760k|Gilles Benhamou (J.BONET) fête 50 ans de design et ouvre un showroom d'exception à Monaco !\nbusiness|2026-09-18T09:42|421|TiWQSCgXHtPYK3wxas1fgGBXSQHvxRrVzE5mmAiA|b7aRPUmWzJDr|Gilles Babinet et Françoise Milatos (Monaco Digital) en débat sur l'IA et le Cloud !\nbusiness|2026-09-18T09:40|232|RRtOa1NfEaIFEygy1qtBipZPmNUVbUzBtJ2PRTTr|ygxVgc02d5zv|Dario Vedda (Boss Intérim) révèle les secteurs qui recrutent et les clés pour réussir ! 💼🇲🇨\nbusiness|2026-09-18T09:37|407|sTNUSFgjtMbuii0PjrIG7t5fIVKbnVOS5GZe9p59|oZ26RcNXVLdZ|David Hache (GS Monaco) ouvre les portes de la dernière presse offset de la Principauté !\nbusiness|2026-09-18T09:36|262|S5Fyo1wURtTNASidmHe2zHjm3C5xzpyK9KqcCJF2|b2a5rUq64kr0|Valentin Morel (Risorius Production) mixe IA, vidéo et storytelling pour faire décoller la com des entreprises !\nbusiness|2026-09-18T09:35|258|VqTZmi1nNXse6kK347xqlEoouhxNL4zmEcKrNylp|BNO0eTGdQNNK|Thierry Leray (TELIS) révèle les secrets de la souveraineté numérique à Monaco !\netoiles|2026-10-21T05:23|95|ZnkgtV7DFzJ6H7nwEYwDTANjf6vsLzKQCFH9GYz9|zrqJrFV8Me5E|L'horoscope du jour sur Radio Monaco\nsunny|2026-10-20T17:58|3608|u28E3SmBfwE0fvTDD2600lyWDqZKtJ72sh9QibAR|bW6j6cjvdj63|\nsunny|2026-10-13T17:58|3609|tN5xlltPTeiKUw00oeOwKxUdu7ADtkSMxrFkXUAc|od5Y5TKOOPL3|\nsunny|2026-10-06T17:58|3609|hbpInq37GUTVhZs22IDrfGqGHVXEFmAOCFgR9dGX|b5mkmcnJXWzQ|\nsunny|2026-09-29T17:58|3609|olVypgAFYy1F9Z2el2uEh8I2f7Dx2yFWSRD6QWyc|b2j9jTDaYPNA|\nsunny|2026-09-22T17:58|3609|pHSFhiOHbSEQwblSw2m8weulbrUf80OkbbeKJ5oS|yOQEQSzGed08|\nsunny|2026-09-15T17:58|3609|IKp9WiBQrUgQfgwAU4UGoG6RZKYTVNllyYHOWAiX|o9D1DI6gOlvB|\ngoodvibes|2026-10-19T17:58|3582|z1sO0MuGuzyiOWd8Tf9RAhXtYsC2QgQ5UccYzKxf|yAdQdFqwn3WW|\ngoodvibes|2026-10-12T17:58|3609|6k7rRIOv5k2l02gHW23BUv7tCDLfIEd324nIdmJR|Bnm3mcam24wQ|\ngoodvibes|2026-10-05T17:59|3613|kYQOzZiVXIgffZxdZHgJteFoIM83iz8jgDIRoZLx|BxMXMC4VEEkm|\ngoodvibes|2026-09-28T17:58|3525|SosPxEffwnWjWMtffSYknWY9l9MyRrv1XDxQPeNY|yXznziJ70rlm|\ngoodvibes|2026-09-21T17:57|3602|rmF8H0wRVH6fhVl7TUE7ElZHIgQrHMUQBsEIkK5v|ykjejTYArAa1|\ngoodvibes|2026-09-15T13:01|3603|SYYrK6LXVzx86nWV5vZ21EdXf60WKGWprU2my4mQ|oagZgTQD42x0|\ngolden|2026-10-14T17:58|3616|gdhtGFRZwoURL2pLp9qCPVE5JpDgQs4gidcwSznk|y0RXRUEezaVN|\ngolden|2026-10-07T18:00|4149|DGQJiN7y4VrvnWKV8F6wx24ljuUWfNdL4f8SrJLy|ykjejTRAOEJe|\ngolden|2026-09-30T17:58|3616|wo1bNtxnm9BmKun9hNmkLGaE0dTbQmdapO2oHxUS|yJe3eIDkMnNM|\ngolden|2026-09-23T17:58|3615|RLeay17D59b16Avdo50ISV5xnRXJLwXkjB5iUUrO|yvEJEin7q3lo|\ngolden|2026-09-16T17:58|3616|tAsSSbIRK5ZJfQDjXBkDq9osTMd5i73QCWm233xS|oZKmKhpYaNzd|\ngolden|2026-09-10T08:27|3806|WZGbVtj55rP5cN2aHxAThDFPfq0OjQsETXawwCFs|Bq1q1h3dZzmd|\ndeelighted|2026-10-15T17:58|3605|JvuKLNZ9V2MxBBffHVHniVDbXmtVWnv7FbiY1sTp|yg2G2iKxR0ja|\ndeelighted|2026-10-08T17:58|3605|sj7joSJrMy4k5NQMKX61sLCvsTV2c0gMBHGgw3YU|brDaDIqeMza4|\ndeelighted|2026-10-01T17:58|3605|FF3Gm76dxPDTyXh4bbo3CTcVcfN7ZzcCc3WzkXI5|omklkUAEqRD4|\ndeelighted|2026-09-24T17:58|3605|A4s21QXlMVjfhO1Z22orkYjHt8H3zIYd1tB8sD19|o9D1DIvLmR4B|\ndeelighted|2026-09-17T17:58|3605|UamH0AfITR0UT4JyMfYrBT8NuswMPDe0B3PqfBSn|BGPePUVK1064|\ndeelighted|2026-09-10T17:58|3605|7IFdHJesSLknLvK3LewqK9jlm7zgJwiqoAWMr6bC|BMPqPUaVXx8b|\nhouse|2026-10-15T18:58|3613|thTb4HN5qU99eqiIIovXKPCcx82CdKLkE0dzqwy5|bY8k8Cvd7KAl|\nhouse|2026-10-08T18:58|3613|S7DieDJggWB9KaAkQXySR6IIrY0eYvBYrFGkxtYv|oZKmKhX2A4P8|\nhouse|2026-10-01T18:58|3614|P7wekETqJmHRoW4jbd1aBVEV4YW8m8iovsd249kp|b7NVNU6r1VV5|\nhouse|2026-09-17T19:04|3614|eF5gViAdPB2WEHLGurbrsg4soFW8DZuansM3olq3|oLvKviEqERkM|\nhouse|2026-09-10T18:58|3613|acI2PsRlqkPs2wE92CaWPuepewYbqTaingE3Fc2x|yEagasYG1Qkv|\nhouse|2026-09-03T18:58|3614|MrV79ciNj7ZC9pSYny8hE8fe0RJRNYxXX0yHJLsD|b7NVNU6LDYNE|\nafterchic|2026-10-14T18:57|3592|i5uheIl8SDbU34koCv7q64mWRQ9OB2L4iIMO5iQ1|ykjejT40vN6X|\nafterchic|2026-10-07T18:57|3592|ym2C5kdVI30ggGOba6C0WwF2j3o7BLZtyTIpL4o7|b7NVNUE6JJma|\nafterchic|2026-09-30T18:57|3592|Z3zm8lvXLcWFAB4DphVWewgAX4XJ3tqJPMOhvFjY|y81N1hPlPAQG|\nafterchic|2026-09-16T18:57|3592|gd1eRD8jMROOhOXHsulcOihclz263tV7YBYpojjG|oR8J8CqLGd4n|\nafterchic|2026-09-09T18:57|3592|HqyZvMpjW3eoumgvLm37EuhmcakO5AyEPM1ymh2S|bj979uX08VwP|\nafterchic|2026-09-02T18:57|3592|9pyeo47PaJWeBcWvqaQcZVpHOu5tk0JeCJL0sJE6|ow525TqzLVKa|\nbemyguest|2026-10-17T18:54|3627|FyKwMYuLN6cOVf9wbFhPuWOi5nbTBQ06bKAOTMwS|oZKmKhXnv11K|Avec La Luna\nbemyguest|2026-10-10T18:54|3615|BW9cxvGfdkuwRFv73Nujd7eaXlltd3m1VYNUC05K|BNQaQSaWGP2j|Avec Karlota\nbemyguest|2026-10-03T18:54|3619|bsUz5rbiO7FBMxzRmQpsIN4cTC3sD6xO5A2vBedi|y0RXRUYMleKd|Avec Deepow\nbemyguest|2026-06-27T18:53|3585|p0ORmegj9HHRnkmsCFicHMXYNJBVcbWq8y91GuCl|oZKmKh195QWY|Avec Deepow\nbemyguest|2026-06-13T18:53|3578|0POgg4rLJ5EfvBpj9nFIaZP84zUqQRoVer0R9Qpq|bj979u2z6mZ9|Avec Gabin Nogueira\nbemyguest|2026-06-06T18:53|3611|vQFuRJBHm8nIaVYZmda1vMtkku2cejxUA0IicMt4|bln0ni6Kk3x4|Avec Wesley Aarons\nsidekick|2026-10-17T17:58|3610|C51Bra58xGHrkgx7dI4PDAoo6iHLTXutrKRsINJC|bY8k8CgYm4zJ|\nsidekick|2026-10-03T17:57|3614|C51Bra58xGHrkgx7dI4PDAoo6iHLTXutrKRsINJC|ow525TP3LkMA|\nsidekick|2026-09-26T17:58|3595|CFhuwhbMv5mfLBYFGIK2VIEzWRtlV0ZSOapS3SH7|b2j9jTLjpW4n|\nsidekick|2026-09-19T17:58|3594|kJtLnjO9WMKVGqNGsWiUVcqQpehpHBGtMS6MWloN|b2j9jTpaQQdb|\nsidekick|2026-07-11T17:57|3598|um9xgrf7us4oVHWIa4IAQIfSUnOL2JnaRyH27yl4|B19R9u1aMKPO|\nsidekick|2026-06-27T17:57|3601|8ZqkHm3QLm5l9lm4FNnn4c9L1Zat7DCNhWTfu71L|yOQEQSk7q60Q|\ntimeless|2026-10-16T18:58|3609|ZJfr6sdTTN5SAazDSWyNSarSBAEtqUkOZD4EQvle|yXznziJD2lnW|\ntimeless|2026-10-12T08:46|3607|rjdRCjQo19lCHr1L3JPBf2KAN83PYyAl7FxUU1Kw|yOQEQS9MPv94|\ntimeless|2026-10-12T08:43|3607|jfTtunDt1nz1u4zC1i4cd3eVQrJJw1PQUTuwZKFh|oZKmKhzeZ1Rz|\ntimeless|2026-10-06T08:42|3600|rmcSSDbcSN5m8y6kXyHUCerZnnowA9xnQCj8PNAE|yeMQMCdppWav|\ntimeless|2026-07-31T08:38|3604|Gg1YYUMEVlC95Eay1GnIiXVpQWrD7vCzGNQAsQJd|ow525TvV5mAN|\ntimeless|2026-06-29T08:29|3609|ZO1BRinHuztag2OJdOZg3rbnfNvNJBewhCFAauak|oKQzQSmDDerp|\nweekend|2026-10-16T17:58|3634|R2QcKzN7f5MMVB1tWCnrgPlPA3Zh4itENy905PdJ|bW6j6cjEAp69|\nweekend|2026-09-11T17:58|3621|eONxiAfPyqgRCgsj5M1J56EacyvmgY3GrdaxAlT8|b3njniZqnkGy|\nweekend|2026-07-03T17:57|3588|tc1SdceJTNX8xmzpYZYhS2wTLq8uM05JzWqoMFxi|bV898CwgMdWz|\nweekend|2026-05-29T17:57|3606|05120BoFFBg8GlbzWVqveUgvBoFQINEDhCjDkLw5|bY8k8CGQmmMv|\nweekend|2026-05-22T17:57|3622|g5aPL5e27gaPzU3BkeT8dA74YixPj3oCsgIdDreF|bW6j6cqKELeL|\nweekend|2026-05-15T17:57|3630|WYC5aUqbrrid24oVG7c5hZPvFwVNKNHhJSaPmy5E|yOQEQSajalrB|";
+  }
+  podData() {
+    const raw = this._podRaw || this.podSnapshot();
+    if (this._podCache && this._podCache.raw === raw) return this._podCache.data;
+    const by = {};
+    raw.split('\n').forEach((l) => {
+      const p = l.split('|'); if (p.length < 5) return;
+      const s = +p[2] || 0; if (s < 10) return;
+      (by[p[0]] = by[p[0]] || []).push({ d: p[1], s, img: p[3], au: p[4], t: p.slice(5).join('|') });
+    });
+    const data = this.podShowsMeta().map((m) => Object.assign({}, m, { eps: (by[m.k] || []).sort((a, b) => (a.d < b.d ? 1 : -1)) })).filter((m) => m.eps.length);
+    this._podCache = { raw, data };
+    return data;
+  }
+  async loadPodcasts() {
+    try {
+      const r = await fetch('podcasts.json?r=' + Math.floor(Date.now() / 600000), { cache: 'no-store' });
+      if (!r.ok) return;
+      const j = await r.json();
+      if (j && Array.isArray(j.lines) && j.lines.length > 20) { this._podRaw = j.lines.join('\n'); this.forceUpdate && this.forceUpdate(); }
+    } catch (e) {}
+  }
+  playEpisode(k, idx) {
+    const a = this.audio(); if (!a) return;
+    const st = this.state || {};
+    const id = k + ':' + idx;
+    if (st.mode === 'pod' && st.ep === id) {
+      try { if (st.playing) a.pause(); else { const p = a.play(); if (p && p.catch) p.catch(() => {}); } } catch (e) {}
+      this.setState({ playing: !st.playing });
+      return;
+    }
+    const show = this.podData().find((x) => x.k === k); const ep = show && show.eps[idx]; if (!ep) return;
+    if (!this._podWired) {
+      this._podWired = true;
+      a.addEventListener('timeupdate', () => {
+        const now = Date.now(); if (this._podTick && now - this._podTick < 700) return; this._podTick = now;
+        if (this.state && this.state.mode === 'pod') this.setState({ podT: a.currentTime || 0, podD: a.duration || 0 });
+      });
+      a.addEventListener('ended', () => { if (this.state && this.state.mode === 'pod') this.setState({ playing: false, podT: 0 }); });
+    }
+    try { a.src = 'https://audio.ausha.co/' + ep.au + '.mp3'; const p = a.play(); if (p && p.catch) p.catch(() => {}); } catch (e) {}
+    this.setState({ mode: 'pod', ep: id, playing: true, podT: 0, podD: ep.s });
+  }
   streams() {
     return [
       { stream: 'https://radiomonaco.ice.infomaniak.ch/radiomonaco-128.mp3' },
@@ -748,12 +908,13 @@ class Component extends DCLogic {
         } else { a.pause(); }
       } catch (e) {}
     }
-    this.setState({ station: i, playing: on });
+    this.setState({ station: i, playing: on, mode: 'live' });
   }
   componentDidMount() {
     this._sc = this._sc || {};
     this._hold = this._hold || {};
     this.readMeta();
+    this.loadPodcasts();
     this._metaT = setInterval(() => this.readMeta(), 20000);
     this._t = setInterval(() => this.setState({ tick: Date.now() }), 30000);
     this._hero = setInterval(() => this.setState((s) => ({ hero: (((s && s.hero) || 0) + 1) % 4 })), 6000);
@@ -783,7 +944,7 @@ class Component extends DCLogic {
     this.initMotion();
   }
   initMotion() {
-    const IDS = ['radios', 'actualites', 'reseaux', 'equipes', 'djs', 'podcasts'];
+    const IDS = ['radios', 'podcasts', 'actualites', 'reseaux', 'equipes', 'djs'];
     const doc = document.documentElement;
     const se = () => document.scrollingElement || document.documentElement;
     const mm = (q) => !!(window.matchMedia && window.matchMedia(q).matches);
@@ -821,7 +982,7 @@ class Component extends DCLogic {
       }
       let act = '';
       IDS.forEach((k) => { const el = this._secEl[k]; if (el && el.getBoundingClientRect().top < vh * 0.42) act = k; });
-      if (y + vh >= se().scrollHeight - 4) act = 'podcasts';
+      if (y + vh >= se().scrollHeight - 4) act = 'djs';
       if (!this._ease && act !== ((this.state && this.state.active) || '')) this.setState({ active: act });
       if (!this._ease && !this._lerpOn) { this._cy = y; this._ty = y; }
     };
@@ -931,6 +1092,7 @@ class Component extends DCLogic {
     const newsI = st.news ?? 0;
     const teamI = st.team ?? 0;
     const motion = this.props.motion ?? true;
+    const podMode = st.mode === 'pod';
     const pad = (n) => String(n).padStart(2, '0');
 
     let h = 8, m = 0;
@@ -1018,7 +1180,7 @@ class Component extends DCLogic {
     };
     const radios = R.map((r, i) => {
       const sel = station === i;
-      const on = sel && playing;
+      const on = sel && playing && !podMode;
       const n = np(i);
       return {
         ...r,
@@ -1044,7 +1206,58 @@ class Component extends DCLogic {
       };
     });
     const s = R[station];
-    const pl = Object.assign({ name: s.name, color: s.color, ink: s.ink }, np(station));
+    let pl = Object.assign({ kind: 'Direct', name: s.name, color: s.color, ink: s.ink, pct: 0, progO: 0 }, np(station));
+
+    // ===== podcasts =====
+    const PC = { emissions: '#E4032E', mixdj: '#F59C00', horoscope: '#8A5AA1' };
+    const FL = { emissions: 'Le Morning & chroniques', mixdj: '100 % Mix DJ', horoscope: 'Horoscope' };
+    const MOIS = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+    const MOISL = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+    const today = new Date(); const t0 = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+    const when = (iso) => { const d = new Date(iso + 'Z'); const dd = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime(); const diff = Math.round((t0 - dd) / 86400000); if (diff <= 0) return 'Aujourd’hui'; if (diff === 1) return 'Hier'; if (diff < 7) return 'Il y a ' + diff + ' jours'; return d.getDate() + ' ' + MOIS[d.getMonth()] + (d.getFullYear() !== today.getFullYear() ? ' ' + d.getFullYear() : ''); };
+    const dur = (sec) => { const m = Math.round(sec / 60); if (m < 1) return sec + ' s'; if (m < 60) return m + ' min'; const h = Math.floor(m / 60), r = m % 60; return h + ' h' + (r ? ' ' + String(r).padStart(2, '0') : ''); };
+    const img = (id, big) => 'https://image.ausha.co/' + id + (big ? '_1400x1400.jpeg' : '_400x400.jpeg');
+    const etitle = (sh, e) => { if (sh.feed !== 'mixdj') return e.t; const d = new Date(e.d + 'Z'); const base = 'Émission du ' + d.getDate() + ' ' + MOISL[d.getMonth()]; return e.t ? e.t + ' · ' + d.getDate() + ' ' + MOIS[d.getMonth()] : base; };
+    const PD = this.podData();
+    const filt = st.podFilter || 'all';
+    const selK = st.podSel || '';
+    const shownShows = PD.filter((x) => filt === 'all' || x.feed === filt);
+    const selShow = selK ? PD.find((x) => x.k === selK) : null;
+    const curEp = podMode ? st.ep : '';
+    const prog = (id) => (curEp === id && st.podD ? Math.min(100, (100 * (st.podT || 0)) / st.podD) : 0);
+    const all = [];
+    shownShows.forEach((sh) => sh.eps.forEach((e, i) => all.push({ sh, e, i })));
+    all.sort((a, b) => (a.e.d < b.e.d ? 1 : -1));
+    const featE = selShow ? { sh: selShow, e: selShow.eps[0], i: 0 } : (all.find((x) => x.sh.k === 'morning') || all[0]);
+    const mkEp = (x) => {
+      const id = x.sh.k + ':' + x.i; const on = curEp === id && playing;
+      return { img: img(x.e.img), show: x.sh.name, color: PC[x.sh.feed], title: etitle(x.sh, x.e), meta: when(x.e.d) + ' · ' + dur(x.e.s), cls: curEp === id ? 'on' : '', on, off: !on, pct: prog(id).toFixed(1), aria: (on ? 'Mettre en pause : ' : 'Écouter : ') + x.sh.name + ' — ' + etitle(x.sh, x.e), play: () => this.playEpisode(x.sh.k, x.i) };
+    };
+    const featId = featE ? featE.sh.k + ':' + featE.i : '';
+    const featOn = curEp === featId && playing;
+    const feat = featE ? {
+      img: img(featE.e.img, true), color: PC[featE.sh.feed], show: featE.sh.name, title: etitle(featE.sh, featE.e),
+      meta: when(featE.e.d) + ' · ' + dur(featE.e.s) + ' · ' + featE.sh.sub,
+      badge: when(featE.e.d) === 'Aujourd’hui' ? 'Nouveau · aujourd’hui' : 'À la une',
+      cta: featOn ? 'Pause' : (curEp === featId ? 'Reprendre l’écoute' : 'Écouter l’épisode'), on: featOn, off: !featOn, pct: prog(featId).toFixed(1),
+      aria: (featOn ? 'Mettre en pause : ' : 'Écouter : ') + featE.sh.name, play: () => this.playEpisode(featE.sh.k, featE.i)
+    } : {};
+    const listSrc = selShow ? selShow.eps.map((e, i) => ({ sh: selShow, e, i })).slice(0, 6) : all.filter((x) => !(featE && x.sh.k === featE.sh.k && x.i === featE.i)).slice(0, 6);
+    const podList = { title: selShow ? selShow.name : 'Derniers épisodes', sub: selShow ? selShow.sub : (filt === 'all' ? 'Toutes émissions' : FL[filt]), eps: listSrc.map(mkEp) };
+    const podShows = shownShows.map((sh, i) => ({
+      name: sh.name, sub: sh.sub, color: PC[sh.feed], feedLabel: FL[sh.feed], cover: img(sh.eps[0].img), count: sh.eps.length + (sh.eps.length > 1 ? ' épisodes' : ' épisode'),
+      last: 'Dernier épisode : ' + when(sh.eps[0].d).toLowerCase(), cls: selK === sh.k ? 'on' : '', sel: selK === sh.k ? 'true' : 'false', d: (0.2 + Math.min(i, 5) * 0.08).toFixed(2) + 's',
+      aria: 'Afficher les épisodes de ' + sh.name, pick: () => this.setState({ podSel: selK === sh.k ? '' : sh.k })
+    }));
+    const podTabs = [['all', 'Tout'], ['emissions', 'Le Morning & chroniques'], ['mixdj', '100 % Mix DJ'], ['horoscope', 'Horoscope']].map(([v, label]) => ({ label, cls: filt === v ? 'on' : '', sel: filt === v ? 'true' : 'false', pick: () => this.setState({ podFilter: v, podSel: '' }) }));
+    const podShowsLabel = shownShows.length + ' émissions · nouveaux épisodes chaque jour';
+    if (podMode) {
+      const [pk, pi] = (st.ep || ':').split(':'); const psh = PD.find((x) => x.k === pk); const pe = psh && psh.eps[+pi];
+      if (psh && pe) {
+        const tt = (v) => { v = Math.max(0, Math.floor(v || 0)); const h = Math.floor(v / 3600), m = Math.floor((v % 3600) / 60), x = v % 60; return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(x).padStart(2, '0'); };
+        pl = { kind: 'Podcast', name: psh.name, color: PC[psh.feed], ink: psh.feed === 'mixdj' ? '#141218' : '#FFFFFF', np1: etitle(psh, pe), np2: tt(st.podT) + ' / ' + tt(st.podD || pe.s), cover: img(pe.img), hasCover: true, noCover: false, pct: prog(st.ep).toFixed(1), progO: 1 };
+      }
+    }
 
     const IG = 'https://www.instagram.com/radiomonaco_officiel/reel/';
     const reelList = [
@@ -1070,18 +1283,9 @@ class Component extends DCLogic {
       { name: 'Yan One', show: 'L’After Chic', img: 'assets/dj-yanone.jpg' }
     ];
 
-    const podList = [
-      { title: 'Le Morning « Made in Monte-Carlo »', sub: 'Le replay du 19 octobre', tag: 'Replay', img: 'assets/show-morning.jpg', pos: '60% 50%' },
-      { title: 'L’horoscope du jour', sub: 'Les 12 signes, chaque matin', tag: 'Horoscope', img: 'assets/rm-night.jpg', pos: '50% 40%' },
-      { title: 'La Tendance des marchés', sub: 'Inflation américaine : les marchés surpris', tag: 'Marchés', img: 'assets/rm-yacht.jpg', pos: '50% 50%' },
-      { title: 'Good Vibes by Matt Forti', sub: '100 % Mix DJ', tag: 'DJ set', img: 'assets/show-goodvibes.jpg', pos: '70% 50%' },
-      { title: 'Golden Hour by Mynarya', sub: '100 % Mix DJ', tag: 'DJ set', img: 'assets/show-goldenhour.jpg', pos: '70% 50%' },
-      { title: 'Deelighted by La Cartoucherie', sub: '100 % Mix DJ', tag: 'DJ set', img: 'assets/show-deelighted.jpg', pos: '70% 50%' },
-      { title: 'L’After Chic by Yan One', sub: '100 % Mix DJ', tag: 'DJ set', img: 'assets/show-afterchic.jpg', pos: '70% 50%' }
-    ];
 
     const stg = (list, base) => list.map((x, i) => Object.assign({}, x, { d: (base + Math.min(i, 5) * 0.08).toFixed(2) + 's' }));
-    const IDS = ['radios', 'actualites', 'reseaux', 'equipes', 'djs', 'podcasts'];
+    const IDS = ['radios', 'podcasts', 'actualites', 'reseaux', 'equipes', 'djs'];
     const seen = motion ? (st.seen || {}) : null;
     const active = st.active || '';
     const sec = {}, nav = {}, navRef = {}, secRef = {};
@@ -1106,13 +1310,13 @@ class Component extends DCLogic {
     return {
       motionClass: motion ? '' : 'motion-off',
       hdr: Object.assign({ prog: scrolled ? 1 : 0 }, hdr), now, hero, news, headlines, team, teamThumbs, radios, pl,
-      reelList: stg(reelList, 0.2), djs: stg(djs, 0.2), podList: stg(podList, 0.2),
+      reelList: stg(reelList, 0.2), djs: stg(djs, 0.2), podList, podShows, podTabs, podShowsLabel, feat,
       sec, nav, navRef, secRef, ind,
       reels: this.slider('reels'), djsS: this.slider('djs'), pods: this.slider('pods'),
       playing, notPlaying: !playing,
       eqState: playing ? 'running' : 'paused',
-      togglePlay: () => this.playStation(station, !playing),
-      playLabel: playing ? 'Mettre en pause' : 'Écouter le direct',
+      togglePlay: () => (podMode ? this.playEpisode(...(st.ep || ':').split(':').map((v, n) => (n ? +v : v))) : this.playStation(station, !playing)),
+      playLabel: playing ? 'Mettre en pause' : (podMode ? 'Reprendre le podcast' : 'Écouter le direct'),
       headerLabel: playing ? 'En écoute' : 'Écouter',
       heroLabel: playing ? 'Pause' : 'Écouter le direct',
       videoRef: (el) => { if (el && !el._rmInit) { el._rmInit = true; el.muted = true; el.playsInline = true; const p = el.play && el.play(); if (p && p.catch) p.catch(() => {}); } }
