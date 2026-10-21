@@ -99,6 +99,107 @@ a:hover{color:inherit}
 @supports (animation-timeline: view()){
 .reveal{animation:reveal linear both;animation-timeline:view();animation-range:entry 0% entry 50%}
 }
+
+/* ===== Navigation & transitions entre rubriques ===== */
+html{scroll-behavior:auto}
+.nav{position:relative}
+.nav a.on{opacity:1}
+.nav a.on::after{opacity:0}
+.nav .ind{position:absolute;left:0;bottom:-9px;height:2px;border-radius:2px;background:#E4032E;pointer-events:none;transition:transform 1s cubic-bezier(.65,0,.12,1),width 1s cubic-bezier(.65,0,.12,1),opacity .5s ease}
+.prog{position:absolute;left:0;right:0;bottom:-1px;height:2px;background:#E4032E;transform-origin:left;transform:scaleX(var(--rm-p,0));pointer-events:none;transition:opacity .5s ease}
+
+/* titres : révélés derrière un masque, mot à mot */
+.m{display:inline-block;overflow:hidden;vertical-align:top;padding:.14em 0 .1em;margin:-.14em 0 -.1em}
+.m>span{display:inline-block;transform:translate3d(0,112%,0) rotate(4deg);transform-origin:0 100%;transition:transform 1.5s cubic-bezier(.19,1,.22,1)}
+.in .m>span{transform:none}
+.m:nth-child(2)>span{transition-delay:.09s}.m:nth-child(3)>span{transition-delay:.18s}.m:nth-child(4)>span{transition-delay:.27s}
+
+/* surtitres : filet rouge qui se dessine + lettres qui se resserrent */
+.eb{opacity:0;letter-spacing:.42em !important;transition:opacity 1.1s ease,letter-spacing 1.6s cubic-bezier(.19,1,.22,1)}
+.eb::before{content:"";display:inline-block;width:0;height:1px;margin-right:0;background:#E4032E;vertical-align:middle;transition:width 1.2s cubic-bezier(.19,1,.22,1) .2s,margin-right 1.2s cubic-bezier(.19,1,.22,1) .2s}
+.in .eb{opacity:1;letter-spacing:.24em !important}
+.in .eb::before{width:30px;margin-right:14px}
+
+/* blocs et cartes : montée en cascade */
+.rise{opacity:0;translate:0 56px;transition:opacity 1.2s cubic-bezier(.19,1,.22,1) var(--d,0s),translate 1.6s cubic-bezier(.19,1,.22,1) var(--d,0s)}
+.in .rise{opacity:1;translate:0 0}
+.rc.rise{transition:opacity 1.2s cubic-bezier(.19,1,.22,1) var(--d,0s),translate 1.6s cubic-bezier(.19,1,.22,1) var(--d,0s),transform .6s cubic-bezier(.16,.84,.12,1),box-shadow .6s cubic-bezier(.16,.84,.12,1),background .4s}
+
+/* images : dévoilement + zoom 1.18 → 1 + parallaxe */
+.unv{clip-path:inset(14% 9% 14% 9% round 22px);transition:clip-path 1.8s cubic-bezier(.19,1,.22,1) var(--d,0s)}
+.in .unv{clip-path:inset(0 0 0 0 round 22px)}
+.rm .zm{scale:1.18;transition:scale 2.4s cubic-bezier(.19,1,.22,1) var(--d,0s),transform 1.4s cubic-bezier(.16,.84,.12,1),opacity 1.1s ease}
+.rm .in .zm{scale:1}
+@keyframes plx{from{translate:0 -6%}to{translate:0 6%}}
+@supports (animation-timeline: view()){
+.plx{animation:plx linear both;animation-timeline:view();animation-range:cover 0% cover 100%}
+}
+/* héros : profondeur au scroll */
+.hpx{position:absolute;inset:0;translate:0 var(--rm-hy,0px);will-change:translate}
+.hct{opacity:var(--rm-ho,1);translate:0 var(--rm-hc,0px)}
+
+
+/* ===== univers (option D) : 4 photos bord à bord, extensibles ===== */
+.uvs{position:relative;height:calc(100vh - 84px);min-height:620px;max-height:1040px;background:#141218;overflow:hidden;color:#fff}
+.uvrow{position:absolute;inset:0;display:flex}
+.ux{position:relative;flex:1 1 0;min-width:0;margin:0;padding:0;border:0;background:#141218;color:#fff;font-family:inherit;text-align:left;cursor:pointer;overflow:hidden;transition:flex-grow 1.15s cubic-bezier(.65,0,.12,1)}
+.ux+.ux{box-shadow:inset 1px 0 0 rgba(255,255,255,.08)}
+.uxp{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;scale:1.16;transform:scale(1.04);transition:scale 2.4s cubic-bezier(.19,1,.22,1) var(--d,0s),transform 1.6s cubic-bezier(.16,.84,.12,1),filter .9s ease}
+.in .uxp{scale:1}
+.uxs{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,16,.35) 0%,rgba(10,10,16,0) 38%,rgba(10,10,16,.1) 55%,rgba(10,10,16,.9) 100%);transition:opacity .9s ease}
+.uxw{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 45%,var(--w) 100%);mix-blend-mode:multiply;opacity:0;transition:opacity .9s ease}
+.ux.on .uxw{opacity:.75}
+.uxb{position:absolute;left:clamp(20px,2.2vw,32px);right:clamp(20px,2.2vw,32px);bottom:104px;display:flex;flex-direction:column;gap:16px}
+.uxh{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.uxl{width:min(128px,calc(100% - 60px));height:auto;aspect-ratio:392 / 141;object-fit:contain;flex:0 1 auto;min-width:0;display:block;filter:drop-shadow(0 2px 12px rgba(0,0,0,.35));transform-origin:left bottom;transition:transform 1s cubic-bezier(.65,0,.12,1)}
+.uxpl{flex:0 0 auto;width:46px;height:46px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,.18);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#fff;transition:transform .6s cubic-bezier(.16,.84,.12,1),background .4s,color .4s}
+.ux.on .uxpl{background:var(--c);color:#fff}
+.uxr{height:1px;background:rgba(255,255,255,.25)}
+.uxlv{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.88)}
+.uxi{display:grid;grid-template-rows:0fr;opacity:0;transform:translateY(14px);transition:grid-template-rows .9s cubic-bezier(.65,0,.12,1),opacity .45s ease,transform .9s cubic-bezier(.16,.84,.12,1)}
+.uxi>span{min-height:0;overflow:hidden}
+.uxn{display:flex;align-items:center;gap:18px;padding-top:2px}
+.uxc{position:relative;flex:0 0 auto;width:96px;height:96px;border-radius:14px;overflow:hidden;background:rgba(255,255,255,.14);display:inline-flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 18px 40px -16px rgba(0,0,0,.6)}
+.uxc img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.uxt{min-width:0;display:flex;flex-direction:column;gap:6px;line-height:1.2}
+.uxt1{font-size:24px;font-weight:600;letter-spacing:-.01em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.uxt2{font-size:15px;color:rgba(255,255,255,.75);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ux.on .uxi{grid-template-rows:1fr;opacity:1;transform:none}
+.ux.on .uxc{width:64px;height:64px}.ux.on .uxt1{font-size:18px}
+.uvtop{position:absolute;left:0;right:0;top:0;height:46%;background:linear-gradient(180deg,rgba(10,10,16,.6),rgba(10,10,16,0));pointer-events:none}
+.uvtitle{position:absolute;left:clamp(24px,4vw,56px);right:clamp(24px,4vw,56px);top:clamp(36px,6vh,64px);pointer-events:none}
+.uvtitle h2{margin:0;font-size:clamp(56px,7.6vw,120px);line-height:.92;letter-spacing:-0.04em;font-weight:300;color:#fff}
+.uveb{color:rgba(255,255,255,.82)}
+@media (hover:hover) and (min-width:901px){
+.uvrow:hover .ux{flex-grow:.78}
+.uvrow .ux:hover{flex-grow:2.4}
+.ux:hover .uxp{transform:scale(1)}
+.ux:hover .uxs{opacity:.72}
+.uvrow:hover .ux:not(:hover) .uxp{filter:brightness(.55) saturate(.75)}
+.ux:hover .uxw{opacity:.55}
+.ux:hover .uxpl{transform:scale(1.12);background:#fff;color:#141218}
+.ux.on:hover .uxpl{background:var(--c);color:#fff}
+.ux:hover .uxl{transform:scale(1.25)}
+.ux:hover .uxi{grid-template-rows:1fr;opacity:1;transform:none;transition-delay:.2s,.35s,.2s}
+.ux:hover .uxc{width:96px;height:96px}.ux:hover .uxt1{font-size:24px}
+.uvrow:hover .ux.on:not(:hover) .uxi{grid-template-rows:0fr;opacity:0;transform:translateY(14px)}
+}
+.uxc,.uxt1{transition:width .9s cubic-bezier(.65,0,.12,1),height .9s cubic-bezier(.65,0,.12,1),font-size .9s cubic-bezier(.65,0,.12,1)}
+@media (hover:none){.uxi{grid-template-rows:1fr;opacity:1;transform:none}.uxc{width:64px !important;height:64px !important}.uxt1{font-size:18px !important}}
+@media (max-width:900px){
+.uvs{height:auto;min-height:0;max-height:none;background:#F6F3EE;color:#141218;padding-top:100px;overflow:visible;display:flex;flex-direction:column}
+.uvtitle{order:-1}
+.uvtop{display:none}
+.uvtitle{position:static;padding:0 24px 28px;pointer-events:auto}
+.uvtitle h2{color:#141218;font-size:clamp(40px,11vw,64px)}
+.uveb{color:#6A6570}
+.uvrow{position:static;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.uvrow::-webkit-scrollbar{display:none}
+.ux{flex:0 0 82vw;height:min(72vh,620px);scroll-snap-align:start}
+.uxi{grid-template-rows:1fr;opacity:1;transform:none}
+.uxc{width:64px !important;height:64px !important}.uxt1{font-size:18px !important}
+}
+
 .motion-off *,.motion-off *::before,.motion-off *::after{animation:none !important;transition:none !important}
 @media (prefers-reduced-motion: reduce){.rm *,.rm *::before,.rm *::after{animation:none !important;transition:none !important}}
 @media (max-width: 1000px){.nav{display:none !important}}
@@ -118,21 +219,24 @@ a:hover{color:inherit}
 <sc-if value="{{hdr.dark}}" hint-placeholder-val="{{ false }}"><img src="assets/rm-logo-ink.png" alt="Radio Monaco" style="height: 36px; width: auto; display: block"></sc-if>
 </a>
 <nav class="nav" aria-label="Navigation principale" style="display: flex; align-items: center; gap: 34px; font-size: 13px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase">
-<a href="#radios">Radios</a>
-<a href="#actualites">Actualités</a>
-<a href="#reseaux">Réseaux</a>
-<a href="#equipes">Équipes</a>
-<a href="#djs">DJs</a>
-<a href="#podcasts">Podcasts</a>
+<a href="#radios" class="{{nav.radios}}" aria-current="{{nav.radiosCur}}" ref="{{navRef.radios}}">Radios</a>
+<a href="#actualites" class="{{nav.actualites}}" aria-current="{{nav.actualitesCur}}" ref="{{navRef.actualites}}">Actualités</a>
+<a href="#reseaux" class="{{nav.reseaux}}" aria-current="{{nav.reseauxCur}}" ref="{{navRef.reseaux}}">Réseaux</a>
+<a href="#equipes" class="{{nav.equipes}}" aria-current="{{nav.equipesCur}}" ref="{{navRef.equipes}}">Équipes</a>
+<a href="#djs" class="{{nav.djs}}" aria-current="{{nav.djsCur}}" ref="{{navRef.djs}}">DJs</a>
+<a href="#podcasts" class="{{nav.podcasts}}" aria-current="{{nav.podcastsCur}}" ref="{{navRef.podcasts}}">Podcasts</a>
+<span class="ind" aria-hidden="true" style="width: {{ind.w}}px; transform: translateX({{ind.x}}px); opacity: {{ind.o}}"></span>
 </nav>
 <button class="btn" onClick="{{togglePlay}}" style="display: inline-flex; align-items: center; gap: 11px; height: 44px; padding: 0 20px 0 17px; border: 0; border-radius: 999px; background: {{hdr.btnBg}}; color: {{hdr.btnFg}}; font-size: 14px; font-weight: 500; cursor: pointer">
 <span class="live-dot"></span><span>{{headerLabel}}</span>
 </button>
 </div>
+<span class="prog" aria-hidden="true" style="opacity: {{hdr.prog}}"></span>
 </header>
 
 <!-- HERO SLIDESHOW -->
-<section id="top" style="position: relative; height: 900px; overflow: hidden; color: #FFFFFF; background: #1E2129">
+<section id="top" ref="{{secRef.top}}" style="position: relative; height: 900px; overflow: hidden; color: #FFFFFF; background: #1E2129">
+<div class="hpx">
 <img class="hs {{hero.k0}}" src="assets/rm-monaco-port.jpg" alt="Le port Hercule et Monte-Carlo" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 60%; opacity: {{hero.o0}}">
 <img class="hs {{hero.k1}}" src="assets/rm-monaco-baie.jpg" alt="La baie de Monaco" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 55%; opacity: {{hero.o1}}">
 <img class="hs {{hero.k2}}" src="assets/rm-night.jpg" alt="Monaco de nuit" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; opacity: {{hero.o2}}">
@@ -140,8 +244,9 @@ a:hover{color:inherit}
 <div aria-hidden="true" style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(12,14,22,.52) 0%, rgba(12,14,22,.26) 35%, rgba(12,14,22,.28) 62%, rgba(12,14,22,.62) 100%)"></div>
 <!-- logo focus: soft shadow halo behind the logo -->
 <div aria-hidden="true" style="position: absolute; inset: 0; background: radial-gradient(ellipse 44% 34% at 50% 44%, rgba(8,10,18,.48) 0%, rgba(8,10,18,.2) 52%, rgba(8,10,18,0) 100%)"></div>
+</div>
 
-<div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 24px 120px">
+<div class="hct" style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 24px 120px">
 <div class="vid" style="width: min(880px, 100%); aspect-ratio: 16 / 9; margin: -20px 0 -112px">
 <video ref="{{videoRef}}" autoplay muted playsinline preload="auto" aria-label="Logo Radio Monaco animé" style="width: 100%; height: 100%; display: block; mix-blend-mode: screen">
 <source src="assets/rm-intro.webm" type="video/webm">
@@ -177,61 +282,67 @@ a:hover{color:inherit}
 </div>
 </section>
 
-<!-- 01 · RADIOS (compact) -->
-<section id="radios" style="padding: 72px 0 0">
-<div style="max-width: 1400px; margin: 0 auto; padding: 0 clamp(24px,4vw,56px)">
-<div class="reveal" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 12px 32px; margin-bottom: 24px">
-<p style="margin: 0; font-size: 12px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: #6A6570">01 — Nos radios en direct</p>
-<p style="margin: 0; font-size: 14px; color: #6A6570">Cliquez pour écouter</p>
-</div>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 16px">
+<!-- 01 · NOS UNIVERS (webradios) — 4 photos bord à bord, extensibles au survol -->
+<section id="radios" data-full="1" ref="{{secRef.radios}}" class="uvs {{sec.radios}}">
+<div class="uvrow">
 <sc-for list="{{radios}}" as="r" hint-placeholder-count="4">
-<button class="rc reveal" onClick="{{r.pick}}" aria-pressed="{{r.pressed}}" aria-label="{{r.aria}}" style="display: flex; flex-direction: column; gap: 18px; padding: 22px 18px 18px 20px; border: 0; border-radius: 26px; background: {{r.a1bg}}; box-shadow: {{r.a1shadow}}; text-align: left; font-family: inherit; color: #141218; cursor: pointer; overflow: hidden">
-<span style="display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%">
-<img src="{{r.logo}}" alt="{{r.alt}}" style="height: 56px; width: auto; max-width: 78%; display: block">
-<span class="pl" style="flex: 0 0 auto; width: 44px; height: 44px; border-radius: 50%; background: {{r.btnBg}}; color: {{r.btnFg}}; display: inline-flex; align-items: center; justify-content: center">
-<sc-if value="{{r.eq}}" hint-placeholder-val="{{ false }}"><svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor"></path></svg></sc-if>
-<sc-if value="{{r.play}}" hint-placeholder-val="{{ true }}"><svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></sc-if>
+<button class="ux {{r.onCls}}" onClick="{{r.pick}}" aria-pressed="{{r.pressed}}" aria-label="{{r.aria}}" style="--c: {{r.color}}; --w: {{r.washC}}; --d: {{r.d}}">
+<img class="uxp" src="{{r.photo}}" alt="" style="object-position: {{r.pos}}">
+<span class="uxs" aria-hidden="true"></span>
+<span class="uxw" aria-hidden="true"></span>
+<span class="uxb rise">
+<span class="uxh">
+<img class="uxl" src="{{r.wlogo}}" alt="{{r.alt}}">
+<span class="uxpl">
+<sc-if value="{{r.eq}}" hint-placeholder-val="{{ false }}"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor"></path></svg></sc-if>
+<sc-if value="{{r.play}}" hint-placeholder-val="{{ true }}"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></sc-if>
 </span>
 </span>
-<span style="display: flex; align-items: center; gap: 12px; width: 100%">
-<span style="position: relative; flex: 0 0 auto; width: 56px; height: 56px; border-radius: 14px; overflow: hidden; background: {{r.soft}}; box-shadow: {{r.glow}}; display: inline-flex; align-items: center; justify-content: center">
-<sc-if value="{{r.hasCover}}" hint-placeholder-val="{{ false }}"><img class="cv" src="{{r.cover}}" alt="Pochette du titre en cours" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover"></sc-if>
-<sc-if value="{{r.noCover}}" hint-placeholder-val="{{ true }}"><img src="{{r.sig}}" alt="" style="width: 26px; height: 26px"></sc-if>
+<span class="uxr" aria-hidden="true"></span>
+<span class="uxlv"><span class="live-dot" style="background: {{r.color}}"></span>{{r.status}}</span>
+<span class="uxi"><span>
+<span class="uxn">
+<span class="uxc">
+<sc-if value="{{r.hasCover}}" hint-placeholder-val="{{ false }}"><img src="{{r.cover}}" alt="Pochette du titre en cours"></sc-if>
+<sc-if value="{{r.noCover}}" hint-placeholder-val="{{ true }}"><span class="eq" aria-hidden="true" style="--eq: {{r.eqRun}}"><i></i><i></i><i></i><i></i></span></sc-if>
 </span>
-<span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 3px">
-<span style="font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.np1}}</span>
-<span style="font-size: 13px; color: #6A6570; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.np2}}</span>
+<span class="uxt"><span class="uxt1">{{r.np1}}</span><span class="uxt2">{{r.np2}}</span></span>
 </span>
+</span></span>
 </span>
-<span class="wave {{r.waveCls}}" aria-hidden="true" style="width: 100%; color: {{r.color}}"><i></i><i style="animation-delay:-.2s"></i><i style="animation-delay:-.5s"></i><i style="animation-delay:-.1s"></i><i style="animation-delay:-.7s"></i><i style="animation-delay:-.3s"></i><i style="animation-delay:-.9s"></i><i style="animation-delay:-.4s"></i><i style="animation-delay:-.6s"></i><i style="animation-delay:-.15s"></i><i style="animation-delay:-.8s"></i><i style="animation-delay:-.35s"></i><i style="animation-delay:-.55s"></i><i style="animation-delay:-.05s"></i><i style="animation-delay:-.75s"></i><i style="animation-delay:-.25s"></i><i style="animation-delay:-.65s"></i><i style="animation-delay:-.45s"></i><i style="animation-delay:-.12s"></i><i style="animation-delay:-.58s"></i><i style="animation-delay:-.33s"></i><i style="animation-delay:-.82s"></i></span>
 </button>
 </sc-for>
 </div>
+<div class="uvtop" aria-hidden="true"></div>
+<div class="uvtitle">
+<p class="eb uveb" style="margin: 0 0 18px; font-size: 12px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase">01 — Nos webradios</p>
+<h2><span class="m"><span>Découvrez</span></span> <span class="m"><span style="font-weight: 600">nos univers.</span></span></h2>
 </div>
 </section>
 
 <!-- 02 · ACTUALITÉS (slider) -->
-<section id="actualites" style="padding: 140px 0 0">
+<section id="actualites" ref="{{secRef.actualites}}" class="{{sec.actualites}}" style="padding: 140px 0 0">
 <div style="max-width: 1400px; margin: 0 auto; padding: 0 clamp(24px,4vw,56px)">
-<div class="reveal" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 20px 40px; margin-bottom: 44px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 20px 40px; margin-bottom: 44px">
 <div>
-<p style="margin: 0 0 18px; font-size: 12px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: #6A6570">02 — Actualités</p>
-<h2 style="margin: 0; font-size: clamp(40px, 4.8vw, 68px); line-height: 1; letter-spacing: -0.03em; font-weight: 300">À la <span style="font-weight: 600">une.</span></h2>
+<p class="eb" style="margin: 0 0 18px; font-size: 12px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: #6A6570">02 — Actualités</p>
+<h2 style="margin: 0; font-size: clamp(40px, 4.8vw, 68px); line-height: 1; letter-spacing: -0.03em; font-weight: 300"><span class="m"><span>À la</span></span> <span class="m"><span style="font-weight: 600">une.</span></span></h2>
 </div>
-<div style="display: flex; align-items: center; gap: 10px">
+<div class="rise" style="display: flex; align-items: center; gap: 10px; --d: .35s">
 <button class="nb" onClick="{{news.prev}}" aria-label="Actualité précédente" style="width: 50px; height: 50px; border-radius: 50%; border: 1px solid rgba(20,18,24,.2); background: transparent; color: #141218; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg class="ic" viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg></button>
 <button class="nb" onClick="{{news.next}}" aria-label="Actualité suivante" style="width: 50px; height: 50px; border-radius: 50%; border: 1px solid rgba(20,18,24,.2); background: transparent; color: #141218; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg class="ic" viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
 </div>
 </div>
 
-<div class="reveal" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(480px, 100%), 1fr)); gap: 32px 64px; align-items: center">
-<a href="#" class="tile" style="position: relative; display: block; aspect-ratio: 16 / 11; border-radius: 22px; overflow: hidden; background: #D8CBB4">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(480px, 100%), 1fr)); gap: 32px 64px; align-items: center">
+<a href="#" class="tile unv" style="position: relative; display: block; aspect-ratio: 16 / 11; border-radius: 22px; overflow: hidden; background: #D8CBB4; --d: .15s">
+<div class="plx zm" style="position: absolute; inset: -8% 0">
 <img class="slide ph" src="assets/rm-casino.jpg" alt="L’Opéra Garnier de Monte-Carlo" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 35%; opacity: {{news.o0}}">
 <img class="slide ph" src="assets/rm-monaco-port.jpg" alt="Monaco" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: {{news.o1}}">
 <img class="slide ph" src="assets/rm-monaco-baie.jpg" alt="Monaco" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 30% 60%; opacity: {{news.o2}}">
+</div>
 </a>
-<div style="display: flex; flex-direction: column; gap: 28px">
+<div class="rise" style="display: flex; flex-direction: column; gap: 28px; --d: .3s">
 <div style="position: relative; min-height: 250px">
 <a href="#" class="slide" style="position: absolute; inset: 0; display: flex; flex-direction: column; gap: 16px; opacity: {{news.o0}}; transform: translateY({{news.t0}}px); pointer-events: {{news.p0}}">
 <span style="font-size: 12px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: #C8022A">Musique · 18 — 29 novembre</span>
@@ -257,7 +368,7 @@ a:hover{color:inherit}
 </div>
 </div>
 
-<div class="reveal" style="margin-top: 56px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 0 40px">
+<div class="rise" style="--d: .45s; margin-top: 56px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 0 40px">
 <sc-for list="{{headlines}}" as="n" hint-placeholder-count="3">
 <a href="#" class="row" style="display: flex; flex-direction: column; gap: 10px; padding: 26px 0; border-top: 1px solid rgba(20,18,24,.12)">
 <span style="font-size: 12px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: #6A6570">{{n.cat}}</span>
@@ -269,14 +380,14 @@ a:hover{color:inherit}
 </section>
 
 <!-- 03 · SUR NOS RÉSEAUX (reels slider) -->
-<section id="reseaux" style="padding: 140px 0 0">
+<section id="reseaux" ref="{{secRef.reseaux}}" class="{{sec.reseaux}}" style="padding: 140px 0 0">
 <div style="max-width: 1400px; margin: 0 auto; padding: 0 clamp(24px,4vw,56px)">
-<div class="reveal" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 20px 40px; margin-bottom: 44px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 20px 40px; margin-bottom: 44px">
 <div>
-<p style="margin: 0 0 18px; font-size: 12px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: #6A6570">03 — Sur nos réseaux</p>
-<h2 style="margin: 0; font-size: clamp(40px, 4.8vw, 68px); line-height: 1; letter-spacing: -0.03em; font-weight: 300">Sur nos <span style="font-weight: 600">réseaux.</span></h2>
+<p class="eb" style="margin: 0 0 18px; font-size: 12px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: #6A6570">03 — Sur nos réseaux</p>
+<h2 style="margin: 0; font-size: clamp(40px, 4.8vw, 68px); line-height: 1; letter-spacing: -0.03em; font-weight: 300"><span class="m"><span>Sur nos</span></span> <span class="m"><span style="font-weight: 600">réseaux.</span></span></h2>
 </div>
-<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+<div class="rise" style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; --d: .35s">
 <a href="https://www.instagram.com/radiomonaco_officiel/" class="btn" style="display: inline-flex; align-items: center; gap: 10px; height: 50px; padding: 0 22px; border-radius: 999px; background: #141218; color: #fff; font-size: 14px; font-weight: 500">
 <svg class="ic" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.3" cy="6.7" r=".6"></circle></svg>
 @radiomonaco_officiel</a>
@@ -287,8 +398,8 @@ a:hover{color:inherit}
 </div>
 <div class="scroller" ref="{{reels.ref}}" onMouseEnter="{{reels.hold}}" onMouseLeave="{{reels.free}}" style="display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px max(clamp(24px,4vw,56px), calc((100% - 1400px) / 2 + 56px)) 12px; scroll-padding-left: max(clamp(24px,4vw,56px), calc((100% - 1400px) / 2 + 56px))">
 <sc-for list="{{reelList}}" as="v" hint-placeholder-count="8">
-<a href="{{v.href}}" data-card="1" class="reel tile" style="position: relative; flex: 0 0 260px; aspect-ratio: 9 / 16; scroll-snap-align: start; border-radius: 20px; overflow: hidden; background: #141218; color: #fff">
-<img class="ph" src="{{v.img}}" alt="{{v.alt}}" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover">
+<a href="{{v.href}}" data-card="1" class="reel tile rise" style="--d: {{v.d}}; position: relative; flex: 0 0 260px; aspect-ratio: 9 / 16; scroll-snap-align: start; border-radius: 20px; overflow: hidden; background: #141218; color: #fff">
+<img class="ph zm" src="{{v.img}}" alt="{{v.alt}}" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover">
 <span class="ov" aria-hidden="true" style="position: absolute; inset: 0; background: rgba(20,18,24,.25); opacity: 0; display: flex; align-items: center; justify-content: center"><span style="width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,.92); color: #141218; display: inline-flex; align-items: center; justify-content: center"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></span></span>
 <span style="position: absolute; left: 12px; bottom: 12px; display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px; background: rgba(20,18,24,.55); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); font-size: 12px; font-weight: 600">
 <svg viewBox="0 0 24 24" width="11" height="11" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg>{{v.views}}</span>
@@ -298,24 +409,26 @@ a:hover{color:inherit}
 </section>
 
 <!-- 04 · ÉQUIPES (spotlight slider) -->
-<section id="equipes" style="padding: 140px 0 0">
+<section id="equipes" ref="{{secRef.equipes}}" class="{{sec.equipes}}" style="padding: 140px 0 0">
 <div style="max-width: 1400px; margin: 0 auto; padding: 0 clamp(24px,4vw,56px)">
-<div class="reveal" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(460px, 100%), 1fr)); gap: 40px 72px; align-items: center">
-<div style="position: relative; aspect-ratio: 1 / 1; max-height: 620px; border-radius: 24px; overflow: hidden; background: #E4032E">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(460px, 100%), 1fr)); gap: 40px 72px; align-items: center">
+<div class="unv" style="position: relative; aspect-ratio: 1 / 1; max-height: 620px; border-radius: 24px; overflow: hidden; background: #E4032E; --d: .1s">
+<div class="plx zm" style="position: absolute; inset: -8% 0">
 <img class="slide" src="assets/team-leo.jpg" alt="Léo Barraband" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: {{team.o0}}; transform: scale({{team.s0}})">
 <img class="slide" src="assets/team-giulia.jpg" alt="Giulia Testaverde" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: {{team.o1}}; transform: scale({{team.s1}})">
 <img class="slide" src="assets/team-marie.jpg" alt="Marie Marquet" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: {{team.o2}}; transform: scale({{team.s2}})">
 <img class="slide" src="assets/show-morning.jpg" alt="L’équipe du Morning" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 70% 50%; opacity: {{team.o3}}; transform: scale({{team.s3}})">
 </div>
+</div>
 <div>
-<p style="margin: 0 0 18px; font-size: 12px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: #6A6570">04 — Nos équipes</p>
-<div style="position: relative; min-height: 230px">
+<p class="eb" style="margin: 0 0 18px; font-size: 12px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: #6A6570">04 — Nos équipes</p>
+<div class="rise" style="position: relative; min-height: 230px; --d: .25s">
 <div class="slide" style="position: absolute; inset: 0; opacity: {{team.o0}}; transform: translateY({{team.t0}}px)"><h2 style="margin: 0; font-size: clamp(44px, 5.4vw, 80px); line-height: .98; letter-spacing: -0.035em; font-weight: 300">Léo <span style="font-weight: 600">Barraband</span></h2><p style="margin: 18px 0 0; font-size: 17px; color: #6A6570">Animateur · Le Morning « Made in Monte-Carlo » et Le Morning +</p></div>
 <div class="slide" style="position: absolute; inset: 0; opacity: {{team.o1}}; transform: translateY({{team.t1}}px)"><h2 style="margin: 0; font-size: clamp(44px, 5.4vw, 80px); line-height: .98; letter-spacing: -0.035em; font-weight: 300">Giulia <span style="font-weight: 600">Testaverde</span></h2><p style="margin: 18px 0 0; font-size: 17px; color: #6A6570">Animatrice · Le Morning « Made in Monte-Carlo » et Le Morning +</p></div>
 <div class="slide" style="position: absolute; inset: 0; opacity: {{team.o2}}; transform: translateY({{team.t2}}px)"><h2 style="margin: 0; font-size: clamp(44px, 5.4vw, 80px); line-height: .98; letter-spacing: -0.035em; font-weight: 300">Marie <span style="font-weight: 600">Marquet</span></h2><p style="margin: 18px 0 0; font-size: 17px; color: #6A6570">Journaliste · L’info de la Principauté et de la Riviera</p></div>
 <div class="slide" style="position: absolute; inset: 0; opacity: {{team.o3}}; transform: translateY({{team.t3}}px)"><h2 style="margin: 0; font-size: clamp(44px, 5.4vw, 80px); line-height: .98; letter-spacing: -0.035em; font-weight: 300">Le <span style="font-weight: 600">Morning</span></h2><p style="margin: 18px 0 0; font-size: 17px; color: #6A6570">« Made in Monte-Carlo » · du direct de 07:00 à 10:00</p></div>
 </div>
-<div style="margin-top: 32px; display: flex; gap: 12px">
+<div class="rise" style="margin-top: 32px; display: flex; gap: 12px; --d: .4s">
 <sc-for list="{{teamThumbs}}" as="tt" hint-placeholder-count="4">
 <button class="thumb" onClick="{{tt.pick}}" aria-label="{{tt.label}}" aria-pressed="{{tt.pressed}}" style="width: 72px; height: 72px; padding: 0; border: 0; border-radius: 16px; overflow: hidden; cursor: pointer; background: #E4032E; opacity: {{tt.op}}; box-shadow: {{tt.ring}}">
 <img src="{{tt.img}}" alt="" style="width: 100%; height: 100%; object-fit: cover; display: block; object-position: {{tt.pos}}">
@@ -329,14 +442,14 @@ a:hover{color:inherit}
 </section>
 
 <!-- 05 · DJs (slider) -->
-<section id="djs" style="padding: 140px 0 0">
+<section id="djs" ref="{{secRef.djs}}" class="{{sec.djs}}" style="padding: 140px 0 0">
 <div style="max-width: 1400px; margin: 0 auto; padding: 0 clamp(24px,4vw,56px)">
-<div class="reveal" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 20px 40px; margin-bottom: 44px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 20px 40px; margin-bottom: 44px">
 <div>
-<p style="margin: 0 0 18px; font-size: 12px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: #6A6570">05 — Nos DJs</p>
-<h2 style="margin: 0; font-size: clamp(40px, 4.8vw, 68px); line-height: 1; letter-spacing: -0.03em; font-weight: 300">Les DJ <span style="font-weight: 600">sets.</span></h2>
+<p class="eb" style="margin: 0 0 18px; font-size: 12px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: #6A6570">05 — Nos DJs</p>
+<h2 style="margin: 0; font-size: clamp(40px, 4.8vw, 68px); line-height: 1; letter-spacing: -0.03em; font-weight: 300"><span class="m"><span>Les DJ</span></span> <span class="m"><span style="font-weight: 600">sets.</span></span></h2>
 </div>
-<div style="display: flex; align-items: center; gap: 10px">
+<div class="rise" style="display: flex; align-items: center; gap: 10px; --d: .35s">
 <button class="nb" onClick="{{djsS.prev}}" aria-label="DJs précédents" style="width: 50px; height: 50px; border-radius: 50%; border: 1px solid rgba(20,18,24,.2); background: transparent; color: #141218; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg class="ic" viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg></button>
 <button class="nb" onClick="{{djsS.next}}" aria-label="DJs suivants" style="width: 50px; height: 50px; border-radius: 50%; border: 1px solid rgba(20,18,24,.2); background: transparent; color: #141218; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg class="ic" viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
 </div>
@@ -344,9 +457,9 @@ a:hover{color:inherit}
 </div>
 <div class="scroller" ref="{{djsS.ref}}" onMouseEnter="{{djsS.hold}}" onMouseLeave="{{djsS.free}}" style="display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px max(clamp(24px,4vw,56px), calc((100% - 1400px) / 2 + 56px)) 12px; scroll-padding-left: max(clamp(24px,4vw,56px), calc((100% - 1400px) / 2 + 56px))">
 <sc-for list="{{djs}}" as="d" hint-placeholder-count="9">
-<a href="#" data-card="1" class="tile" style="flex: 0 0 280px; scroll-snap-align: start; display: flex; flex-direction: column; gap: 16px">
+<a href="#" data-card="1" class="tile rise" style="--d: {{d.d}}; flex: 0 0 280px; scroll-snap-align: start; display: flex; flex-direction: column; gap: 16px">
 <span style="position: relative; display: block; aspect-ratio: 840 / 1080; border-radius: 20px; overflow: hidden; background: #E4032E">
-<img class="ph" src="{{d.img}}" alt="{{d.name}}" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 20%">
+<img class="ph zm" src="{{d.img}}" alt="{{d.name}}" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 20%">
 <span class="pb" style="position: absolute; right: 14px; bottom: 14px; width: 44px; height: 44px; border-radius: 50%; background: #FFFFFF; color: #141218; display: inline-flex; align-items: center; justify-content: center"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></span>
 </span>
 <span style="display: flex; flex-direction: column; gap: 3px"><span style="font-size: 20px; font-weight: 500">{{d.name}}</span><span style="font-size: 14px; color: #6A6570">{{d.show}}</span></span>
@@ -356,14 +469,14 @@ a:hover{color:inherit}
 </section>
 
 <!-- 06 · PODCASTS (slider) -->
-<section id="podcasts" style="padding: 140px 0 0">
+<section id="podcasts" ref="{{secRef.podcasts}}" class="{{sec.podcasts}}" style="padding: 140px 0 0">
 <div style="max-width: 1400px; margin: 0 auto; padding: 0 clamp(24px,4vw,56px)">
-<div class="reveal" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 20px 40px; margin-bottom: 44px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 20px 40px; margin-bottom: 44px">
 <div>
-<p style="margin: 0 0 18px; font-size: 12px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: #6A6570">06 — Nos podcasts</p>
-<h2 style="margin: 0; font-size: clamp(40px, 4.8vw, 68px); line-height: 1; letter-spacing: -0.03em; font-weight: 300">À réécouter, <span style="font-weight: 600">à tout moment.</span></h2>
+<p class="eb" style="margin: 0 0 18px; font-size: 12px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: #6A6570">06 — Nos podcasts</p>
+<h2 style="margin: 0; font-size: clamp(40px, 4.8vw, 68px); line-height: 1; letter-spacing: -0.03em; font-weight: 300"><span class="m"><span>À réécouter,</span></span> <span class="m"><span style="font-weight: 600">à tout</span></span> <span class="m"><span style="font-weight: 600">moment.</span></span></h2>
 </div>
-<div style="display: flex; align-items: center; gap: 10px">
+<div class="rise" style="display: flex; align-items: center; gap: 10px; --d: .35s">
 <button class="nb" onClick="{{pods.prev}}" aria-label="Podcasts précédents" style="width: 50px; height: 50px; border-radius: 50%; border: 1px solid rgba(20,18,24,.2); background: transparent; color: #141218; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg class="ic" viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg></button>
 <button class="nb" onClick="{{pods.next}}" aria-label="Podcasts suivants" style="width: 50px; height: 50px; border-radius: 50%; border: 1px solid rgba(20,18,24,.2); background: transparent; color: #141218; display: inline-flex; align-items: center; justify-content: center; cursor: pointer"><svg class="ic" viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
 </div>
@@ -371,9 +484,9 @@ a:hover{color:inherit}
 </div>
 <div class="scroller" ref="{{pods.ref}}" onMouseEnter="{{pods.hold}}" onMouseLeave="{{pods.free}}" style="display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px max(clamp(24px,4vw,56px), calc((100% - 1400px) / 2 + 56px)) 12px; scroll-padding-left: max(clamp(24px,4vw,56px), calc((100% - 1400px) / 2 + 56px))">
 <sc-for list="{{podList}}" as="p" hint-placeholder-count="7">
-<a href="#" data-card="1" class="tile" style="flex: 0 0 380px; max-width: 86vw; scroll-snap-align: start; display: flex; flex-direction: column; gap: 16px">
+<a href="#" data-card="1" class="tile rise" style="--d: {{p.d}}; flex: 0 0 380px; max-width: 86vw; scroll-snap-align: start; display: flex; flex-direction: column; gap: 16px">
 <span style="position: relative; display: block; aspect-ratio: 1500 / 945; border-radius: 20px; overflow: hidden; background: #141218">
-<img class="ph" src="{{p.img}}" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: {{p.pos}}">
+<img class="ph zm" src="{{p.img}}" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: {{p.pos}}">
 <span style="position: absolute; left: 14px; top: 14px; padding: 5px 11px; border-radius: 999px; background: rgba(255,255,255,.9); color: #141218; font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase">{{p.tag}}</span>
 <span class="pb" style="position: absolute; right: 14px; bottom: 14px; width: 44px; height: 44px; border-radius: 50%; background: #FFFFFF; color: #141218; display: inline-flex; align-items: center; justify-content: center"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></span>
 </span>
@@ -645,11 +758,131 @@ class Component extends DCLogic {
       if (s !== !!(this.state && this.state.scrolled)) this.setState({ scrolled: s });
     };
     window.addEventListener('scroll', this._onScroll, { passive: true });
+    this.initMotion();
+  }
+  initMotion() {
+    const IDS = ['radios', 'actualites', 'reseaux', 'equipes', 'djs', 'podcasts'];
+    const doc = document.documentElement;
+    const se = () => document.scrollingElement || document.documentElement;
+    const mm = (q) => !!(window.matchMedia && window.matchMedia(q).matches);
+    const reduced = mm('(prefers-reduced-motion: reduce)');
+    const motion = () => (this.props.motion ?? true) && !reduced;
+    this._secEl = this._secEl || {};
+    this._navEl = this._navEl || {};
+
+    // 1. Révélation des rubriques à l'arrivée dans l'écran
+    if (!motion() || typeof IntersectionObserver === 'undefined') {
+      const all = {}; IDS.forEach((k) => { all[k] = true; }); this.setState({ seen: all });
+    } else {
+      this._io = new IntersectionObserver((es) => {
+        let next = null;
+        es.forEach((e) => {
+          if (!e.isIntersecting) return;
+          const k = e.target.id, cur = (this.state && this.state.seen) || {};
+          if (!cur[k]) { next = next || Object.assign({}, cur); next[k] = true; }
+        });
+        if (next) this.setState({ seen: next });
+      }, { rootMargin: '0px 0px -14% 0px', threshold: 0 });
+      IDS.forEach((k) => { const el = this._secEl[k]; if (el) this._io.observe(el); });
+    }
+
+    // 2. Rubrique active, barre de progression, profondeur du héros
+    const spy = () => {
+      this._spyQ = 0;
+      const y = se().scrollTop, vh = window.innerHeight || 800;
+      const max = Math.max(1, se().scrollHeight - vh);
+      doc.style.setProperty('--rm-p', Math.min(1, y / max).toFixed(4));
+      if (y < 1400) {
+        doc.style.setProperty('--rm-hy', (y * 0.38).toFixed(1) + 'px');
+        doc.style.setProperty('--rm-hc', (y * 0.16).toFixed(1) + 'px');
+        doc.style.setProperty('--rm-ho', Math.max(0, 1 - y / 560).toFixed(3));
+      }
+      let act = '';
+      IDS.forEach((k) => { const el = this._secEl[k]; if (el && el.getBoundingClientRect().top < vh * 0.42) act = k; });
+      if (y + vh >= se().scrollHeight - 4) act = 'podcasts';
+      if (!this._ease && act !== ((this.state && this.state.active) || '')) this.setState({ active: act });
+      if (!this._ease && !this._lerpOn) { this._cy = y; this._ty = y; }
+    };
+    this._spy = () => { if (!this._spyQ) this._spyQ = requestAnimationFrame(spy); };
+    window.addEventListener('scroll', this._spy, { passive: true });
+    this._onResize = () => { this._spy(); this.forceUpdate && this.forceUpdate(); };
+    window.addEventListener('resize', this._onResize);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => this.forceUpdate && this.forceUpdate());
+    setTimeout(this._onResize, 600);
+    spy();
+
+    // 3. Défilement fluide : molette amortie (souris / trackpad)
+    const canSmooth = () => motion() && mm('(pointer: fine)') && se().scrollHeight > (window.innerHeight || 0) + 40;
+    const lerpLoop = () => {
+      const d = this._ty - this._cy;
+      if (Math.abs(d) < 0.4) { this._cy = this._ty; se().scrollTop = this._cy; this._lerpOn = false; return; }
+      this._cy += d * 0.085;
+      se().scrollTop = this._cy;
+      this._lerpRaf = requestAnimationFrame(lerpLoop);
+    };
+    this._onWheel = (e) => {
+      if (e.ctrlKey || e.defaultPrevented || !canSmooth()) return;
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+      e.preventDefault();
+      if (this._ease) { cancelAnimationFrame(this._ease); this._ease = 0; }
+      const unit = e.deltaMode === 1 ? 36 : e.deltaMode === 2 ? (window.innerHeight || 800) : 1;
+      const max = se().scrollHeight - (window.innerHeight || 0);
+      if (!this._lerpOn) { this._cy = se().scrollTop; this._ty = this._cy; }
+      this._ty = Math.max(0, Math.min(max, this._ty + e.deltaY * unit));
+      if (!this._lerpOn) { this._lerpOn = true; this._lerpRaf = requestAnimationFrame(lerpLoop); }
+    };
+    window.addEventListener('wheel', this._onWheel, { passive: false });
+
+    // 4. Clic sur un onglet : glissé long et freiné vers la rubrique
+    const glide = (to) => {
+      const from = se().scrollTop, dist = to - from;
+      if (Math.abs(dist) < 2) return;
+      if (!motion()) { se().scrollTop = to; return; }
+      if (this._lerpOn) { cancelAnimationFrame(this._lerpRaf); this._lerpOn = false; }
+      if (this._ease) cancelAnimationFrame(this._ease);
+      const dur = Math.min(2000, 1000 + Math.abs(dist) * 0.16);
+      const t0 = performance.now();
+      const ez = (t) => (t < 0.5 ? 16 * t * t * t * t * t : 1 - Math.pow(-2 * t + 2, 5) / 2);
+      const step = (now) => {
+        const t = Math.min(1, (now - t0) / dur);
+        se().scrollTop = from + dist * ez(t);
+        if (t < 1) this._ease = requestAnimationFrame(step);
+        else { this._ease = 0; this._cy = this._ty = se().scrollTop; }
+      };
+      this._ease = requestAnimationFrame(step);
+    };
+    this._onClick = (e) => {
+      const a = e.target && e.target.closest && e.target.closest('a[href^="#"]');
+      if (!a) return;
+      const id = a.getAttribute('href').slice(1);
+      e.preventDefault();
+      if (!id) return;
+      const el = this._secEl[id] || document.getElementById(id);
+      if (!el) return;
+      const r = el.getBoundingClientRect(), vh = window.innerHeight || 800;
+      if (id !== 'top' && this._io && (r.top > vh || r.bottom < 0)) {
+        const cur = Object.assign({}, (this.state && this.state.seen) || {}); delete cur[id];
+        this.setState({ seen: cur, active: id });
+      } else if (id !== 'top') this.setState({ active: id });
+      const pt = parseFloat(getComputedStyle(el).paddingTop) || 0;
+      const full = el.getAttribute && el.getAttribute('data-full');
+      const to = id === 'top' ? 0 : Math.max(0, r.top + se().scrollTop + (full ? -84 : pt - 84 - 52));
+      glide(Math.min(to, se().scrollHeight - vh));
+      if (history && history.replaceState) { try { history.replaceState(null, '', '#' + id); } catch (err) {} }
+    };
+    document.addEventListener('click', this._onClick);
   }
   componentWillUnmount() {
     [this._t, this._hero, this._news, this._team, this._auto, this._metaT].forEach((x) => x && clearInterval(x));
     if (this._audio) { try { this._audio.pause(); } catch (e) {} }
     if (this._onScroll) window.removeEventListener('scroll', this._onScroll);
+    if (this._spy) window.removeEventListener('scroll', this._spy);
+    if (this._onResize) window.removeEventListener('resize', this._onResize);
+    if (this._onWheel) window.removeEventListener('wheel', this._onWheel);
+    if (this._onClick) document.removeEventListener('click', this._onClick);
+    if (this._io) this._io.disconnect();
+    if (this._ease) cancelAnimationFrame(this._ease);
+    if (this._lerpRaf) cancelAnimationFrame(this._lerpRaf);
   }
   slider(k) {
     this._sc = this._sc || {};
@@ -750,10 +983,10 @@ class Component extends DCLogic {
     }));
 
     const R = [
-      { name: 'Monte-Carlo', aria: 'Écouter Radio Monaco Monte-Carlo', alt: 'Radio Monaco Monte Carlo', logo: 'assets/wr-montecarlo-ink.png', sig: 'assets/rm-mark.png', color: '#E4032E', soft: '#F6E2E5', tint: '#FFF4F5', glowC: 'rgba(228,3,46,.55)', ink: '#FFFFFF', line: now.name },
-      { name: 'Paris', aria: 'Écouter Radio Monaco Paris', alt: 'Radio Monaco Paris', logo: 'assets/wr-paris-ink.png', sig: 'assets/rm-mark.png', color: '#E4032E', soft: '#F3E7E6', tint: '#FFF4F5', glowC: 'rgba(228,3,46,.55)', ink: '#FFFFFF', line: 'La webradio Radio Monaco' },
-      { name: '100 % Mix DJ', aria: 'Écouter Radio Monaco 100 % Mix DJ', alt: 'Radio Monaco 100 % Mix DJ', logo: 'assets/wr-mixdj-ink.png', sig: 'assets/sig-mixdj-color.png', color: '#F59C00', soft: '#FBEBD0', tint: '#FFF8EC', glowC: 'rgba(245,156,0,.6)', ink: '#141218', line: 'DJ sets non-stop' },
-      { name: 'Night Mood', aria: 'Écouter Radio Monaco Night Mood', alt: 'Radio Monaco Night Mood', logo: 'assets/wr-nightmood-ink.png', sig: 'assets/sig-nightmood-color.png', color: '#8A5AA1', soft: '#EDE3F2', tint: '#F8F3FA', glowC: 'rgba(138,90,161,.6)', ink: '#FFFFFF', line: 'La playlist de Pampa' }
+      { name: 'Monte-Carlo', aria: 'Écouter Radio Monaco Monte-Carlo', alt: 'Radio Monaco Monte Carlo', logo: 'assets/wr-montecarlo-ink.png', wlogo: 'assets/wr-montecarlo-allwhite.png', photo: 'assets/rm-casino.jpg', pos: '50% 30%', washC: 'rgba(228,3,46,.55)', sig: 'assets/rm-mark.png', color: '#E4032E', soft: '#F6E2E5', tint: '#FFF4F5', glowC: 'rgba(228,3,46,.55)', ink: '#FFFFFF', line: now.name },
+      { name: 'Paris', aria: 'Écouter Radio Monaco Paris', alt: 'Radio Monaco Paris', logo: 'assets/wr-paris-ink.png', wlogo: 'assets/wr-paris-allwhite.png', photo: 'assets/rm-paris.jpg', pos: '50% 40%', washC: 'rgba(228,3,46,.5)', sig: 'assets/rm-mark.png', color: '#E4032E', soft: '#F3E7E6', tint: '#FFF4F5', glowC: 'rgba(228,3,46,.55)', ink: '#FFFFFF', line: 'La webradio Radio Monaco' },
+      { name: '100 % Mix DJ', aria: 'Écouter Radio Monaco 100 % Mix DJ', alt: 'Radio Monaco 100 % Mix DJ', logo: 'assets/wr-mixdj-ink.png', wlogo: 'assets/wr-mixdj-allwhite.png', photo: 'assets/rm-dj.jpg', pos: '40% 50%', washC: 'rgba(245,156,0,.55)', sig: 'assets/sig-mixdj-color.png', color: '#F59C00', soft: '#FBEBD0', tint: '#FFF8EC', glowC: 'rgba(245,156,0,.6)', ink: '#141218', line: 'DJ sets non-stop' },
+      { name: 'Night Mood', aria: 'Écouter Radio Monaco Night Mood', alt: 'Radio Monaco Night Mood', logo: 'assets/wr-nightmood-ink.png', wlogo: 'assets/wr-nightmood-allwhite.png', photo: 'assets/rm-night.jpg', pos: '35% 50%', washC: 'rgba(138,90,161,.6)', sig: 'assets/sig-nightmood-color.png', color: '#8A5AA1', soft: '#EDE3F2', tint: '#F8F3FA', glowC: 'rgba(138,90,161,.6)', ink: '#FFFFFF', line: 'La playlist de Pampa' }
     ];
     const meta = st.meta || {};
     const np = (i) => {
@@ -775,9 +1008,15 @@ class Component extends DCLogic {
         a1bg: sel ? r.tint : '#FFFFFF',
         a1shadow: sel ? '0 0 0 1.5px ' + r.color + ', 0 22px 44px -22px ' + r.glowC : '0 14px 34px -20px rgba(20,18,24,.24)',
         glow: n.hasCover ? '0 12px 26px -12px ' + r.glowC : 'none',
-        btnBg: on ? r.color : '#F2EFEA',
-        btnFg: on ? '#FFFFFF' : '#141218',
-        pick: () => this.playStation(i, sel ? !playing : true)
+        pick: () => this.playStation(i, sel ? !playing : true),
+        d: (i * 0.09 + 0.12).toFixed(2) + 's',
+        status: on ? 'En écoute' : 'En direct',
+        onCls: on ? 'on' : '',
+        eqRun: on ? 'running' : 'paused',
+        washO: sel ? 0.7 : 0,
+        uvShadow: sel ? '0 0 0 2px ' + r.color + ', 0 30px 60px -28px ' + r.glowC : '0 24px 50px -30px rgba(20,18,24,.45)',
+        btnBg: on ? r.color : 'rgba(255,255,255,.2)',
+        btnFg: on && r.ink === '#141218' ? '#141218' : '#FFFFFF'
       };
     });
     const s = R[station];
@@ -817,13 +1056,34 @@ class Component extends DCLogic {
       { title: 'L’After Chic by Yan One', sub: '100 % Mix DJ', tag: 'DJ set', img: 'assets/show-afterchic.jpg', pos: '70% 50%' }
     ];
 
+    const stg = (list, base) => list.map((x, i) => Object.assign({}, x, { d: (base + Math.min(i, 5) * 0.08).toFixed(2) + 's' }));
+    const IDS = ['radios', 'actualites', 'reseaux', 'equipes', 'djs', 'podcasts'];
+    const seen = motion ? (st.seen || {}) : null;
+    const active = st.active || '';
+    const sec = {}, nav = {}, navRef = {}, secRef = {};
+    this._navEl = this._navEl || {};
+    this._secEl = this._secEl || {};
+    IDS.concat(['top']).forEach((k) => {
+      sec[k] = !seen || seen[k] ? 'in' : '';
+      nav[k] = active === k ? 'on' : '';
+      nav[k + 'Cur'] = active === k ? 'location' : 'false';
+      navRef[k] = (el) => { if (el) this._navEl[k] = el; };
+      secRef[k] = (el) => { if (el && this._secEl[k] !== el) { this._secEl[k] = el; if (this._io && k !== 'top') this._io.observe(el); } };
+    });
+    const ae = this._navEl[active];
+    if (ae) this._lastInd = { x: ae.offsetLeft, w: ae.offsetWidth };
+    const li = this._lastInd || { x: 0, w: 0 };
+    const ind = { x: li.x, w: li.w, o: ae ? 1 : 0 };
+
     const hdr = scrolled
       ? { light: false, dark: true, fg: '#141218', bg: 'rgba(246,243,238,.88)', line: 'rgba(20,18,24,.08)', btnBg: '#141218', btnFg: '#FFFFFF' }
       : { light: true, dark: false, fg: '#FFFFFF', bg: 'rgba(246,243,238,0)', line: 'rgba(255,255,255,0)', btnBg: '#FFFFFF', btnFg: '#141218' };
 
     return {
       motionClass: motion ? '' : 'motion-off',
-      hdr, now, hero, news, headlines, team, teamThumbs, radios, pl, reelList, djs, podList,
+      hdr: Object.assign({ prog: scrolled ? 1 : 0 }, hdr), now, hero, news, headlines, team, teamThumbs, radios, pl,
+      reelList: stg(reelList, 0.2), djs: stg(djs, 0.2), podList: stg(podList, 0.2),
+      sec, nav, navRef, secRef, ind,
       reels: this.slider('reels'), djsS: this.slider('djs'), pods: this.slider('pods'),
       playing, notPlaying: !playing,
       eqState: playing ? 'running' : 'paused',
