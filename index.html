@@ -147,10 +147,13 @@ html{scroll-behavior:auto}
 .uxp{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;scale:1.16;transform:scale(1.04);transition:scale 2.4s cubic-bezier(.19,1,.22,1) var(--d,0s),transform 1.6s cubic-bezier(.16,.84,.12,1),filter .9s ease}
 .in .uxp{scale:1}
 /* duotone doux : photo désaturée, teintée de la couleur de l'univers */
-.uxp{filter:grayscale(.6) contrast(1.03) brightness(.98)}
-.uxt0{position:absolute;inset:0;background:var(--c);mix-blend-mode:color;opacity:.5;transition:opacity 1.1s ease}
-.ux.on .uxp{filter:grayscale(.3) contrast(1.02)}
-.ux.on .uxt0{opacity:.32}
+.uxp{filter:grayscale(.4) contrast(1.02)}
+.uxt0{position:absolute;inset:0;background:var(--c);mix-blend-mode:color;opacity:.32;transition:opacity 1.1s ease}
+.ux.on .uxp{filter:grayscale(.2)}
+.ux.on .uxt0{opacity:.2}
+/* liseré de la couleur de l'univers en pied de bannière */
+.uxbar{position:absolute;left:0;right:0;bottom:0;height:6px;background:var(--c);z-index:2;transition:height .9s cubic-bezier(.65,0,.12,1)}
+.ux.on .uxbar{height:10px}
 .uxs{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,16,.35) 0%,rgba(10,10,16,0) 38%,rgba(10,10,16,.1) 55%,rgba(10,10,16,.9) 100%);transition:opacity .9s ease}
 .uxw{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 45%,var(--w) 100%);mix-blend-mode:multiply;opacity:0;transition:opacity .9s ease}
 .ux.on .uxw{opacity:.75}
@@ -183,6 +186,8 @@ html{scroll-behavior:auto}
 .uvrow:hover .ux:not(:hover) .uxp{filter:grayscale(.8) contrast(1.04) brightness(.62)}
 .ux:hover .uxp{filter:none}
 .ux:hover .uxt0{opacity:.08}
+.ux:hover .uxbar{height:10px}
+.uvrow:hover .ux.on:not(:hover) .uxbar{height:6px}
 .ux:hover .uxw{opacity:.55}
 .ux:hover .uxpl{transform:scale(1.12);background:#fff;color:#141218}
 .ux.on:hover .uxpl{background:var(--c);color:#fff}
@@ -293,11 +298,12 @@ html{scroll-behavior:auto}
 <section id="radios" data-full="1" ref="{{secRef.radios}}" class="uvs {{sec.radios}}">
 <div class="uvrow">
 <sc-for list="{{radios}}" as="r" hint-placeholder-count="4">
-<button class="ux {{r.onCls}}" onClick="{{r.pick}}" aria-pressed="{{r.pressed}}" aria-label="{{r.aria}}" style="--c: {{r.color}}; --w: {{r.washC}}; --d: {{r.d}}">
+<button class="ux {{r.onCls}} {{r.inkCls}}" onClick="{{r.pick}}" aria-pressed="{{r.pressed}}" aria-label="{{r.aria}}" style="--c: {{r.color}}; --w: {{r.washC}}; --d: {{r.d}}">
 <img class="uxp" src="{{r.photo}}" alt="" style="object-position: {{r.pos}}">
 <span class="uxt0" aria-hidden="true"></span>
 <span class="uxs" aria-hidden="true"></span>
 <span class="uxw" aria-hidden="true"></span>
+<span class="uxbar" aria-hidden="true"></span>
 <span class="uxb rise">
 <span class="uxh">
 <img class="uxl" src="{{r.wlogo}}" alt="{{r.alt}}">
@@ -1020,6 +1026,7 @@ class Component extends DCLogic {
         d: (i * 0.09 + 0.12).toFixed(2) + 's',
         status: on ? 'En écoute' : 'En direct',
         onCls: on ? 'on' : '',
+        inkCls: r.ink === '#141218' ? 'dk' : '',
         eqRun: on ? 'running' : 'paused',
         washO: sel ? 0.7 : 0,
         uvShadow: sel ? '0 0 0 2px ' + r.color + ', 0 30px 60px -28px ' + r.glowC : '0 24px 50px -30px rgba(20,18,24,.45)',
