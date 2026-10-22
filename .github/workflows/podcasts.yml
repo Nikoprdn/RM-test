@@ -1,0 +1,32 @@
+name: Podcasts Ausha
+
+on:
+  schedule:
+    - cron: '17 * * * *'   # toutes les heures
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node scripts/update-podcasts.mjs
+      - name: Enregistrer les nouveaux épisodes et republier le site
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -n "$(git status --porcelain podcasts.json)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898+github-actions[bot]@users.noreply.github.com"
+            git add podcasts.json
+            git commit -m "Podcasts : nouveaux épisodes Ausha"
+            git push
+            gh api -X POST "repos/${{ github.repository }}/pages/builds" || true
+          fi
