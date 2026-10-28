@@ -44,6 +44,9 @@ jobs:
           cache: npm
           cache-dependency-path: rm-site/package-lock.json
       - run: npm ci
+      # les images sont dans le dossier assets/ à la racine du dépôt
+      - name: Images
+        run: mkdir -p public/assets && cp ../assets/* public/assets/
       - run: npm run build
       - uses: actions/upload-pages-artifact@v3
         with:
