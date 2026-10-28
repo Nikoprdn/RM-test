@@ -1,0 +1,35 @@
+---
+import Base from '../../layouts/Base.astro';
+import EpisodeList from '../../components/EpisodeList.astro';
+import I from '../../components/Icons.astro';
+import { u } from '../../lib/url.js';
+import { getShows, getDJs, getPodcasts, clip } from '../../lib/data.js';
+export async function getStaticPaths() { return (await getShows()).map((s) => ({ params: { slug: s.slug }, props: { show: s } })); }
+const { show } = Astro.props;
+const dj = (await getDJs()).find((d) => d.path === show.path);
+const norm = (s) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+const pod = (await getPodcasts()).find((p) => norm(show.name).includes(norm(p.name)) || norm(p.name).includes(norm(show.name)));
+const station = show.dj ? 2 : /night/i.test(show.name) ? 3 : 0;
+const PROD = (process.env.PROD_URL || 'https://radio-monaco.com').replace(/\/$/, '');
+const ld = { '@context': 'https://schema.org', '@type': 'RadioSeries', name: show.name, description: show.excerpt, url: PROD + show.path, image: show.img && show.img.large, ...(dj && dj.member ? { actor: { '@type': 'Person', name: dj.name } } : {}) };
+---
+<Base title={`${show.name} — Radio Monaco`} description={clip(show.excerpt || show.name + ' sur Radio Monaco.', 158)} image={show.img && show.img.large} path={show.path} jsonld={[ld]}>
+  <div class="wrap">
+    <div class="profile">
+      <div class:list={['ph', { wide: !(dj && dj.img && dj.member) }]}>{(dj && dj.img ? dj.img : show.img) && <img src={(dj && dj.img ? dj.img : show.img).large} alt={show.name} />}</div>
+      <div>
+        <nav class="crumbs" aria-label="Fil d’Ariane"><a href={u('/')}>Accueil</a><span class="sep">/</span><a href={u('/#djs')}>Émissions</a></nav>
+        <h1 class="h1"><b>{show.name}</b></h1>
+        {dj && <p class="lead">avec <a href={dj.member ? u(dj.member) : undefined} style="color:var(--ink);font-weight:600">{dj.name}</a>{dj.when ? ' · ' + dj.when : ''}</p>}
+        <div class="bio" set:html={show.html} />
+        <button class="btn-play" type="button" data-rm-live={station} style={`--c:${station === 2 ? '#F59C00' : station === 3 ? '#8A5AA1' : '#E4032E'}`}><span class="pi"><I n="play" /></span>Écouter {station === 2 ? '100 % Mix DJ' : station === 3 ? 'Night Mood' : 'le direct'}</button>
+      </div>
+    </div>
+    {pod && (
+      <section style="margin-top:96px">
+        <div class="sec-t"><h2>Les derniers <b>épisodes.</b></h2><a href={u('/podcasts/' + pod.k + '/')}>Tous les épisodes<I n="right" s={18} /></a></div>
+        <EpisodeList show={pod} limit={6} />
+      </section>
+    )}
+  </div>
+</Base>

@@ -1,0 +1,77 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Player from '../components/Player.astro';
+import Install from '../components/Install.astro';
+import { u, asset, INDEXABLE } from '../lib/url.js';
+
+const PROD = (process.env.PROD_URL || 'https://radio-monaco.com').replace(/\/$/, '');
+const {
+  title = 'Radio Monaco — The sound of Monte-Carlo',
+  description = 'Radio Monaco : le direct de Monte-Carlo, Paris, 100 % Mix DJ et Night Mood, l’actualité de Monaco et de la Riviera, les podcasts. 98,2 FM Monaco, DAB+.',
+  image = asset('og-default.jpg'),
+  path = '/',
+  type = 'website',
+  jsonld = [],
+  hero = false,
+  published, modified
+} = Astro.props;
+const canonical = INDEXABLE ? new URL(u(path), Astro.site).href : PROD + path;
+const img = image && /^https?:/.test(image) ? image : new URL(image, Astro.site).href;
+const org = {
+  '@context': 'https://schema.org', '@type': ['RadioStation', 'NewsMediaOrganization'], '@id': PROD + '/#organisation', name: 'Radio Monaco', url: PROD + '/',
+  logo: new URL(asset('icon-512.png'), Astro.site).href, telephone: '+377 97 700 700',
+  address: { '@type': 'PostalAddress', streetAddress: '7 rue Gabian', postalCode: '98000', addressLocality: 'Monaco', addressCountry: 'MC' },
+  sameAs: ['https://www.instagram.com/radiomonaco_officiel/', 'https://www.facebook.com/radiomonaco']
+};
+---
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  {!INDEXABLE && <meta name="robots" content="noindex, nofollow" />}
+  <meta property="og:site_name" content="Radio Monaco" />
+  <meta property="og:locale" content="fr_FR" />
+  <meta property="og:type" content={type} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={img} />
+  {published && <meta property="article:published_time" content={published} />}
+  {modified && <meta property="article:modified_time" content={modified} />}
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#F6F3EE" />
+  <link rel="manifest" href={u('/manifest.webmanifest').replace(/\/$/, '')} />
+  <link rel="icon" href={asset('icon-192.png')} type="image/png" />
+  <link rel="apple-touch-icon" href={asset('apple-touch-icon.png')} />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Radio Monaco" />
+  <link rel="preconnect" href="https://radio-monaco.com" crossorigin />
+  <link rel="preconnect" href="https://image.ausha.co" />
+  <link rel="preload" href={asset('Barlow-Regular.ttf')} as="font" type="font/ttf" crossorigin />
+  <link rel="stylesheet" href={u('/styles/site.css').replace(/\/$/, '')} />
+  <link rel="stylesheet" href={u('/styles/layout.css').replace(/\/$/, '')} />
+  <script type="application/ld+json" set:html={JSON.stringify(org)} />
+  {jsonld.map((j) => <script type="application/ld+json" set:html={JSON.stringify(j)} />)}
+  <ClientRouter fallback="swap" />
+  <script src="../scripts/site.js"></script>
+  <script src="../scripts/pwa.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Aller au contenu</a>
+  <div class="rm">
+    <Header hero={hero} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <Player />
+    <Install />
+  </div>
+</body>
+</html>

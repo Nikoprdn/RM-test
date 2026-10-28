@@ -1,0 +1,39 @@
+---
+import Base from '../layouts/Base.astro';
+import I from '../components/Icons.astro';
+import { u, asset } from '../lib/url.js';
+import { STATIONS } from '../lib/stations.js';
+// Textes repris de la page « Nos radios » du site actuel
+const TXT = [
+  'Créée en 2007, Radio Monaco est une radio musicale qui diffuse également des news et des émissions thématiques. En FM, les fréquences 95.4, 98.2 et 103.2 couvrent un territoire entre Bordighera et Saint-Tropez. En DAB+, Radio Monaco propose une qualité numérique pour Paris et Nice.',
+  'Les programmes de Radio Monaco et l’actualité francilienne, en DAB+ à Paris et partout sur le site et l’appli.',
+  'Chaque jour, toute la team DJ de Radio Monaco avec des sets nu-disco, house, deep-house, future-soul et electro-pop.',
+  'La programmation musicale de nuit, disponible 24 h/24 : house, pop, urban pop et chill-out, une sélection tendance pour plonger dans une expérience nocturne.'
+];
+const PROD = (process.env.PROD_URL || 'https://radio-monaco.com').replace(/\/$/, '');
+const ld = { '@context': 'https://schema.org', '@type': 'ItemList', name: 'Les radios de Radio Monaco', itemListElement: STATIONS.map((s, i) => ({ '@type': 'ListItem', position: i + 1, item: { '@type': 'RadioChannel', name: 'Radio Monaco ' + s.name, broadcastChannelId: s.bands.map((b) => b.f).join(', '), url: PROD + '/nos-radios/#' + s.key } })) };
+---
+<Base title="Nos radios — Radio Monaco" description="Monte-Carlo, Paris, 100 % Mix DJ et Night Mood : les quatre radios de Radio Monaco en FM, DAB+ et en ligne." path="/nos-radios/" jsonld={[ld]}>
+  <div class="wrap">
+    <header class="page-hd"><nav class="crumbs" aria-label="Fil d’Ariane"><a href={u('/')}>Accueil</a><span class="sep">/</span><span>Nos radios</span></nav><h1 class="h1">Quatre radios, <b>une signature.</b></h1></header>
+    <div class="radios">
+      {STATIONS.map((s, i) => (
+        <section class="radio" id={s.key} style={`--c:${s.color}`} data-reveal>
+          <div class="rp"><img class="photo" src={asset(s.photo)} alt="" loading={i ? 'lazy' : 'eager'} style={`object-position:${s.pos}`} /><img class="lg" src={asset(s.logo)} alt={'Radio Monaco ' + s.name} /></div>
+          <div class="rt">
+            <h2>Radio Monaco <b>{s.name}</b></h2>
+            <p>{TXT[i]}</p>
+            <div class="fq">{s.bands.map((b) => <span>{b.city && <>{b.city} </>}<b>{b.f}</b></span>)}</div>
+            <div class="now" data-now={i}></div>
+            <button class="btn-play" type="button" data-rm-live={i} style={`--c:${s.color}`}><span class="pi"><I n="play" /></span>Écouter {s.name}</button>
+          </div>
+        </section>
+      ))}
+    </div>
+  </div>
+  <script>
+    // titre en cours pour chaque radio (métadonnées du lecteur)
+    const paint = () => { const m = (window.RM && window.RM.meta) || {}; document.querySelectorAll('[data-now]').forEach((el) => { const x = m[+el.dataset.now]; el.textContent = x && x.title ? 'En ce moment · ' + x.title + (x.artist ? ' — ' + x.artist : '') : ''; }); };
+    document.addEventListener('rm:meta', paint); document.addEventListener('astro:page-load', paint); paint();
+  </script>
+</Base>

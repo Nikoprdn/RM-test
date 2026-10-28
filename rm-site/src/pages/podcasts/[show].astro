@@ -1,0 +1,27 @@
+---
+import Base from '../../layouts/Base.astro';
+import EpisodeList from '../../components/EpisodeList.astro';
+import I from '../../components/Icons.astro';
+import { u } from '../../lib/url.js';
+import { getPodcasts, ausImg, ausAudio, FEED_LABEL } from '../../lib/data.js';
+export async function getStaticPaths() { return (await getPodcasts()).map((p) => ({ params: { show: p.k }, props: { pod: p } })); }
+const { pod } = Astro.props;
+const PROD = (process.env.PROD_URL || 'https://radio-monaco.com').replace(/\/$/, '');
+const ld = { '@context': 'https://schema.org', '@type': 'PodcastSeries', name: pod.name, description: pod.sub, url: PROD + '/podcasts/' + pod.k + '/', image: ausImg(pod.eps[0].img, true), publisher: { '@id': PROD + '/#organisation' },
+  hasPart: pod.eps.slice(0, 12).map((e) => ({ '@type': 'PodcastEpisode', name: e.title, datePublished: e.d + ':00Z', timeRequired: 'PT' + Math.round(e.s / 60) + 'M', associatedMedia: { '@type': 'MediaObject', contentUrl: ausAudio(e.au) } })) };
+const first = { id: pod.k + ':0', url: ausAudio(pod.eps[0].au), title: pod.eps[0].title, show: pod.name, color: pod.color, ink: pod.feed === 'mixdj' ? '#141218' : '#FFFFFF', img: ausImg(pod.eps[0].img), s: pod.eps[0].s };
+---
+<Base title={`${pod.name} — Podcast Radio Monaco`} description={`${pod.name} : ${pod.sub}. Tous les épisodes à réécouter sur Radio Monaco.`} image={ausImg(pod.eps[0].img, true)} path={'/podcasts/' + pod.k + '/'} jsonld={[ld]}>
+  <div class="wrap">
+    <div class="profile" style="grid-template-columns:minmax(0,360px) minmax(0,1fr);align-items:end">
+      <div class="ph" style="aspect-ratio:1/1"><img src={ausImg(pod.eps[0].img, true)} alt="" /></div>
+      <div>
+        <nav class="crumbs"><a href={u('/')}>Accueil</a><span class="sep">/</span><a href={u('/podcasts/')}>Podcasts</a><span class="sep">/</span><span>{FEED_LABEL[pod.feed]}</span></nav>
+        <h1 class="h1"><b>{pod.name}</b></h1>
+        <p class="lead">{pod.sub}</p>
+        <button class="btn-play" type="button" data-rm-ep={JSON.stringify(first)} style={`--c:${pod.color}`}><span class="pi"><I n="play" /></span>Écouter le dernier épisode</button>
+      </div>
+    </div>
+    <section style="margin-top:72px"><div class="sec-t"><h2>Tous les <b>épisodes.</b></h2></div><EpisodeList show={pod} limit={12} /></section>
+  </div>
+</Base>

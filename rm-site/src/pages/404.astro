@@ -1,0 +1,10 @@
+---
+import Base from '../layouts/Base.astro';
+import Card from '../components/Card.astro';
+import { u } from '../lib/url.js';
+import { getPosts } from '../lib/data.js';
+const latest = (await getPosts()).slice(0, 3);
+---
+<Base title="Page introuvable — Radio Monaco" path="/404/">
+  <div class="wrap"><header class="page-hd"><h1 class="h1">Cette page a changé <b>de fréquence.</b></h1><p class="lead">Elle n’existe pas ou plus. Voici les dernières actualités, ou <a href={u('/')} style="color:var(--red)">revenez à l’accueil</a>.</p></header><div class="cards">{latest.map((p) => <Card p={p} />)}</div></div>
+</Base>

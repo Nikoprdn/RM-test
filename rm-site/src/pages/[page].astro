@@ -1,0 +1,15 @@
+---
+// Pages institutionnelles reprises de WordPress, aux mêmes adresses (mentions légales, CGU, régie…)
+import Base from '../layouts/Base.astro';
+import { u } from '../lib/url.js';
+import { getPages, dateLong } from '../lib/data.js';
+export async function getStaticPaths() { return (await getPages()).map((p) => ({ params: { page: p.slug }, props: { pg: p } })); }
+const { pg } = Astro.props;
+const title = (pg.seo && pg.seo.title) || pg.title + ' — Radio Monaco';
+---
+<Base title={title} description={(pg.seo && pg.seo.description) || pg.title + ' — Radio Monaco.'} path={pg.path}>
+  <div class="wrap narrow">
+    <header class="page-hd"><nav class="crumbs" aria-label="Fil d’Ariane"><a href={u('/')}>Accueil</a><span class="sep">/</span><span>{pg.title}</span></nav><h1 class="h1"><b>{pg.title}</b></h1><p class="lead" style="font-size:15px">Mis à jour le {dateLong(pg.modified)}</p></header>
+  </div>
+  <article class="prose legal" set:html={pg.html} />
+</Base>

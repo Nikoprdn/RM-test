@@ -1,0 +1,13 @@
+---
+import { u } from '../lib/url.js';
+import { dateShort } from '../lib/data.js';
+const { p, big = false, eager = false } = Astro.props;
+---
+<a href={u(p.path)} class:list={['card', { big }]}>
+  <span class="im">{p.img && <img src={big ? p.img.large : p.img.medium} srcset={p.img.srcset || undefined} sizes={big ? '(max-width: 860px) 100vw, 60vw' : '(max-width: 700px) 100vw, 33vw'} alt={p.img.alt || ''} loading={eager ? 'eager' : 'lazy'} />}</span>
+  <span style="display:flex;flex-direction:column;gap:10px">
+    <span class="k">{p.cat} <i>· {dateShort(p.date)}</i></span>
+    <span class="t">{p.title}</span>
+    {big && p.excerpt && <span class="e">{p.excerpt}</span>}
+  </span>
+</a>

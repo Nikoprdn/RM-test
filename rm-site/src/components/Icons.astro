@@ -1,0 +1,9 @@
+---
+const { n, s = 15 } = Astro.props;
+---
+{n === 'play' && <svg viewBox="0 0 24 24" width={s} height={s} aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor" /></svg>}
+{n === 'pause' && <svg viewBox="0 0 24 24" width={s} height={s} aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor" /></svg>}
+{n === 'pp' && <><svg class="ic-play" viewBox="0 0 24 24" width={s} height={s} aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor" /></svg><svg class="ic-pause" viewBox="0 0 24 24" width={s} height={s} aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor" /></svg></>}
+{n === 'left' && <svg class="ic" viewBox="0 0 24 24" width={s} height={s} aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" /></svg>}
+{n === 'right' && <svg class="ic arrow" viewBox="0 0 24 24" width={s} height={s} aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>}
+{n === 'eq' && <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>}

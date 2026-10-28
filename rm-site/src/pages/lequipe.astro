@@ -1,0 +1,14 @@
+---
+import Base from '../layouts/Base.astro';
+import { u } from '../lib/url.js';
+import { getTeam, getDJs } from '../lib/data.js';
+const [team, djs] = await Promise.all([getTeam(), getDJs()]);
+---
+<Base title="L’équipe — Radio Monaco" description="Les voix de Radio Monaco : l’équipe du Morning, la rédaction et les DJs." path="/lequipe/">
+  <div class="wrap">
+    <header class="page-hd"><nav class="crumbs"><a href={u('/')}>Accueil</a><span class="sep">/</span><span>L’équipe</span></nav><h1 class="h1">Les voix de <b>Radio Monaco.</b></h1></header>
+    <div class="people">{team.map((m) => <a class="person" href={u(m.path)}><span class="ph">{m.img && <img src={m.img.card} alt={m.name} loading="lazy" />}</span><b>{m.name}</b><span>{m.role}</span></a>)}</div>
+    <div class="sec-t" style="margin-top:96px"><h2>Nos <b>DJs.</b></h2></div>
+    <div class="people">{djs.map((d) => <a class="person" href={u(d.path)}><span class="ph">{d.img && <img src={d.img.card} alt={d.name} loading="lazy" />}</span><b>{d.name}</b><span>{d.show}{d.when ? ' · ' + d.when : ''}</span></a>)}</div>
+  </div>
+</Base>

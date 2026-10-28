@@ -1,0 +1,9 @@
+---
+import { asset } from '../lib/url.js';
+---
+<div class="install" id="install" role="dialog" aria-label="Installer l’application" transition:persist="install">
+  <img src={asset('icon-192.png')} alt="" width="42" height="42" />
+  <p><b>Radio Monaco sur votre écran d’accueil</b><span id="install-txt">Le direct et les podcasts en un geste, comme une appli.</span></p>
+  <button class="ok" id="install-ok" type="button">Installer</button>
+  <button class="no" id="install-no" type="button" aria-label="Plus tard">Plus tard</button>
+</div>

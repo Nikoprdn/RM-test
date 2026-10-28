@@ -1,0 +1,269 @@
+---
+import Base from '../layouts/Base.astro';
+import I from '../components/Icons.astro';
+import { u, asset } from '../lib/url.js';
+import { STATIONS } from '../lib/stations.js';
+import { REELS } from '../lib/reels.js';
+import { getPosts, getTeam, getDJs, getPodcasts, ausImg, ausAudio, dur, dateShort, FEED_LABEL } from '../lib/data.js';
+
+const [posts, team, djs, pods] = await Promise.all([getPosts(), getTeam(), getDJs(), getPodcasts()]);
+const une = posts.filter((p) => p.une && p.img).slice(0, 3);
+const heads = posts.filter((p) => !une.includes(p)).slice(0, 3);
+const TEAM = team.slice(0, 3);
+
+// podcasts : données compactes pour l'interactivité côté navigateur
+const podData = pods.map((s) => ({ k: s.k, f: s.feed, n: s.name, sub: s.sub, c: s.color, e: s.eps.slice(0, 7).map((e) => [e.d, e.s, e.img, e.au, e.title]) }));
+const all = pods.flatMap((s) => s.eps.slice(0, 7).map((e, i) => ({ s, e, i }))).sort((a, b) => (a.e.d < b.e.d ? 1 : -1));
+const feat = all.find((x) => x.s.k === 'morning') || all[0];
+const list = feat ? [feat, ...all.filter((x) => x !== feat)].slice(0, 7) : [];
+const epJSON = (x) => JSON.stringify({ id: x.s.k + ':' + x.i, url: ausAudio(x.e.au), title: x.e.title, show: x.s.name, color: x.s.color, ink: x.s.feed === 'mixdj' ? '#141218' : '#FFFFFF', img: ausImg(x.e.img), s: x.e.s });
+const when = (iso) => { const d = new Date(iso + 'Z'), t = new Date(); const diff = Math.round((new Date(t.getFullYear(), t.getMonth(), t.getDate()) - new Date(d.getFullYear(), d.getMonth(), d.getDate())) / 864e5); return diff <= 0 ? 'Aujourd’hui' : diff === 1 ? 'Hier' : diff < 7 ? `Il y a ${diff} jours` : dateShort(iso); };
+
+const HERO = [
+  ['rm-monaco-port.jpg', 'Le port Hercule et Monte-Carlo', '50% 60%', 'Le port Hercule'],
+  ['rm-monaco-baie.jpg', 'La baie de Monaco', '50% 55%', 'La baie de Monaco'],
+  ['rm-night.jpg', 'Monaco de nuit', '50% 50%', 'Monaco, la nuit'],
+  ['rm-casino.jpg', 'Le Casino de Monte-Carlo', '50% 30%', 'Le Casino de Monte-Carlo']
+];
+const jsonld = [{
+  '@context': 'https://schema.org', '@type': 'WebSite', name: 'Radio Monaco', url: 'https://radio-monaco.com/', inLanguage: 'fr-FR'
+}, ...STATIONS.map((s) => ({ '@context': 'https://schema.org', '@type': 'RadioChannel', name: 'Radio Monaco ' + s.name, broadcastChannelId: s.bands.map((b) => (b.city ? b.city + ' ' : '') + b.f).join(', '), providesBroadcastService: { '@type': 'BroadcastService', name: 'Radio Monaco ' + s.name, broadcaster: { '@id': 'https://radio-monaco.com/#organisation' } } }))];
+---
+<Base hero path="/" jsonld={jsonld}>
+  <!-- HÉROS -->
+  <section id="top" data-hero style="position:relative;height:min(900px,100svh);min-height:620px;overflow:hidden;color:#fff;background:#1E2129">
+    <div class="hpx">
+      {HERO.map(([f, alt, pos], i) => <img class:list={['hs', { 'on kb-on': i === 0 }]} data-hs={i} src={asset(f)} alt={alt} style={`position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:${pos}`} fetchpriority={i === 0 ? 'high' : 'low'} loading={i === 0 ? 'eager' : 'lazy'} />)}
+      <div aria-hidden="true" style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,14,22,.52) 0%,rgba(12,14,22,.26) 35%,rgba(12,14,22,.28) 62%,rgba(12,14,22,.62) 100%)"></div>
+      <div aria-hidden="true" style="position:absolute;inset:0;background:radial-gradient(ellipse 44% 34% at 50% 44%,rgba(8,10,18,.48) 0%,rgba(8,10,18,.2) 52%,rgba(8,10,18,0) 100%)"></div>
+    </div>
+    <div class="hct" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px 140px">
+      <h1 class="sr">Radio Monaco — The sound of Monte-Carlo</h1>
+      <div class="vid" style="width:min(880px,100%);aspect-ratio:16/9;margin:-20px 0 -112px">
+        <video autoplay muted playsinline preload="auto" aria-label="Logo Radio Monaco animé" style="width:100%;height:100%;display:block;mix-blend-mode:screen">
+          <source src={asset('rm-intro.webm')} type="video/webm" /><source src={asset('rm-intro.mp4')} type="video/mp4" />
+        </video>
+      </div>
+      <p class="fade f1" style="margin:0;padding-left:.44em;font-size:clamp(13px,1.25vw,17px);font-weight:500;letter-spacing:.44em;text-transform:uppercase">The sound of Monte-Carlo</p>
+      <button class="btn fade f2" type="button" data-rm-toggle style="margin-top:40px;display:inline-flex;align-items:center;gap:14px;height:56px;padding:0 28px 0 8px;border:0;border-radius:999px;background:#fff;color:#141218;font:inherit;font-size:15px;font-weight:600;cursor:pointer">
+        <span style="width:40px;height:40px;border-radius:50%;background:#E4032E;color:#fff;display:inline-flex;align-items:center;justify-content:center"><I n="pp" /></span>
+        <span data-rm-label data-rm-idle="Écouter le direct" data-rm-playing="Pause">Écouter le direct</span>
+      </button>
+      <button class="onair fade f3" type="button" data-rm-live="0" id="onair" style="margin-top:22px" aria-label="Écouter le direct">
+        <img id="onair-img" src={asset('rm-mark.png')} alt="" width="44" height="44" />
+        <span class="oa"><span class="k"><span class="live-dot"></span>En ce moment</span><span class="n" id="onair-now">The sound of Monte-Carlo</span><span class="x" id="onair-next">Programme du jour</span></span>
+      </button>
+    </div>
+    <div class="fade f3" style="position:absolute;left:0;right:0;bottom:36px">
+      <div class="wrap" style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:20px 40px">
+        <div style="position:relative;height:44px;min-width:220px;flex:1 1 220px">
+          {HERO.map(([, , , cap], i) => <span class:list={['cap', { on: i === 0 }]} data-cap={i} style="position:absolute;left:0;bottom:0;display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;letter-spacing:.24em;text-transform:uppercase;opacity:.8">0{i + 1} / 04</span><span style="font-size:16px;font-weight:500">{cap}</span></span>)}
+        </div>
+        <div style="flex:0 1 260px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px">
+          {HERO.map((_, i) => <button type="button" data-hgo={i} aria-label={`Photo ${i + 1}`} style="height:44px;padding:0;border:0;background:transparent;cursor:pointer;display:flex;align-items:center"><span class:list={['bar', { on: i === 0 }]} style="width:100%"><i></i></span></button>)}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 01 · UNIVERS WEBRADIOS -->
+  <section id="radios" data-full data-reveal class="uvs">
+    <div class="uvrow">
+      {STATIONS.map((r, i) => (
+        <button class:list={['ux', { dk: r.ink === '#141218' }]} type="button" data-rm-live={i} data-ux={i} aria-label={`Écouter Radio Monaco ${r.name}`} style={`--c:${r.color};--w:${r.wash};--d:${(i * 0.09 + 0.12).toFixed(2)}s`}>
+          <img class="uxp" src={asset(r.photo)} alt="" loading="lazy" style={`object-position:${r.pos}`} />
+          <span class="uxt0" aria-hidden="true"></span><span class="uxs" aria-hidden="true"></span><span class="uxw" aria-hidden="true"></span><span class="uxbar" aria-hidden="true"></span>
+          <span class="uxb rise">
+            <span class="uxh"><img class="uxl" src={asset(r.logo)} alt={`Radio Monaco ${r.name}`} width="128" height="46" /><span class="uxpl"><I n="pp" /></span></span>
+            <span class="uxr" aria-hidden="true"></span>
+            <span class="uxlv"><span class="live-dot"></span><span data-ux-status>En direct</span></span>
+            <span class="uxf" aria-label={'Diffusion : ' + r.bands.map((b) => (b.city ? b.city + ' ' : '') + b.f).join(', ')}>{r.bands.map((b) => <span class="bd">{b.city}<b>{b.f}</b></span>)}</span>
+            <span class="uxi"><span><span class="uxn">
+              <span class="uxc"><img data-ux-cover alt="Pochette du titre en cours" hidden /><I n="eq" /></span>
+              <span class="uxt"><span class="uxt1" data-ux-t1>{r.line}</span><span class="uxt2" data-ux-t2>En direct</span></span>
+            </span></span></span>
+          </span>
+        </button>
+      ))}
+    </div>
+    <div class="uvtop" aria-hidden="true"></div>
+    <div class="uvtitle">
+      <p class="eb uveb" style="margin:0 0 18px;font-size:12px;font-weight:500;letter-spacing:.24em;text-transform:uppercase">01 — Nos webradios</p>
+      <h2><span class="m"><span>Découvrez</span></span> <span class="m"><span style="font-weight:600">nos univers.</span></span></h2>
+    </div>
+  </section>
+
+  <!-- 02 · PODCASTS -->
+  <section id="podcasts" data-full data-reveal class="pzs">
+    <div class="pzw">
+      <div class="pzleft">
+        <p class="eb" style="margin:0 0 18px;font-size:12px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:#6A6570">02 — Podcasts</p>
+        <h2 class="pzh"><span class="m"><span>Vos rendez-vous préférés,</span></span> <span class="m"><span style="font-weight:600">à la demande.</span></span></h2>
+        {feat && (
+          <div class="pzfc rise" id="pz-feat" style={`--c:${feat.s.color};--d:.2s`}>
+            <button class="pzfcv" type="button" data-rm-ep={epJSON(feat)} aria-label={`Écouter : ${feat.s.name}`}><img src={ausImg(feat.e.img, true)} alt="" loading="lazy" /><span class="pzfcp"><I n="play" s={22} /></span></button>
+            <div class="pzfct">
+              <span class="pzfck"><span class="live-dot" style={`background:${feat.s.color}`}></span><span data-f="badge">{when(feat.e.d) === 'Aujourd’hui' ? 'Nouveau · aujourd’hui' : 'À la une'} · {feat.s.name}</span></span>
+              <span class="pzfctt" data-f="title">{feat.e.title}</span>
+              <span class="pzfcm" data-f="meta">{when(feat.e.d)} · {dur(feat.e.s)} · {feat.s.sub}</span>
+              <button class="pzfcb" type="button" data-rm-ep={epJSON(feat)}><span class="pzfpi"><I n="play" /></span><span data-f="cta">Écouter l’épisode</span></button>
+            </div>
+          </div>
+        )}
+        <div class="pzchw rise" style="--d:.35s">
+          <div class="pzchips" id="pz-chips" aria-label="Nos émissions">
+            {pods.map((s) => <button class="pzchip2" type="button" data-show={s.k} aria-pressed="false" style={`--c:${s.color}`}><img src={ausImg(s.eps[0].img)} alt="" loading="lazy" />{s.name}</button>)}
+          </div>
+          <button class="pzchn" type="button" data-chips="-1" aria-label="Émissions précédentes"><I n="left" s={16} /></button>
+          <button class="pzchn" type="button" data-chips="1" aria-label="Émissions suivantes"><I n="right" s={16} /></button>
+        </div>
+      </div>
+      <div class="pzright rise" style="--d:.25s">
+        <div class="pzrh">
+          <div class="pzt" role="tablist" aria-label="Filtrer les podcasts">
+            {[['all', 'Tout'], ...Object.entries(FEED_LABEL)].map(([v, l]) => <button role="tab" type="button" class:list={['pztb', { on: v === 'all' }]} aria-selected={v === 'all' ? 'true' : 'false'} data-filter={v}>{l}</button>)}
+          </div>
+          <span class="pzls" id="pz-title">Derniers épisodes</span>
+        </div>
+        <div class="pzlist" id="pz-list">
+          {list.map((x) => (
+            <button class="pzr2" type="button" data-rm-ep={epJSON(x)} data-epid={x.s.k + ':' + x.i} style={`--c:${x.s.color}`}>
+              <span class="pzr2c"><img src={ausImg(x.e.img)} alt="" loading="lazy" /></span>
+              <span class="pzr2x"><span class="pzrs">{x.s.name}</span><span class="pzr2t">{x.e.title}</span><span class="pzrm">{when(x.e.d)} · {dur(x.e.s)}</span></span>
+              <span class="pzr2p"><I n="play" s={13} /></span>
+              <span class="pzrbar" aria-hidden="true"><i style="width:0%"></i></span>
+            </button>
+          ))}
+        </div>
+        <a href={u('/podcasts/')} class="more" style="margin-top:20px;display:inline-flex;align-items:center;gap:10px;font-size:15px;font-weight:500">Tous les podcasts<I n="right" s={18} /></a>
+      </div>
+    </div>
+    <script type="application/json" id="pz-data" set:html={JSON.stringify({ shows: podData, labels: FEED_LABEL }).replace(/</g, '\\u003c')}></script>
+  </section>
+
+  <!-- 03 · ACTUALITÉS -->
+  <section id="actualites" data-reveal style="padding:140px 0 0">
+    <div class="wrap">
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:20px 40px;margin-bottom:44px">
+        <div>
+          <p class="eb" style="margin:0 0 18px;font-size:12px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:#6A6570">03 — Actualités</p>
+          <h2 style="margin:0;font-size:clamp(40px,4.8vw,68px);line-height:1;letter-spacing:-0.03em;font-weight:300"><span class="m"><span>À la</span></span> <span class="m"><span style="font-weight:600">une.</span></span></h2>
+        </div>
+        <div class="rise" style="display:flex;align-items:center;gap:10px;--d:.35s">
+          <a href={u('/category/a-la-une/')} class="more" style="margin-right:12px;display:inline-flex;align-items:center;gap:10px;font-size:15px;font-weight:500">Toutes les actus<I n="right" s={18} /></a>
+          <button class="nb" type="button" data-news="-1" aria-label="Actualité précédente" style="width:50px;height:50px;border-radius:50%;border:1px solid rgba(20,18,24,.2);background:transparent;color:#141218;display:inline-flex;align-items:center;justify-content:center;cursor:pointer"><I n="left" s={19} /></button>
+          <button class="nb" type="button" data-news="1" aria-label="Actualité suivante" style="width:50px;height:50px;border-radius:50%;border:1px solid rgba(20,18,24,.2);background:transparent;color:#141218;display:inline-flex;align-items:center;justify-content:center;cursor:pointer"><I n="right" s={19} /></button>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(480px,100%),1fr));gap:32px 64px;align-items:center">
+        <a href={une[0] ? u(une[0].path) : '#'} id="news-link" class="tile unv" style="position:relative;display:block;aspect-ratio:16/11;border-radius:22px;overflow:hidden;background:#D8CBB4;--d:.15s">
+          <div class="plx zm" style="position:absolute;inset:-8% 0">
+            {une.map((p, i) => <img class:list={['slide ph nsl-img', { on: i === 0 }]} data-n={i} src={p.img.medium} srcset={p.img.srcset || undefined} sizes="(max-width: 1000px) 100vw, 50vw" alt={p.img.alt || ''} loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />)}
+          </div>
+        </a>
+        <div class="rise" style="display:flex;flex-direction:column;gap:28px;--d:.3s">
+          <div style="position:relative;min-height:250px">
+            {une.map((p, i) => (
+              <a href={u(p.path)} class:list={['slide nsl', { on: i === 0 }]} data-n={i} style="position:absolute;inset:0;display:flex;flex-direction:column;gap:16px">
+                <span style="font-size:12px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:#C8022A">{p.cat} · {dateShort(p.date)}</span>
+                <span style="font-size:clamp(30px,3vw,44px);font-weight:400;letter-spacing:-0.025em;line-height:1.1;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden">{p.title}</span>
+                <span class="more" style="display:inline-flex;align-items:center;gap:10px;font-size:15px;font-weight:500">Lire l’article<I n="right" s={18} /></span>
+              </a>
+            ))}
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;max-width:360px">
+            {une.map((_, i) => <button type="button" data-ngo={i} aria-label={`Actualité ${i + 1}`} style="height:30px;padding:0;border:0;background:transparent;cursor:pointer;display:flex;align-items:center"><span class:list={['bar dark', { on: i === 0 }]} style="width:100%"><i></i></span></button>)}
+          </div>
+        </div>
+      </div>
+      <div class="rise" style="--d:.45s;margin-top:56px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:0 40px">
+        {heads.map((p) => (
+          <a href={u(p.path)} class="row" style="display:flex;flex-direction:column;gap:10px;padding:26px 0;border-top:1px solid rgba(20,18,24,.12)">
+            <span style="font-size:12px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:#6A6570">{p.cat}</span>
+            <span class="rt" style="font-size:20px;font-weight:500;letter-spacing:-0.01em;line-height:1.3">{p.title}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 · RÉSEAUX -->
+  <section id="reseaux" data-reveal style="padding:140px 0 0">
+    <div class="wrap">
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:20px 40px;margin-bottom:44px">
+        <div>
+          <p class="eb" style="margin:0 0 18px;font-size:12px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:#6A6570">04 — Sur nos réseaux</p>
+          <h2 style="margin:0;font-size:clamp(40px,4.8vw,68px);line-height:1;letter-spacing:-0.03em;font-weight:300"><span class="m"><span>Sur nos</span></span> <span class="m"><span style="font-weight:600">réseaux.</span></span></h2>
+        </div>
+        <div class="rise" style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;--d:.35s">
+          <a href="https://www.instagram.com/radiomonaco_officiel/" rel="noopener" class="btn" style="display:inline-flex;align-items:center;gap:10px;height:50px;padding:0 22px;border-radius:999px;background:#141218;color:#fff;font-size:14px;font-weight:500"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.3" cy="6.7" r=".6"></circle></svg>@radiomonaco_officiel</a>
+          <button class="nb" type="button" data-scroll="reels" data-dir="-1" aria-label="Reels précédents" style="width:50px;height:50px;border-radius:50%;border:1px solid rgba(20,18,24,.2);background:transparent;color:#141218;display:inline-flex;align-items:center;justify-content:center;cursor:pointer"><I n="left" s={19} /></button>
+          <button class="nb" type="button" data-scroll="reels" data-dir="1" aria-label="Reels suivants" style="width:50px;height:50px;border-radius:50%;border:1px solid rgba(20,18,24,.2);background:transparent;color:#141218;display:inline-flex;align-items:center;justify-content:center;cursor:pointer"><I n="right" s={19} /></button>
+        </div>
+      </div>
+    </div>
+    <div class="scroller" data-scroller="reels" style="display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px max(clamp(24px,4vw,56px),calc((100% - 1400px) / 2 + 56px)) 12px;scroll-padding-left:max(clamp(24px,4vw,56px),calc((100% - 1400px) / 2 + 56px))">
+      {REELS.map((v, i) => (
+        <a href={v.href} rel="noopener" data-card class="reel tile rise" style={`--d:${(0.2 + Math.min(i, 5) * 0.08).toFixed(2)}s;position:relative;flex:0 0 260px;aspect-ratio:9/16;scroll-snap-align:start;border-radius:20px;overflow:hidden;background:#141218;color:#fff`}>
+          <img class="ph zm" src={asset(v.img)} alt={v.alt} loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
+          <span class="ov" aria-hidden="true" style="position:absolute;inset:0;background:rgba(20,18,24,.25);opacity:0;display:flex;align-items:center;justify-content:center"><span style="width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.92);color:#141218;display:inline-flex;align-items:center;justify-content:center"><I n="play" s={18} /></span></span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- 05 · ÉQUIPES -->
+  <section id="equipes" data-reveal style="padding:140px 0 0">
+    <div class="wrap">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(460px,100%),1fr));gap:40px 72px;align-items:center">
+        <div class="unv" style="position:relative;aspect-ratio:1/1;max-height:620px;border-radius:24px;overflow:hidden;background:#E4032E;--d:.1s">
+          <div class="plx zm" style="position:absolute;inset:-8% 0">
+            {TEAM.map((m, i) => <img class:list={['slide tsl-img', { on: i === 0 }]} data-t={i} src={m.img ? m.img.large : ''} alt={m.name} loading="lazy" style="object-position:50% 25%;position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />)}
+            <img class="slide tsl-img" data-t={TEAM.length} src={asset('show-morning.jpg')} alt="L’équipe du Morning" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:70% 50%" />
+          </div>
+        </div>
+        <div>
+          <p class="eb" style="margin:0 0 18px;font-size:12px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:#6A6570">05 — Nos équipes</p>
+          <div class="rise" style="position:relative;min-height:230px;--d:.25s">
+            {TEAM.map((m, i) => <a href={u(m.path)} class:list={['slide tsl', { on: i === 0 }]} data-t={i} style="position:absolute;inset:0"><h2 style="margin:0;font-size:clamp(44px,5.4vw,80px);line-height:.98;letter-spacing:-0.035em;font-weight:300">{m.first} <span style="font-weight:600">{m.last}</span></h2><p style="margin:18px 0 0;font-size:17px;color:#6A6570">{m.role}</p></a>)}
+            <div class="slide tsl" data-t={TEAM.length} style="position:absolute;inset:0"><h2 style="margin:0;font-size:clamp(44px,5.4vw,80px);line-height:.98;letter-spacing:-0.035em;font-weight:300">Le <span style="font-weight:600">Morning</span></h2><p style="margin:18px 0 0;font-size:17px;color:#6A6570">« Made in Monte-Carlo » · du direct de 07:00 à 10:00</p></div>
+          </div>
+          <div class="rise" style="margin-top:32px;display:flex;gap:12px;--d:.4s">
+            {[...TEAM.map((m) => [m.name, m.img ? m.img.medium : '', '50% 25%']), ['Le Morning', asset('show-morning.jpg'), '72% 40%']].map(([label, img, pos], i) => (
+              <button class:list={['thumb', { on: i === 0 }]} type="button" data-tgo={i} aria-label={label} aria-pressed={i === 0 ? 'true' : 'false'} style="width:72px;height:72px;padding:0;border:0;border-radius:16px;overflow:hidden;cursor:pointer;background:#E4032E"><img src={img} alt="" loading="lazy" style={`width:100%;height:100%;object-fit:cover;display:block;object-position:${pos}`} /></button>
+            ))}
+          </div>
+          <a href={u('/lequipe/')} class="more" style="margin-top:36px;display:inline-flex;align-items:center;gap:10px;font-size:15px;font-weight:500">Toute l’équipe<I n="right" s={18} /></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 · DJs -->
+  <section id="djs" data-reveal style="padding:140px 0 0">
+    <div class="wrap">
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:20px 40px;margin-bottom:44px">
+        <div>
+          <p class="eb" style="margin:0 0 18px;font-size:12px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:#6A6570">06 — Nos DJs</p>
+          <h2 style="margin:0;font-size:clamp(40px,4.8vw,68px);line-height:1;letter-spacing:-0.03em;font-weight:300"><span class="m"><span>Les DJ</span></span> <span class="m"><span style="font-weight:600">sets.</span></span></h2>
+        </div>
+        <div class="rise" style="display:flex;align-items:center;gap:10px;--d:.35s">
+          <button class="nb" type="button" data-scroll="djs" data-dir="-1" aria-label="DJs précédents" style="width:50px;height:50px;border-radius:50%;border:1px solid rgba(20,18,24,.2);background:transparent;color:#141218;display:inline-flex;align-items:center;justify-content:center;cursor:pointer"><I n="left" s={19} /></button>
+          <button class="nb" type="button" data-scroll="djs" data-dir="1" aria-label="DJs suivants" style="width:50px;height:50px;border-radius:50%;border:1px solid rgba(20,18,24,.2);background:transparent;color:#141218;display:inline-flex;align-items:center;justify-content:center;cursor:pointer"><I n="right" s={19} /></button>
+        </div>
+      </div>
+    </div>
+    <div class="scroller" data-scroller="djs" style="display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px max(clamp(24px,4vw,56px),calc((100% - 1400px) / 2 + 56px)) 12px;scroll-padding-left:max(clamp(24px,4vw,56px),calc((100% - 1400px) / 2 + 56px))">
+      {djs.map((d, i) => (
+        <a href={u(d.path)} data-card class="tile rise" style={`--d:${(0.2 + Math.min(i, 5) * 0.08).toFixed(2)}s;flex:0 0 280px;scroll-snap-align:start;display:flex;flex-direction:column;gap:16px`}>
+          <span style="position:relative;display:block;aspect-ratio:840/1080;border-radius:20px;overflow:hidden;background:#E4032E">
+            {d.img && <img class="ph zm" src={d.img.card} alt={d.name} loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 20%" />}
+            <span class="pb" style="position:absolute;right:14px;bottom:14px;width:44px;height:44px;border-radius:50%;background:#fff;color:#141218;display:inline-flex;align-items:center;justify-content:center"><I n="right" s={16} /></span>
+          </span>
+          <span style="display:flex;flex-direction:column;gap:3px"><span style="font-size:20px;font-weight:500">{d.name}</span><span style="font-size:14px;color:#6A6570">{d.show}{d.when ? ' · ' + d.when : ''}</span></span>
+        </a>
+      ))}
+    </div>
+  </section>
+  <script src="../scripts/home.js"></script>
+</Base>

@@ -1,0 +1,24 @@
+---
+import Base from '../layouts/Base.astro';
+import I from '../components/Icons.astro';
+import { u } from '../lib/url.js';
+// Mêmes destinataires que le formulaire du site actuel
+const SVC = [
+  ['Tous services', 'Une question, une remarque, une idée : on vous lit.', 'contact@radio-monaco.com'],
+  ['Programmation musicale', 'Proposer un titre, un artiste ou un DJ set.', 'pampa@radio-monaco.com,eric@radio-monaco.com,benjamin@radio-monaco.com'],
+  ['Rédaction', 'Une information, un communiqué, un sujet à couvrir.', 'redaction@radio-monaco.com'],
+  ['Régie publicitaire', 'Annoncer sur nos antennes, le site et les réseaux.', 'contact-regie-publicitaire@radio-monaco.com'],
+  ['Données personnelles', 'Exercer vos droits (RGPD) sur vos données.', 'rgpd@radio-monaco.com']
+];
+---
+<Base title="Contact — Radio Monaco" description="Écrire à Radio Monaco : rédaction, programmation musicale, régie publicitaire, données personnelles." path="/contact/">
+  <div class="wrap">
+    <header class="page-hd"><nav class="crumbs" aria-label="Fil d’Ariane"><a href={u('/')}>Accueil</a><span class="sep">/</span><span>Contact</span></nav><h1 class="h1">Écrivez-<b>nous.</b></h1><p class="lead">Choisissez le bon interlocuteur : votre message arrive directement à l’équipe concernée.</p></header>
+    <div class="svc">{SVC.map(([t, d, m]) => <a href={'mailto:' + m + '?subject=' + encodeURIComponent('Radio Monaco — ' + t)}><b>{t}</b><span>{d}</span><em>Écrire<I n="right" s={16} /></em></a>)}</div>
+    <div class="coord">
+      <div><span class="t">Adresse</span>Radio Monaco<br />7 rue du Gabian<br />98000 Monaco</div>
+      <div><span class="t">Téléphone</span><a href="tel:+37797700700">+377 97 700 700</a></div>
+      <div><span class="t">Suivre</span><a href="https://www.instagram.com/radiomonaco_officiel/" rel="noopener">Instagram</a><a href="https://www.facebook.com/radiomonaco" rel="noopener">Facebook</a></div>
+    </div>
+  </div>
+</Base>

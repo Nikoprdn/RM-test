@@ -1,0 +1,61 @@
+---
+// Pages articles : mêmes adresses que sur WordPress (/titre-de-l-article/).
+import Base from '../layouts/Base.astro';
+import Card from '../components/Card.astro';
+import I from '../components/Icons.astro';
+import { u } from '../lib/url.js';
+import { getPosts, dateLong, clip } from '../lib/data.js';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  const seen = new Set();
+  return posts.filter((p) => { const k = p.path.replace(/^\/|\/$/g, ''); if (!k || k.includes('/') || seen.has(k)) return false; seen.add(k); return true; })
+    .map((p) => ({ params: { path: p.path.replace(/^\/|\/$/g, '') }, props: { post: p } }));
+}
+const { post: p } = Astro.props;
+const posts = await getPosts();
+const related = posts.filter((x) => x.id !== p.id && x.catSlug === p.catSlug).slice(0, 3);
+const more = related.length < 3 ? [...related, ...posts.filter((x) => x.id !== p.id && !related.includes(x)).slice(0, 3 - related.length)] : related;
+const PROD = (process.env.PROD_URL || 'https://radio-monaco.com').replace(/\/$/, '');
+const desc = (p.seo && p.seo.description) || clip(p.excerpt, 158);
+const image = (p.img && p.img.large) || (p.seo && p.seo.og_image && p.seo.og_image[0] && p.seo.og_image[0].url);
+const ld = {
+  '@context': 'https://schema.org', '@type': 'NewsArticle', headline: p.title, description: desc,
+  datePublished: p.date, dateModified: p.modified, mainEntityOfPage: PROD + p.path,
+  image: image ? [image] : undefined, articleSection: p.cat, inLanguage: 'fr-FR',
+  author: { '@type': 'Organization', name: p.author === 'La rédaction' ? 'Rédaction Radio Monaco' : p.author },
+  publisher: { '@id': PROD + '/#organisation' }
+};
+const crumbs = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+  { '@type': 'ListItem', position: 1, name: 'Accueil', item: PROD + '/' },
+  ...(p.catSlug ? [{ '@type': 'ListItem', position: 2, name: p.cat, item: PROD + '/category/' + p.catSlug + '/' }] : []),
+  { '@type': 'ListItem', position: p.catSlug ? 3 : 2, name: p.title }
+] };
+---
+<Base title={(p.seo && p.seo.title) || p.title + ' — Radio Monaco'} description={desc} image={image} path={p.path} type="article" published={p.date} modified={p.modified} jsonld={[ld, crumbs]}>
+  <article>
+    <header class="art-hd">
+      <div class="wrap">
+        <nav class="crumbs" aria-label="Fil d’Ariane"><a href={u('/')}>Accueil</a><span class="sep">/</span>{p.catSlug && <><a href={u('/category/' + p.catSlug + '/')}>{p.cat}</a><span class="sep">/</span></>}<span>Article</span></nav>
+        <h1 class="h1" style="font-weight:400;font-size:clamp(34px,4.4vw,62px);line-height:1.06">{p.title}</h1>
+        <div class="art-meta">
+          {p.catSlug && <a class="cat" href={u('/category/' + p.catSlug + '/')}>{p.cat}</a>}
+          <time datetime={p.date}>{dateLong(p.date)}</time><span>· {p.author}</span>
+        </div>
+      </div>
+    </header>
+    {p.img && <figure class="art-fig"><img src={p.img.large} srcset={p.img.srcset || undefined} sizes="(max-width: 1300px) 100vw, 1240px" width={p.img.w} height={p.img.h} alt={p.img.alt || ''} fetchpriority="high" />{p.img.alt && <figcaption>{p.img.alt}</figcaption>}</figure>}
+    <div class="prose" set:html={p.html} />
+    <div class="share">
+      <span class="lbl">Partager</span>
+      <button type="button" data-share>Partager l’article</button>
+      <a href={`https://wa.me/?text=${encodeURIComponent(p.title + ' ' + PROD + p.path)}`} rel="noopener" target="_blank">WhatsApp</a>
+      <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(PROD + p.path)}`} rel="noopener" target="_blank">Facebook</a>
+      <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(PROD + p.path)}`} rel="noopener" target="_blank">LinkedIn</a>
+    </div>
+  </article>
+  <section class="related wrap">
+    <div class="sec-t"><h2>À lire <b>aussi.</b></h2>{p.catSlug && <a href={u('/category/' + p.catSlug + '/')}>Toute la rubrique {p.cat}<I n="right" s={18} /></a>}</div>
+    <div class="cards">{more.map((x) => <Card p={x} />)}</div>
+  </section>
+</Base>

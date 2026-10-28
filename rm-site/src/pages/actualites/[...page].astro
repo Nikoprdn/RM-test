@@ -1,0 +1,32 @@
+---
+// Toute l'actualité : /actualites/, /actualites/2/, …
+import Base from '../../layouts/Base.astro';
+import Card from '../../components/Card.astro';
+import { u } from '../../lib/url.js';
+import { getPosts, getCategories, catLabel } from '../../lib/data.js';
+export async function getStaticPaths({ paginate }) {
+  const [posts, cats] = await Promise.all([getPosts(), getCategories()]);
+  return paginate(posts, { props: { cats }, pageSize: 24 });
+}
+const { page, cats } = Astro.props;
+const top = cats.filter((c) => !['a-la-une', 'news'].includes(c.slug) && c.count > 20).sort((a, b) => b.count - a.count).slice(0, 10);
+const path = '/actualites/' + (page.currentPage > 1 ? page.currentPage + '/' : '');
+const pages = Array.from({ length: page.lastPage }, (_, i) => i + 1).filter((n) => n === 1 || n === page.lastPage || Math.abs(n - page.currentPage) <= 2);
+---
+<Base title={`Actualités${page.currentPage > 1 ? ' — page ' + page.currentPage : ''} — Radio Monaco`} description="Monaco, la Côte d’Azur, la culture, le sport et l’économie : toute l’actualité de la rédaction de Radio Monaco." path={path}>
+  <div class="wrap">
+    <header class="page-hd">
+      <nav class="crumbs" aria-label="Fil d’Ariane"><a href={u('/')}>Accueil</a><span class="sep">/</span><span>Actualités</span></nav>
+      <h1 class="h1">Toute <b>l’actualité.</b>{page.currentPage > 1 && <span style="font-weight:300"> · page {page.currentPage}</span>}</h1>
+      <div class="chips">{top.map((c) => <a class="chip" href={u('/category/' + c.slug + '/')}>{catLabel(c)}</a>)}</div>
+    </header>
+    <div class="cards">{page.data.map((p, i) => <Card p={p} big={i === 0 && page.currentPage === 1} eager={i < 2} />)}</div>
+    {page.lastPage > 1 && (
+      <nav class="pager" aria-label="Pagination">
+        {page.currentPage > 1 && <a href={u('/actualites/' + (page.currentPage > 2 ? page.currentPage - 1 + '/' : ''))} rel="prev">←</a>}
+        {pages.map((n, i) => <>{i > 0 && n - pages[i - 1] > 1 && <span>…</span>}{n === page.currentPage ? <span class="cur" aria-current="page">{n}</span> : <a href={u('/actualites/' + (n > 1 ? n + '/' : ''))}>{n}</a>}</>)}
+        {page.currentPage < page.lastPage && <a href={u('/actualites/' + (page.currentPage + 1) + '/')} rel="next">→</a>}
+      </nav>
+    )}
+  </div>
+</Base>

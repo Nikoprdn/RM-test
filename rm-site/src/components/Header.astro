@@ -1,0 +1,24 @@
+---
+import { u, asset } from '../lib/url.js';
+const { hero = false } = Astro.props;
+// Sur l'accueil : ancres vers les rubriques ; ailleurs : les vraies pages
+const NAV = [['radios', 'Radios', '/nos-radios/'], ['podcasts', 'Podcasts', '/podcasts/'], ['actualites', 'Actualités', '/actualites/'], ['reseaux', 'Réseaux', null], ['equipes', 'Équipes', '/lequipe/'], ['djs', 'DJs', '/djs/']];
+---
+<header class:list={['hdr', { over: hero }]} transition:name="header">
+  <div class="hdr-in">
+    <a href={u('/')} class="lg" aria-label="Radio Monaco — accueil">
+      <img class="w" src={asset('rm-logo-white.png')} alt="Radio Monaco" width="112" height="36" />
+      <img class="k" src={asset('rm-logo-ink.png')} alt="Radio Monaco" width="112" height="36" />
+    </a>
+    <nav class="nav" id="nav" aria-label="Navigation principale">
+      {NAV.map(([id, label, page]) => hero || !page ? <a href={u('/#' + id)} data-sec={hero ? id : undefined}>{label}</a> : <a href={u(page)} data-page={page}>{label}</a>)}
+      <a href={u('/programmes/')} data-page="/programmes/">Programme</a>
+      <span class="ind" aria-hidden="true"></span>
+    </nav>
+    <div style="display:flex;align-items:center;gap:10px">
+      <button class="hbtn btn" type="button" data-rm-toggle aria-label="Écouter le direct"><span class="live-dot"></span><span data-rm-label data-rm-idle="Écouter" data-rm-playing="En écoute">Écouter</span></button>
+      <button class="menu-btn" type="button" aria-label="Menu" aria-controls="nav" aria-expanded="false"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 8h16M4 16h16"/></svg></button>
+    </div>
+  </div>
+  <span class="prog" aria-hidden="true"></span>
+</header>

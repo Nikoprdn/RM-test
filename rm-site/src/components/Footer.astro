@@ -1,0 +1,22 @@
+---
+import { u, asset } from '../lib/url.js';
+import { getCategories, catLabel } from '../lib/data.js';
+const cats = (await getCategories().catch(() => [])).filter((c) => !['a-la-une', 'news'].includes(c.slug)).sort((a, b) => b.count - a.count).slice(0, 6);
+---
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr-top">
+      <img src={asset('rm-logo-ink.png')} alt="Radio Monaco" width="160" height="52" style="width:160px;height:auto;display:block" />
+      <div class="ftr-cols">
+        <div><span class="t">Écouter</span><a href={u('/nos-radios/')}>Nos radios</a><a href={u('/podcasts/')}>Podcasts</a><a href={u('/programmes/')}>Programme du jour</a><a href={u('/djs/')}>DJ sets</a></div>
+        <div><span class="t">Actualités</span><a href={u('/actualites/')}>Toute l’actualité</a>{cats.map((c) => <a href={u('/category/' + c.slug + '/')}>{catLabel(c)}</a>)}</div>
+        <div><span class="t">Radio Monaco</span><span style="color:var(--muted)">7 rue du Gabian, 98000 Monaco</span><a href="tel:+37797700700">+377 97 700 700</a><a href={u('/lequipe/')}>L’équipe</a><a href={u('/contact/')}>Contact</a><a href={u('/regie-publicitaire/')}>Régie publicitaire</a></div>
+        <div><span class="t">Suivre</span><a href="https://www.instagram.com/radiomonaco_officiel/" rel="noopener">Instagram</a><a href="https://www.facebook.com/radiomonaco" rel="noopener">Facebook</a></div>
+      </div>
+    </div>
+    <div class="ftr-bot">
+      <span>© {new Date().getFullYear()} Radio Monaco · FM · DAB+ · Web</span>
+      <span><a href={u('/mentions-legales/')}>Mentions légales</a><a href={u('/politique-de-confidentialite/')}>Confidentialité</a><a href={u('/conditions-generales-dutilisation/')}>CGU</a><a href={u('/reglement-jeux-concours/')}>Jeux-concours</a></span>
+    </div>
+  </div>
+</footer>

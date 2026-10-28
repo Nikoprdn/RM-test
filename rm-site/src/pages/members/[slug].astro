@@ -1,0 +1,28 @@
+---
+import Base from '../../layouts/Base.astro';
+import I from '../../components/Icons.astro';
+import { u } from '../../lib/url.js';
+import { getMembers, getTeam, getDJs, clip } from '../../lib/data.js';
+export async function getStaticPaths() { return (await getMembers()).map((m) => ({ params: { slug: m.slug }, props: { m } })); }
+const { m } = Astro.props;
+const t = (await getTeam()).find((x) => x.id === m.id);
+const shows = (await getDJs()).filter((d) => d.member === m.path);
+const LBL = { animateur: 'Animateur', animatrice: 'Animatrice', journaliste: 'Journaliste', dj: 'DJ' };
+const PROD = (process.env.PROD_URL || 'https://radio-monaco.com').replace(/\/$/, '');
+const ld = { '@context': 'https://schema.org', '@type': 'Person', name: m.name, jobTitle: LBL[m.type] || undefined, image: m.img && m.img.large, url: PROD + m.path, worksFor: { '@id': PROD + '/#organisation' } };
+---
+<Base title={`${m.name} — Radio Monaco`} description={clip(m.bio || `${m.name}, ${(LBL[m.type] || 'membre de l’équipe').toLowerCase()} sur Radio Monaco.`, 158)} image={m.img && m.img.large} path={m.path} jsonld={[ld]}>
+  <div class="wrap">
+    <div class="profile">
+      <div class="ph">{m.img && <img src={m.img.large} alt={m.name} />}</div>
+      <div>
+        <nav class="crumbs" aria-label="Fil d’Ariane"><a href={u('/')}>Accueil</a><span class="sep">/</span><a href={u('/lequipe/')}>L’équipe</a></nav>
+        <h1 class="h1">{m.name.split(' ')[0]} <b>{m.name.split(' ').slice(1).join(' ')}</b></h1>
+        <p class="lead">{t ? t.role : (LBL[m.type] || '')}</p>
+        {m.html && <div class="bio" set:html={m.html} />}
+        {shows.length > 0 && <div class="facts">{shows.map((s) => <a href={u(s.path)}><span>{s.show}{s.when ? ' · ' + s.when : ''}</span></a>)}</div>}
+        <button class="btn-play" type="button" data-rm-live={m.type === 'dj' ? 2 : 0} style={`--c:${m.type === 'dj' ? '#F59C00' : '#E4032E'}`}><span class="pi"><I n="play" /></span>Écouter {m.type === 'dj' ? '100 % Mix DJ' : 'le direct'}</button>
+      </div>
+    </div>
+  </div>
+</Base>

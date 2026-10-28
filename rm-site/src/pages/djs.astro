@@ -1,0 +1,18 @@
+---
+import Base from '../layouts/Base.astro';
+import I from '../components/Icons.astro';
+import { u } from '../lib/url.js';
+import { getDJs } from '../lib/data.js';
+const djs = await getDJs();
+---
+<Base title="DJ sets — Radio Monaco" description="Les DJs résidents et invités de Radio Monaco : leurs sets, leurs horaires et 100 % Mix DJ en continu." path="/djs/">
+  <div class="wrap">
+    <header class="page-hd">
+      <nav class="crumbs" aria-label="Fil d’Ariane"><a href={u('/')}>Accueil</a><span class="sep">/</span><span>DJ sets</span></nav>
+      <h1 class="h1">Les DJs de <b>Radio Monaco.</b></h1>
+      <p class="lead">Nu-disco, house, deep-house, future-soul : nos résidents et invités aux platines, et 100 % Mix DJ en continu.</p>
+      <button class="btn-play" type="button" data-rm-live="2" style="--c:#F59C00;margin-top:28px"><span class="pi"><I n="play" /></span>Écouter 100 % Mix DJ</button>
+    </header>
+    <div class="people">{djs.map((d) => <a class="person" href={u(d.path)}><span class="ph">{d.img && <img src={d.img.card} alt={d.name} loading="lazy" />}</span><b>{d.show}</b><span>{d.name !== d.show ? d.name : ''}{d.when ? (d.name !== d.show ? ' · ' : '') + d.when : ''}</span></a>)}</div>
+  </div>
+</Base>

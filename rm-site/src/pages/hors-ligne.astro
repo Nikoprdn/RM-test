@@ -1,0 +1,7 @@
+---
+import Base from '../layouts/Base.astro';
+import { u } from '../lib/url.js';
+---
+<Base title="Hors ligne — Radio Monaco" path="/hors-ligne/">
+  <div class="wrap" style="max-width:760px"><header class="page-hd"><h1 class="h1">Vous êtes <b>hors ligne.</b></h1><p class="lead">Pas de connexion pour le moment. Les pages déjà consultées restent disponibles ; le direct reprendra dès le retour du réseau.</p><p style="margin-top:28px"><a class="chip" href={u('/')}>Revenir à l’accueil</a></p></header></div>
+</Base>

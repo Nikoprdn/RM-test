@@ -1,0 +1,19 @@
+---
+import { ausImg, ausAudio, dur, dateShort } from '../lib/data.js';
+const { show, limit = 12 } = Astro.props;
+const ep = (e, i) => JSON.stringify({ id: show.k + ':' + i, url: ausAudio(e.au), title: e.title, show: show.name, color: show.color, ink: show.feed === 'mixdj' ? '#141218' : '#FFFFFF', img: ausImg(e.img), s: e.s });
+---
+<div class="eps" data-eps>
+  {show.eps.slice(0, limit).map((e, i) => (
+    <button class="ep" type="button" data-rm-ep={ep(e, i)} data-epid={show.k + ':' + i} style={`--c:${show.color}`}>
+      <span class="c"><img src={ausImg(e.img)} alt="" loading="lazy" /></span>
+      <span class="x"><span class="t">{e.title}</span><span class="m">{dateShort(e.d + 'Z')} · {dur(e.s)}</span>{e.desc && <span class="d">{e.desc}</span>}</span>
+      <span class="p"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor" /></svg></span>
+    </button>
+  ))}
+</div>
+<script>
+  // surbrillance de l'épisode en cours
+  const mark = () => { const s = window.RM && window.RM.state; const cur = s && s.mode === 'pod' && s.ep ? s.ep.id : ''; document.querySelectorAll('[data-eps] .ep').forEach((b) => b.classList.toggle('on', b.dataset.epid === cur && s.playing)); };
+  document.addEventListener('rm:state', mark); document.addEventListener('astro:page-load', mark);
+</script>

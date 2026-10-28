@@ -1,0 +1,20 @@
+---
+import Base from '../../layouts/Base.astro';
+import { u } from '../../lib/url.js';
+import { getPodcasts, ausImg, FEED_LABEL } from '../../lib/data.js';
+const pods = await getPodcasts();
+const groups = Object.entries(FEED_LABEL).map(([f, l]) => [l, pods.filter((p) => p.feed === f)]).filter(([, l]) => l.length);
+const PROD = (process.env.PROD_URL || 'https://radio-monaco.com').replace(/\/$/, '');
+const ld = { '@context': 'https://schema.org', '@type': 'ItemList', name: 'Podcasts Radio Monaco', itemListElement: pods.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: PROD + '/podcasts/' + p.k + '/', name: p.name })) };
+---
+<Base title="Podcasts — Radio Monaco" description="Le Morning, les chroniques, l’horoscope et les DJ sets de Radio Monaco à réécouter quand vous voulez." path="/podcasts/" jsonld={[ld]}>
+  <div class="wrap">
+    <header class="page-hd"><nav class="crumbs"><a href={u('/')}>Accueil</a><span class="sep">/</span><span>Podcasts</span></nav><h1 class="h1">Vos rendez-vous préférés, <b>à la demande.</b></h1><p class="lead">{pods.length} émissions, de nouveaux épisodes chaque jour.</p></header>
+    {groups.map(([label, list]) => (
+      <section style="margin-top:40px">
+        <div class="sec-t"><h2><b>{label}</b></h2></div>
+        <div class="show-grid">{list.map((p) => <a class="show-card" href={u('/podcasts/' + p.k + '/')} style={`--c:${p.color}`}><span class="ci"><img src={ausImg(p.eps[0].img)} alt="" loading="lazy" /></span><span class="f">{p.eps.length} épisodes</span><b>{p.name}</b><span>{p.sub}</span></a>)}</div>
+      </section>
+    ))}
+  </div>
+</Base>

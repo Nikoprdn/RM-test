@@ -1,0 +1,40 @@
+---
+// Rubriques : /category/monaco/, /category/monaco/2/, …
+import Base from '../../../layouts/Base.astro';
+import Card from '../../../components/Card.astro';
+import { u } from '../../../lib/url.js';
+import { getPosts, getCategories, catLabel } from '../../../lib/data.js';
+
+export async function getStaticPaths({ paginate }) {
+  const [posts, cats] = await Promise.all([getPosts(), getCategories()]);
+  return cats.flatMap((c) => {
+    const list = posts.filter((p) => p.cats.some((x) => x.id === c.id));
+    if (!list.length) return [];
+    return paginate(list, { params: { slug: c.slug }, props: { cat: c, cats }, pageSize: 24 });
+  });
+}
+const { page, cat, cats } = Astro.props;
+const name = catLabel(cat);
+const others = cats.filter((c) => c.id !== cat.id && c.count > 20).sort((a, b) => b.count - a.count).slice(0, 8);
+const path = '/category/' + cat.slug + '/' + (page.currentPage > 1 ? page.currentPage + '/' : '');
+const pages = Array.from({ length: page.lastPage }, (_, i) => i + 1).filter((n) => n === 1 || n === page.lastPage || Math.abs(n - page.currentPage) <= 2);
+---
+<Base title={`${name}${page.currentPage > 1 ? ' — page ' + page.currentPage : ''} — Radio Monaco`} description={`Toute l’actualité ${name} par la rédaction de Radio Monaco.`} path={path}>
+  <div class="wrap">
+    <header class="page-hd">
+      <nav class="crumbs" aria-label="Fil d’Ariane"><a href={u('/')}>Accueil</a><span class="sep">/</span><span>Actualités</span></nav>
+      <h1 class="h1"><b>{name}</b>{page.currentPage > 1 && <span style="font-weight:300"> · page {page.currentPage}</span>}</h1>
+      <div class="chips">{others.map((c) => <a class="chip" href={u('/category/' + c.slug + '/')}>{catLabel(c)}</a>)}</div>
+    </header>
+    <div class="cards">
+      {page.data.map((p, i) => <Card p={p} big={i === 0 && page.currentPage === 1} eager={i < 2} />)}
+    </div>
+    {page.lastPage > 1 && (
+      <nav class="pager" aria-label="Pagination">
+        {page.url.prev && <a href={page.url.prev.endsWith('/') ? page.url.prev : page.url.prev + '/'} rel="prev">←</a>}
+        {pages.map((n, i) => <>{i > 0 && n - pages[i - 1] > 1 && <span>…</span>}{n === page.currentPage ? <span class="cur" aria-current="page">{n}</span> : <a href={u('/category/' + cat.slug + '/' + (n > 1 ? n + '/' : ''))}>{n}</a>}</>)}
+        {page.url.next && <a href={page.url.next.endsWith('/') ? page.url.next : page.url.next + '/'} rel="next">→</a>}
+      </nav>
+    )}
+  </div>
+</Base>
