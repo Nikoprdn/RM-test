@@ -1,6 +1,6 @@
 // Service worker Radio Monaco : pages et ressources en cache pour un chargement instantané
 // et une page hors ligne. Jamais de cache pour l'audio, les flux ni l'API WordPress.
-const V = 'rm-v1';
+const V = 'rm-v2';
 const SCOPE = self.registration.scope;
 const OFFLINE = SCOPE + 'hors-ligne/';
 self.addEventListener('install', (e) => {
@@ -22,7 +22,7 @@ self.addEventListener('fetch', (e) => {
   if (url.origin === location.origin || /image\.ausha\.co|radio-monaco\.com\/wp-content/.test(r.url)) {
     // ressources : cache d'abord, mise à jour en arrière-plan
     e.respondWith(caches.match(r).then((m) => {
-      const net = fetch(r).then((res) => { if (res.ok || res.type === 'opaque') { const cp = res.clone(); caches.open(V).then((c) => c.put(r, cp)); } return res; }).catch(() => m);
+      const net = fetch(r).then((res) => { if (res.ok || res.type === 'opaque') { const cp = res.clone(); caches.open(V).then((c) => c.put(r, cp)); } return res; }).catch(() => m || caches.match(r, { ignoreSearch: true }));
       return m || net;
     }));
   }

@@ -5,6 +5,11 @@ import Footer from '../components/Footer.astro';
 import Player from '../components/Player.astro';
 import Install from '../components/Install.astro';
 import { u, asset, INDEXABLE } from '../lib/url.js';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { createHash } from 'node:crypto';
+// feuilles de style versionnées par leur contenu : une mise en ligne n’est jamais servie avec l’ancien CSS en cache
+const css = (f) => { const href = u('/styles/' + f).replace(/\/$/, ''); try { return href + '?v=' + createHash('md5').update(readFileSync(join(process.cwd(), 'public', 'styles', f))).digest('hex').slice(0, 8); } catch (e) { return href; } };
 
 const PROD = (process.env.PROD_URL || 'https://radio-monaco.com').replace(/\/$/, '');
 const {
@@ -54,8 +59,8 @@ const org = {
   <link rel="preconnect" href="https://radio-monaco.com" crossorigin />
   <link rel="preconnect" href="https://image.ausha.co" />
   <link rel="preload" href={asset('Barlow-Regular.ttf')} as="font" type="font/ttf" crossorigin />
-  <link rel="stylesheet" href={u('/styles/site.css').replace(/\/$/, '')} />
-  <link rel="stylesheet" href={u('/styles/layout.css').replace(/\/$/, '')} />
+  <link rel="stylesheet" href={css('site.css')} />
+  <link rel="stylesheet" href={css('layout.css')} />
   <script type="application/ld+json" set:html={JSON.stringify(org)} />
   {jsonld.map((j) => <script type="application/ld+json" set:html={JSON.stringify(j)} />)}
   <ClientRouter fallback="swap" />
