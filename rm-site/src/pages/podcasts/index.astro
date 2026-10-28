@@ -20,7 +20,7 @@ const ld = { '@context': 'https://schema.org', '@type': 'ItemList', name: 'Podca
       {groups.map(([label, list]) => (
         <div class="pg">
           <p class="pg-t">{label}</p>
-          <div class="show-grid">{list.map((p, i) => <a class="show-card rise" href={u('/podcasts/' + p.k + '/')} style={`--c:${p.color};--d:${Math.min(i, 6) * 0.06}s`}><span class="ci"><img src={ausImg(p.eps[0].img)} alt="" loading="lazy" /></span><span class="f">{p.eps.length} épisodes</span><b>{p.name}</b><span>{p.sub}</span></a>)}</div>
+          <div class="show-grid">{list.map((p, i) => <a class="show-card rise" href={u('/podcasts/' + p.k + '/')} style={`--c:${p.color};--d:${Math.min(i, 6) * 0.06}s`}><span class="ci"><img src={ausImg(p.eps[0].img)} alt="" loading="lazy" /></span><span class="f">{p.eps.length} {p.eps.length > 1 ? 'épisodes' : 'épisode'}</span><b>{p.name}</b><span>{p.sub}</span></a>)}</div>
         </div>
       ))}
     </div>

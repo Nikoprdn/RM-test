@@ -13,7 +13,7 @@ const first = { id: pod.k + ':0', url: ausAudio(pod.eps[0].au), title: pod.eps[0
 ---
 <Base title={`${pod.name} — Podcast Radio Monaco`} description={`${pod.name} : ${pod.sub}. Tous les épisodes à réécouter sur Radio Monaco.`} image={ausImg(pod.eps[0].img, true)} path={'/podcasts/' + pod.k + '/'} jsonld={[ld]}>
   <div class="wrap">
-    <div class="profile" style="grid-template-columns:minmax(0,360px) minmax(0,1fr);align-items:end">
+    <div class="profile pod-hd">
       <div class="ph" style="aspect-ratio:1/1"><img src={ausImg(pod.eps[0].img, true)} alt="" /></div>
       <div>
         <nav class="crumbs"><a href={u('/')}>Accueil</a><span class="sep">/</span><a href={u('/podcasts/')}>Podcasts</a><span class="sep">/</span><span>{FEED_LABEL[pod.feed]}</span></nav>
@@ -22,6 +22,6 @@ const first = { id: pod.k + ':0', url: ausAudio(pod.eps[0].au), title: pod.eps[0
         <button class="btn-play" type="button" data-rm-ep={JSON.stringify(first)} style={`--c:${pod.color}`}><span class="pi"><I n="play" /></span>Écouter le dernier épisode</button>
       </div>
     </div>
-    <section style="margin-top:72px"><div class="sec-t"><h2>Tous les <b>épisodes.</b></h2></div><EpisodeList show={pod} limit={12} /></section>
+    <section class="pod-eps"><div class="sec-t"><h2>Tous les <b>épisodes.</b></h2></div><EpisodeList show={pod} limit={12} /></section>
   </div>
 </Base>

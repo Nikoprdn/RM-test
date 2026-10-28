@@ -23,15 +23,33 @@ body{background:var(--bg);color:var(--ink)}
 .hdr.over .hbtn{background:#fff;color:var(--ink)}
 .hdr.over .prog{opacity:0}
 .menu-btn{display:none;width:44px;height:44px;border-radius:50%;border:1px solid currentColor;background:transparent;color:inherit;align-items:center;justify-content:center;cursor:pointer}
+/* bouton menu : deux traits qui forment une croix à l'ouverture */
+.menu-btn{flex-direction:column;gap:5px;position:relative}
+.menu-btn .mbl{display:block;width:16px;height:1.6px;border-radius:2px;background:currentColor;transition:transform .45s cubic-bezier(.65,0,.12,1)}
+.hdr.open .menu-btn .mbl:first-child{transform:translateY(3.3px) rotate(45deg)}
+.hdr.open .menu-btn .mbl:last-child{transform:translateY(-3.3px) rotate(-45deg)}
 @media (max-width:1000px){
   .menu-btn{display:inline-flex}
-  .hdr .hbtn span:last-child{display:none}.hdr .hbtn{padding:0 15px}
+  .hdr .hbtn span:last-child{display:none}.hdr .hbtn{padding:0;width:44px;justify-content:center}
   .hdr-in{gap:12px}
   .hdr .nav{display:none!important}
-  .hdr.open .nav{display:flex!important;position:fixed;inset:84px 0 auto 0;flex-direction:column;align-items:flex-start;gap:0;padding:12px var(--pad) 28px;background:rgba(246,243,238,.98);color:var(--ink);backdrop-filter:blur(20px);box-shadow:0 30px 40px -30px rgba(0,0,0,.3)}
-  .hdr.open .nav a{padding:14px 0;font-size:15px;width:100%;border-bottom:1px solid var(--line)}
+  /* menu plein écran : en-tête opaque, grands intitulés, apparition en cascade */
+  .hdr.open{background:var(--bg);color:var(--ink);border-bottom-color:var(--line);backdrop-filter:none;-webkit-backdrop-filter:none}
+  .hdr.over.open .lg .w{display:none}.hdr.over.open .lg .k{display:block}
+  .hdr.over.open .hbtn{background:var(--ink);color:#fff}
+  .hdr.open .prog{opacity:0}
+  .hdr.open .nav{display:flex!important;position:fixed;top:84px;left:0;right:0;height:calc(100vh - 84px);height:calc(100dvh - 84px);overflow-y:auto;overscroll-behavior:contain;flex-direction:column;align-items:stretch;gap:0;padding:8px var(--pad) calc(120px + env(safe-area-inset-bottom));background:var(--bg);color:var(--ink);counter-reset:nv;letter-spacing:0;text-transform:none;animation:nvIn .5s cubic-bezier(.16,.84,.12,1) both}
+  .hdr.open .nav a{counter-increment:nv;display:flex;align-items:baseline;gap:16px;padding:18px 0;font-size:clamp(28px,8vw,40px);font-weight:300;letter-spacing:-.025em;line-height:1.1;border-bottom:1px solid var(--line);opacity:0;transform:translateY(14px);animation:nvA .6s cubic-bezier(.16,.84,.12,1) forwards}
+  .hdr.open .nav a::before{content:counter(nv,decimal-leading-zero);font-size:12px;font-weight:500;letter-spacing:.2em;color:var(--red);min-width:22px}
+  .hdr.open .nav a.on,.hdr.open .nav a[aria-current]{font-weight:500}
+  .hdr.open .nav a:nth-child(2){animation-delay:.04s}.hdr.open .nav a:nth-child(3){animation-delay:.08s}.hdr.open .nav a:nth-child(4){animation-delay:.12s}
+  .hdr.open .nav a:nth-child(5){animation-delay:.16s}.hdr.open .nav a:nth-child(6){animation-delay:.2s}.hdr.open .nav a:nth-child(7){animation-delay:.24s}
   .hdr.open .nav .ind{display:none}
 }
+@keyframes nvIn{from{opacity:0}to{opacity:1}}
+@keyframes nvA{to{opacity:1;transform:none}}
+html.menu-open,html.menu-open body{overflow:hidden}
+@media (prefers-reduced-motion:reduce){.hdr.open .nav,.hdr.open .nav a{animation:none;opacity:1;transform:none}}
 
 /* ---- pied de page ---- */
 .ftr{flex:1 0 auto;margin-top:140px;border-top:1px solid var(--line);padding:56px 0 32px}
@@ -284,3 +302,134 @@ body{background:var(--bg);color:var(--ink)}
 .coord div{display:flex;flex-direction:column;gap:6px;font-size:16px}.coord .t{font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
 .pg+.pg{margin-top:72px}
 .pg-t{margin:0 0 24px;padding-bottom:14px;border-bottom:1px solid var(--line);font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#6A6570}
+
+/* page d'une émission podcast */
+.profile.pod-hd{grid-template-columns:minmax(0,360px) minmax(0,1fr);align-items:end}
+.pod-eps{margin-top:72px}
+.sec-t a{white-space:nowrap}
+.rm a,.rm button{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+
+/* =====================================================================
+   MOBILE — finitions (≤ 640 px, téléphones)
+   Les !important ne servent qu'à reprendre des styles écrits en ligne
+   dans les gabarits (accueil), sans rien changer à l'affichage bureau.
+   ===================================================================== */
+@media (max-width:860px){
+  .profile.pod-hd{grid-template-columns:1fr;align-items:start}
+  .profile.pod-hd .ph{width:min(260px,64vw)}
+}
+@media (max-width:640px){
+  /* rythme vertical : moins de vide entre les rubriques */
+  .hsec{padding-top:88px!important}
+  .pzs{padding:88px 0 8px}
+  .ftr{margin-top:96px;padding-top:44px}
+  .ftr .wrap{gap:32px}
+  .related{margin-top:72px}
+  .ou{padding-top:80px}
+  .page-hd{padding:40px 0 24px}
+  .profile{padding-top:32px;gap:28px}
+  .pod-eps{margin-top:48px}
+  .sec-t{margin-bottom:24px}
+
+  /* zones tactiles d'au moins ~44 px */
+  .crumbs{gap:4px 8px;margin-bottom:16px}
+  .crumbs a{display:inline-block;padding:10px 0;margin:-10px 0}
+  .more{min-height:44px}
+  .sec-t a{min-height:44px}
+  .ftr-cols{display:grid;grid-template-columns:1fr 1fr;gap:28px 20px;width:100%}
+  .ftr-cols{line-height:1.4}
+  .ftr-cols a{padding:8px 0}
+  .ftr-cols>div>span:not(.t){padding:8px 0}
+  .ftr-cols .t{margin-bottom:4px}
+  .ftr-bot{flex-direction:column;gap:16px}
+  .ftr-bot span{gap:0 22px}
+  .ftr-bot a{display:inline-block;padding:10px 0}
+
+  /* filtres en une ligne qui défile, jusqu'aux bords de l'écran */
+  .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:22px calc(-1 * var(--pad)) 0;padding:4px var(--pad) 10px;scroll-padding-left:var(--pad)}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex:0 0 auto;height:42px}
+
+  /* listes d'articles : la première en grand, les suivantes en lignes compactes */
+  .cards{gap:0}
+  .card.big{margin-bottom:28px}
+  .card:not(.big){display:grid;grid-template-columns:116px minmax(0,1fr);gap:16px;align-items:center;padding:16px 0;border-top:1px solid var(--line)}
+  .card:not(.big) .im{aspect-ratio:1/1;border-radius:14px}
+  .card:not(.big) .t{font-size:17px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .card:not(.big)>span:last-child{gap:7px!important}
+  .card .k{font-size:11px;letter-spacing:.16em}
+  .card.big .t{font-size:28px}
+
+  /* équipe, DJs, émissions : deux colonnes */
+  .people{grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 14px}
+  .person{gap:10px}
+  .person .ph{border-radius:16px}
+  .person b{font-size:16.5px;line-height:1.25}
+  .person span{font-size:13px;line-height:1.4}
+  .show-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 14px}
+  .show-card{gap:9px}
+  .show-card .ci{border-radius:16px}
+  .show-card .f{font-size:11px;letter-spacing:.16em}
+  .show-card b{font-size:16.5px;line-height:1.25}
+  .show-card span{font-size:13px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+  /* épisodes */
+  .ep{grid-template-columns:56px minmax(0,1fr) auto;gap:14px;padding:12px 0}
+  .ep:hover,.ep.on{padding-left:10px;padding-right:10px}
+  .ep .c{width:56px;height:56px}
+  .ep .t{font-size:15.5px}
+  .btn-play{width:100%;justify-content:center;margin-top:24px}
+
+  /* rubrique Podcasts (accueil et page Podcasts) */
+  .pzh{font-size:clamp(36px,10.4vw,46px)}
+  .pzfc{grid-template-columns:112px minmax(0,1fr);column-gap:16px;row-gap:6px;align-items:start;margin-top:26px}
+  .pzfcv{grid-row:1 / span 3;border-radius:18px;box-shadow:0 20px 40px -24px rgba(20,18,24,.6)}
+  .pzfcp{opacity:1;transform:scale(.62)}
+  .pzfct{display:contents}
+  .pzfck{grid-column:2;align-self:end;font-size:11px;letter-spacing:.14em;line-height:1.35}
+  .pzfctt{grid-column:2;font-size:20px;line-height:1.18}
+  .pzfcm{grid-column:2;font-size:13px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .pzfcb{grid-column:1 / -1;width:100%;justify-content:center;margin-top:14px;height:52px}
+  .pzw{padding:0 var(--pad)}
+  .pzchw{margin:20px calc(-1 * var(--pad)) 0}
+  .pzchn{display:none}
+  .pzchips{padding:4px var(--pad) 8px;scroll-padding-left:var(--pad);-webkit-mask-image:none;mask-image:none}
+  .pzright{margin-top:8px}
+  .pzrh{gap:16px}
+  .pzt{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;max-width:100%;border-radius:999px}
+  .pzt::-webkit-scrollbar{display:none}
+  .pztb{flex:0 0 auto;height:38px;padding:0 15px;font-size:13.5px}
+  .pzr2{padding:11px 0;gap:14px}
+  .pzr2:hover,.pzr2.on{padding-left:10px;padding-right:10px}
+  .pzr2c{width:52px;height:52px}
+  .pzr2t{font-size:15px}
+
+  /* accueil : actualités, équipes, réseaux, DJs */
+  .nsl-box{min-height:170px!important}
+  .nsl>span:nth-child(2){font-size:27px!important;-webkit-line-clamp:3!important}
+  #actualites .rise[style*="margin-top:56px"]{margin-top:28px!important}
+  .tsl-box{min-height:122px!important}
+  .tsl-box h2{font-size:clamp(40px,11.5vw,52px)!important}
+  .tsl-box p{font-size:15px!important;margin-top:12px!important}
+  #equipes .thumb{width:64px!important;height:64px!important;border-radius:14px!important}
+  #equipes .rise[style*="margin-top:32px"]{margin-top:24px!important}
+  [data-scroll]{display:none!important}
+  .scroller{padding-left:var(--pad)!important;padding-right:var(--pad)!important;scroll-padding-left:var(--pad)!important;gap:12px!important}
+  .scroller>a{flex-basis:72vw!important;max-width:300px}
+  .uvtitle{padding:0 var(--pad) 28px}
+  .uxt1{font-size:17px!important}
+
+  /* fiches */
+  .profile .ph{border-radius:20px}
+  .profile .bio{font-size:17.5px}
+  .facts span{height:34px;font-size:13.5px}
+  .svc a{padding:24px;border-radius:20px}
+  .coord{margin-top:48px}
+}
+@media (max-width:380px){
+  :root{--pad:18px}
+  .pzfc{grid-template-columns:96px minmax(0,1fr)}
+  .pzfctt{font-size:18.5px}
+  .card:not(.big){grid-template-columns:96px minmax(0,1fr);gap:14px}
+  .people,.show-grid{gap:24px 12px}
+}

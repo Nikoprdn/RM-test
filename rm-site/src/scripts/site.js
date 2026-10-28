@@ -18,8 +18,12 @@ function init() {
   // ---- menu mobile ----
   const mb = document.querySelector('.menu-btn');
   if (mb && hdr) {
-    mb.addEventListener('click', () => { const o = hdr.classList.toggle('open'); mb.setAttribute('aria-expanded', o ? 'true' : 'false'); }, sig);
-    hdr.querySelectorAll('.nav a').forEach((a) => a.addEventListener('click', () => hdr.classList.remove('open'), sig));
+    // plein écran sur mobile : la page derrière ne défile pas tant que le menu est ouvert
+    const setMenu = (o) => { hdr.classList.toggle('open', o); mb.setAttribute('aria-expanded', o ? 'true' : 'false'); mb.setAttribute('aria-label', o ? 'Fermer le menu' : 'Menu'); document.documentElement.classList.toggle('menu-open', o); };
+    mb.addEventListener('click', () => setMenu(!hdr.classList.contains('open')), sig);
+    hdr.querySelectorAll('.nav a').forEach((a) => a.addEventListener('click', () => setMenu(false), sig));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && hdr.classList.contains('open')) { setMenu(false); mb.focus(); } }, sig);
+    window.addEventListener('resize', () => { if (innerWidth > 1000 && hdr.classList.contains('open')) setMenu(false); }, sig);
   }
 
   // ---- apparition des rubriques ----

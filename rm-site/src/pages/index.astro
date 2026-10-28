@@ -68,7 +68,7 @@ const jsonld = [{
   <Podcasts />
 
   <!-- 03 · ACTUALITÉS -->
-  <section id="actualites" data-reveal style="padding:140px 0 0">
+  <section id="actualites" data-reveal class="hsec" style="padding:140px 0 0">
     <div class="wrap">
       <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:20px 40px;margin-bottom:44px">
         <div>
@@ -88,7 +88,7 @@ const jsonld = [{
           </div>
         </a>
         <div class="rise" style="display:flex;flex-direction:column;gap:28px;--d:.3s">
-          <div style="position:relative;min-height:250px">
+          <div class="nsl-box" style="position:relative;min-height:250px">
             {une.map((p, i) => (
               <a href={u(p.path)} class:list={['slide nsl', { on: i === 0 }]} data-n={i} style="position:absolute;inset:0;display:flex;flex-direction:column;gap:16px">
                 <span style="font-size:12px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:#C8022A">{p.cat} · {dateShort(p.date)}</span>
@@ -97,8 +97,8 @@ const jsonld = [{
               </a>
             ))}
           </div>
-          <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;max-width:360px">
-            {une.map((_, i) => <button type="button" data-ngo={i} aria-label={`Actualité ${i + 1}`} style="height:30px;padding:0;border:0;background:transparent;cursor:pointer;display:flex;align-items:center"><span class:list={['bar dark', { on: i === 0 }]} style="width:100%"><i></i></span></button>)}
+          <div class="nbars" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;max-width:360px">
+            {une.map((_, i) => <button type="button" data-ngo={i} aria-label={`Actualité ${i + 1}`} style="height:44px;padding:0;border:0;background:transparent;cursor:pointer;display:flex;align-items:center"><span class:list={['bar dark', { on: i === 0 }]} style="width:100%"><i></i></span></button>)}
           </div>
         </div>
       </div>
@@ -114,7 +114,7 @@ const jsonld = [{
   </section>
 
   <!-- 04 · RÉSEAUX -->
-  <section id="reseaux" data-reveal style="padding:140px 0 0">
+  <section id="reseaux" data-reveal class="hsec" style="padding:140px 0 0">
     <div class="wrap">
       <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:20px 40px;margin-bottom:44px">
         <div>
@@ -139,7 +139,7 @@ const jsonld = [{
   </section>
 
   <!-- 05 · ÉQUIPES -->
-  <section id="equipes" data-reveal style="padding:140px 0 0">
+  <section id="equipes" data-reveal class="hsec" style="padding:140px 0 0">
     <div class="wrap">
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(460px,100%),1fr));gap:40px 72px;align-items:center">
         <div class="unv" style="position:relative;aspect-ratio:1/1;max-height:620px;border-radius:24px;overflow:hidden;background:#E4032E;--d:.1s">
@@ -150,7 +150,7 @@ const jsonld = [{
         </div>
         <div>
           <p class="eb" style="margin:0 0 18px;font-size:12px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:#6A6570">05 — Nos équipes</p>
-          <div class="rise" style="position:relative;min-height:230px;--d:.25s">
+          <div class="rise tsl-box" style="position:relative;min-height:230px;--d:.25s">
             {TEAM.map((m, i) => <a href={u(m.path)} class:list={['slide tsl', { on: i === 0 }]} data-t={i} style="position:absolute;inset:0"><h2 style="margin:0;font-size:clamp(44px,5.4vw,80px);line-height:.98;letter-spacing:-0.035em;font-weight:300">{m.first} <span style="font-weight:600">{m.last}</span></h2><p style="margin:18px 0 0;font-size:17px;color:#6A6570">{m.role}</p></a>)}
             <div class="slide tsl" data-t={TEAM.length} style="position:absolute;inset:0"><h2 style="margin:0;font-size:clamp(44px,5.4vw,80px);line-height:.98;letter-spacing:-0.035em;font-weight:300">Le <span style="font-weight:600">Morning</span></h2><p style="margin:18px 0 0;font-size:17px;color:#6A6570">« Made in Monte-Carlo » · du direct de 07:00 à 10:00</p></div>
           </div>
@@ -166,7 +166,7 @@ const jsonld = [{
   </section>
 
   <!-- 06 · DJs -->
-  <section id="djs" data-reveal style="padding:140px 0 0">
+  <section id="djs" data-reveal class="hsec" style="padding:140px 0 0">
     <div class="wrap">
       <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:20px 40px;margin-bottom:44px">
         <div>
