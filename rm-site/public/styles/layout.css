@@ -433,3 +433,40 @@ html.menu-open{overflow:hidden} /* sur html seulement : sur body, l’en-tête c
   .card:not(.big){grid-template-columns:96px minmax(0,1fr);gap:14px}
   .people,.show-grid{gap:24px 12px}
 }
+
+/* =====================================================================
+   VOLETS DES RADIOS (composant Univers) — mobile et tablette
+   Cartes arrondies qui défilent, photo au naturel (sans voile coloré),
+   logo + lecture en haut, direct / titre / fréquences en bas.
+   ===================================================================== */
+@media (max-width:900px){
+  .uvs{padding-bottom:8px}
+  .uvrow{gap:12px;padding:4px var(--pad) 18px;scroll-padding-left:var(--pad)}
+  .ux{flex:0 0 min(84vw,400px);height:auto;aspect-ratio:4/5;max-height:min(74vh,560px);border-radius:24px;isolation:isolate;box-shadow:0 26px 50px -30px rgba(20,18,24,.6)}
+  .ux+.ux{box-shadow:0 26px 50px -30px rgba(20,18,24,.6)}
+  .uxp,.ux.on .uxp,.ux.sel .uxp{filter:saturate(1.04) contrast(1.02)!important;scale:1;transform:none}
+  .uxt0,.uxw{display:none}
+  .uxs{background:linear-gradient(180deg,rgba(10,10,16,.5) 0%,rgba(10,10,16,0) 24%,rgba(10,10,16,0) 40%,rgba(10,10,16,.5) 62%,rgba(10,10,16,.9) 100%)}
+  .uxbar,.ux.on .uxbar{height:4px}
+  .uxb{top:20px;left:20px;right:20px;bottom:22px;gap:0}
+  .uxh{order:0}
+  .uxl{width:116px;transform:none!important}
+  .uxpl{width:44px;height:44px;background:rgba(255,255,255,.92);color:#141218;backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:0 10px 24px -12px rgba(0,0,0,.6)}
+  .ux.on .uxpl{background:var(--c);color:#fff}
+  .ux.dk.on .uxpl{color:#141218}
+  .uxr{display:none}
+  .uxlv{order:1;margin-top:auto;font-size:10.5px;letter-spacing:.2em}
+  .uxi{order:2;margin-top:12px}
+  .uxn{gap:14px}
+  .uxc{width:52px!important;height:52px!important;border-radius:12px;background:rgba(255,255,255,.16);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+  .uxt{gap:3px}
+  .uxt1{font-size:17px!important;line-height:1.2}
+  .uxt2{font-size:13.5px}
+  .uxf{order:3;margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.18);min-height:0;max-height:none;display:grid;grid-template-columns:repeat(2,minmax(0,max-content));justify-content:start;gap:5px 22px}
+  .bd{height:auto;padding:0;gap:6px;border:0;border-radius:0;background:none;backdrop-filter:none;-webkit-backdrop-filter:none;font-size:12.5px;line-height:1.35;letter-spacing:0;color:rgba(255,255,255,.72)}
+}
+@media (max-width:380px){
+  .uxb{top:16px;left:16px;right:16px;bottom:18px}
+  .uxl{width:104px}
+  .bd{font-size:12px}.uxf{column-gap:16px}
+}
