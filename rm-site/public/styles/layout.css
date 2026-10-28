@@ -48,7 +48,7 @@ body{background:var(--bg);color:var(--ink)}
 }
 @keyframes nvIn{from{opacity:0}to{opacity:1}}
 @keyframes nvA{to{opacity:1;transform:none}}
-html.menu-open,html.menu-open body{overflow:hidden}
+html.menu-open{overflow:hidden} /* sur html seulement : sur body, l’en-tête collant perdrait sa place */
 @media (prefers-reduced-motion:reduce){.hdr.open .nav,.hdr.open .nav a{animation:none;opacity:1;transform:none}}
 
 /* ---- pied de page ---- */
