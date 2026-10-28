@@ -133,7 +133,43 @@ function init() {
   if (!reduced && tn) every(5000, () => { if (Date.now() - tHold > 15000) team(ti + 1); });
 
   // vidéo du logo (lecture forcée, silencieuse)
-  const v = document.querySelector('[data-hero] video'); if (v) { v.muted = true; const p = v.play(); if (p && p.catch) p.catch(() => {}); }
+  const v = document.querySelector('[data-hero] video');
+  if (v) { v.muted = true; if (needsKey()) keyVideo(v, ac.signal); const p = v.play(); if (p && p.catch) p.catch(() => {}); }
+}
+
+// Safari et tous les navigateurs d'iPhone/iPad (WebKit) : ni la transparence du WebM ni
+// mix-blend-mode sur une vidéo ne fonctionnent, le logo apparaît dans un rectangle noir.
+// On lit alors le MP4 (logo blanc sur noir) dans un canvas en changeant le noir en transparence.
+function needsKey() {
+  const ua = navigator.userAgent;
+  const ios = /iP(hone|ad|od)/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  return ios || (/AppleWebKit/.test(ua) && /Safari/.test(ua) && !/Chrome\/|Chromium|Edg\/|OPR\/|Android/.test(ua));
+}
+function keyVideo(v, sig) {
+  const box = v.parentElement; if (!box || box.querySelector('canvas')) return;
+  const mp4 = v.querySelector('source[type="video/mp4"]');
+  if (mp4 && v.canPlayType('video/mp4')) { v.src = mp4.src; v.load(); }
+  const c = document.createElement('canvas'); c.width = 960; c.height = 540; c.setAttribute('aria-hidden', 'true');
+  c.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none';
+  box.style.position = 'relative';
+  // la vidéo reste en place (iOS ne lit pas une vidéo masquée) mais invisible
+  v.style.opacity = '0'; v.style.mixBlendMode = 'normal';
+  box.appendChild(c);
+  const ctx = c.getContext('2d', { willReadFrequently: true });
+  const draw = () => {
+    if (v.readyState < 2) return;
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.drawImage(v, 0, 0, c.width, c.height);
+    const im = ctx.getImageData(0, 0, c.width, c.height), d = im.data;
+    // logo blanc : luminosité → opacité, couleur blanche
+    for (let i = 0; i < d.length; i += 4) { const l = d[i] > d[i + 1] ? (d[i] > d[i + 2] ? d[i] : d[i + 2]) : (d[i + 1] > d[i + 2] ? d[i + 1] : d[i + 2]); d[i] = d[i + 1] = d[i + 2] = 255; d[i + 3] = l < 12 ? 0 : l; }
+    ctx.putImageData(im, 0, 0);
+  };
+  let raf = 0;
+  const loop = () => { draw(); if (!v.paused && !v.ended && !sig.aborted) raf = v.requestVideoFrameCallback ? v.requestVideoFrameCallback(loop) : requestAnimationFrame(loop); };
+  v.addEventListener('playing', loop, { signal: sig });
+  ['loadeddata', 'seeked', 'ended', 'pause'].forEach((e) => v.addEventListener(e, draw, { signal: sig }));
+  sig.addEventListener('abort', () => { if (v.cancelVideoFrameCallback) v.cancelVideoFrameCallback(raf); cancelAnimationFrame(raf); });
 }
 
 document.addEventListener('astro:page-load', init);

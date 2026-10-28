@@ -319,6 +319,8 @@ html.menu-open{overflow:hidden} /* sur html seulement : sur body, l’en-tête c
   .profile.pod-hd .ph{width:min(260px,64vw)}
 }
 @media (max-width:640px){
+  /* héros : le logo animé ne recouvre plus « The sound of Monte-Carlo » (chevauchement proportionnel à la largeur) */
+  .hct .vid{margin:-10px 0 -11vw!important}
   /* rythme vertical : moins de vide entre les rubriques */
   .hsec{padding-top:88px!important}
   .pzs{padding:88px 0 8px}
@@ -428,6 +430,7 @@ html.menu-open{overflow:hidden} /* sur html seulement : sur body, l’en-tête c
 }
 @media (max-width:380px){
   :root{--pad:18px}
+  .hct .f1{font-size:12px!important;letter-spacing:.34em!important;padding-left:.34em!important;white-space:nowrap}
   .pzfc{grid-template-columns:96px minmax(0,1fr)}
   .pzfctt{font-size:18.5px}
   .card:not(.big){grid-template-columns:96px minmax(0,1fr);gap:14px}
