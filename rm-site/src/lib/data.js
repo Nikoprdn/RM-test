@@ -109,6 +109,42 @@ export function cleanHTML(h = '') {
     .replace(/href="https?:\/\/(www\.)?radio-monaco\.com(\/(?!wp-content)[^"]*)"/g, (m, w, p) => 'href="' + BASEP + p + '"');
 }
 
+// Titre SEO Yoast : ignoré quand la rédaction y a laissé un identifiant (ex. « exercice-incendie-port-hercule »)
+export function seoTitle(seo, fallback) {
+  const t = seo && seo.title ? String(seo.title).trim() : '';
+  return t && /\s/.test(t) && !/^[\w-]+$/.test(t) ? t : fallback;
+}
+
+// Mise en forme du corps d’article : retire la photo de une répétée dans le texte,
+// et transforme les crédits (« © … », « Crédit … ») placés sous une image en légende.
+const imgBase = (src = '') => src.split('?')[0].split('/').pop().replace(/-(\d+x\d+|scaled|e\d+)(?=\.)/g, '').toLowerCase();
+const CREDIT = /^(©|\(c\)|crédits?\b|credits?\b|photos?\s*:|dr\b|source\s*:)/i;
+const IMGBLOCK = /<p>\s*(?:<a\b[^>]*>\s*)?<img\b[^>]*>\s*(?:<\/a>\s*)?<\/p>|<figure\b[^>]*>(?:(?!<\/figure>)[\s\S])*?<img\b[\s\S]*?<\/figure>/g;
+export function arrangeArticle(html = '', featured = '') {
+  const fb = featured ? imgBase(featured) : '';
+  let caption = '', out = '', last = 0, m;
+  IMGBLOCK.lastIndex = 0;
+  while ((m = IMGBLOCK.exec(html))) {
+    const block = m[0], end = m.index + block.length;
+    const src = (block.match(/<img\b[^>]*\ssrc="([^"]+)"/) || [])[1] || '';
+    const next = html.slice(end).match(/^\s*<p>([\s\S]*?)<\/p>/);
+    const credit = next && !/<img\b/.test(next[1]) && text(next[1]).replace(/^\s+/, '');
+    const isCredit = credit && credit.length <= 140 && CREDIT.test(credit) && !/<figcaption/.test(block);
+    out += html.slice(last, m.index);
+    if (fb && imgBase(src) === fb && !caption && !out.includes('<img')) {
+      // doublon de la photo de une : on l’enlève, son crédit passe sous la grande photo
+      if (isCredit) caption = credit;
+    } else {
+      out += block;
+      if (isCredit) out += `<p class="credit">${credit.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</p>`;
+    }
+    last = isCredit ? end + next[0].length : end;
+    IMGBLOCK.lastIndex = last;
+  }
+  out += html.slice(last);
+  return { html: out.replace(/^\s+/, ''), caption };
+}
+
 // ---------- équipe & émissions ----------
 const typ = (x) => ((x.class_list || []).find((c) => c.startsWith('membertype-')) || '').slice(11);
 export const getMembers = () => once('members', async () => {

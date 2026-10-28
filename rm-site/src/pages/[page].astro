@@ -2,10 +2,10 @@
 // Pages institutionnelles reprises de WordPress, aux mêmes adresses (mentions légales, CGU, régie…)
 import Base from '../layouts/Base.astro';
 import { u } from '../lib/url.js';
-import { getPages, dateLong } from '../lib/data.js';
+import { getPages, dateLong, seoTitle } from '../lib/data.js';
 export async function getStaticPaths() { return (await getPages()).map((p) => ({ params: { page: p.slug }, props: { pg: p } })); }
 const { pg } = Astro.props;
-const title = (pg.seo && pg.seo.title) || pg.title + ' — Radio Monaco';
+const title = seoTitle(pg.seo, pg.title + ' — Radio Monaco');
 ---
 <Base title={title} description={(pg.seo && pg.seo.description) || pg.title + ' — Radio Monaco.'} path={pg.path}>
   <div class="wrap narrow">

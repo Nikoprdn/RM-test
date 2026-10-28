@@ -4,7 +4,7 @@ const { hero = false } = Astro.props;
 // Sur l'accueil : ancres vers les rubriques ; ailleurs : les vraies pages
 const NAV = [['radios', 'Radios', '/nos-radios/'], ['podcasts', 'Podcasts', '/podcasts/'], ['actualites', 'Actualités', '/actualites/'], ['reseaux', 'Réseaux', null], ['equipes', 'Équipes', '/lequipe/'], ['djs', 'DJs', '/djs/']];
 ---
-<header class:list={['hdr', { over: hero }]} transition:name="header">
+<header class:list={['hdr', { over: hero, hhero: hero }]} transition:name="header">
   <div class="hdr-in">
     <a href={u('/')} class="lg" aria-label="Radio Monaco — accueil">
       <img class="w" src={asset('rm-logo-white.png')} alt="Radio Monaco" width="112" height="36" />
