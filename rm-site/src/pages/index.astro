@@ -1,6 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
 import I from '../components/Icons.astro';
+import Univers from '../components/Univers.astro';
+import Podcasts from '../components/Podcasts.astro';
 import { u, asset } from '../lib/url.js';
 import { STATIONS } from '../lib/stations.js';
 import { REELS } from '../lib/reels.js';
@@ -11,13 +13,6 @@ const une = posts.filter((p) => p.une && p.img).slice(0, 3);
 const heads = posts.filter((p) => !une.includes(p)).slice(0, 3);
 const TEAM = team.slice(0, 3);
 
-// podcasts : données compactes pour l'interactivité côté navigateur
-const podData = pods.map((s) => ({ k: s.k, f: s.feed, n: s.name, sub: s.sub, c: s.color, e: s.eps.slice(0, 7).map((e) => [e.d, e.s, e.img, e.au, e.title]) }));
-const all = pods.flatMap((s) => s.eps.slice(0, 7).map((e, i) => ({ s, e, i }))).sort((a, b) => (a.e.d < b.e.d ? 1 : -1));
-const feat = all.find((x) => x.s.k === 'morning') || all[0];
-const list = feat ? [feat, ...all.filter((x) => x !== feat)].slice(0, 7) : [];
-const epJSON = (x) => JSON.stringify({ id: x.s.k + ':' + x.i, url: ausAudio(x.e.au), title: x.e.title, show: x.s.name, color: x.s.color, ink: x.s.feed === 'mixdj' ? '#141218' : '#FFFFFF', img: ausImg(x.e.img), s: x.e.s });
-const when = (iso) => { const d = new Date(iso + 'Z'), t = new Date(); const diff = Math.round((new Date(t.getFullYear(), t.getMonth(), t.getDate()) - new Date(d.getFullYear(), d.getMonth(), d.getDate())) / 864e5); return diff <= 0 ? 'Aujourd’hui' : diff === 1 ? 'Hier' : diff < 7 ? `Il y a ${diff} jours` : dateShort(iso); };
 
 const HERO = [
   ['rm-monaco-port.jpg', 'Le port Hercule et Monte-Carlo', '50% 60%', 'Le port Hercule'],
@@ -67,79 +62,10 @@ const jsonld = [{
   </section>
 
   <!-- 01 · UNIVERS WEBRADIOS -->
-  <section id="radios" data-full data-reveal class="uvs">
-    <div class="uvrow">
-      {STATIONS.map((r, i) => (
-        <button class:list={['ux', { dk: r.ink === '#141218' }]} type="button" data-rm-live={i} data-ux={i} aria-label={`Écouter Radio Monaco ${r.name}`} style={`--c:${r.color};--w:${r.wash};--d:${(i * 0.09 + 0.12).toFixed(2)}s`}>
-          <img class="uxp" src={asset(r.photo)} alt="" loading="lazy" style={`object-position:${r.pos}`} />
-          <span class="uxt0" aria-hidden="true"></span><span class="uxs" aria-hidden="true"></span><span class="uxw" aria-hidden="true"></span><span class="uxbar" aria-hidden="true"></span>
-          <span class="uxb rise">
-            <span class="uxh"><img class="uxl" src={asset(r.logo)} alt={`Radio Monaco ${r.name}`} width="128" height="46" /><span class="uxpl"><I n="pp" /></span></span>
-            <span class="uxr" aria-hidden="true"></span>
-            <span class="uxlv"><span class="live-dot"></span><span data-ux-status>En direct</span></span>
-            <span class="uxf" aria-label={'Diffusion : ' + r.bands.map((b) => (b.city ? b.city + ' ' : '') + b.f).join(', ')}>{r.bands.map((b) => <span class="bd">{b.city}<b>{b.f}</b></span>)}</span>
-            <span class="uxi"><span><span class="uxn">
-              <span class="uxc"><img data-ux-cover alt="Pochette du titre en cours" hidden /><I n="eq" /></span>
-              <span class="uxt"><span class="uxt1" data-ux-t1>{r.line}</span><span class="uxt2" data-ux-t2>En direct</span></span>
-            </span></span></span>
-          </span>
-        </button>
-      ))}
-    </div>
-    <div class="uvtop" aria-hidden="true"></div>
-    <div class="uvtitle">
-      <p class="eb uveb" style="margin:0 0 18px;font-size:12px;font-weight:500;letter-spacing:.24em;text-transform:uppercase">01 — Nos webradios</p>
-      <h2><span class="m"><span>Découvrez</span></span> <span class="m"><span style="font-weight:600">nos univers.</span></span></h2>
-    </div>
-  </section>
+  <Univers />
 
   <!-- 02 · PODCASTS -->
-  <section id="podcasts" data-full data-reveal class="pzs">
-    <div class="pzw">
-      <div class="pzleft">
-        <p class="eb" style="margin:0 0 18px;font-size:12px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:#6A6570">02 — Podcasts</p>
-        <h2 class="pzh"><span class="m"><span>Vos rendez-vous préférés,</span></span> <span class="m"><span style="font-weight:600">à la demande.</span></span></h2>
-        {feat && (
-          <div class="pzfc rise" id="pz-feat" style={`--c:${feat.s.color};--d:.2s`}>
-            <button class="pzfcv" type="button" data-rm-ep={epJSON(feat)} aria-label={`Écouter : ${feat.s.name}`}><img src={ausImg(feat.e.img, true)} alt="" loading="lazy" /><span class="pzfcp"><I n="play" s={22} /></span></button>
-            <div class="pzfct">
-              <span class="pzfck"><span class="live-dot" style={`background:${feat.s.color}`}></span><span data-f="badge">{when(feat.e.d) === 'Aujourd’hui' ? 'Nouveau · aujourd’hui' : 'À la une'} · {feat.s.name}</span></span>
-              <span class="pzfctt" data-f="title">{feat.e.title}</span>
-              <span class="pzfcm" data-f="meta">{when(feat.e.d)} · {dur(feat.e.s)} · {feat.s.sub}</span>
-              <button class="pzfcb" type="button" data-rm-ep={epJSON(feat)}><span class="pzfpi"><I n="play" /></span><span data-f="cta">Écouter l’épisode</span></button>
-            </div>
-          </div>
-        )}
-        <div class="pzchw rise" style="--d:.35s">
-          <div class="pzchips" id="pz-chips" aria-label="Nos émissions">
-            {pods.map((s) => <button class="pzchip2" type="button" data-show={s.k} aria-pressed="false" style={`--c:${s.color}`}><img src={ausImg(s.eps[0].img)} alt="" loading="lazy" />{s.name}</button>)}
-          </div>
-          <button class="pzchn" type="button" data-chips="-1" aria-label="Émissions précédentes"><I n="left" s={16} /></button>
-          <button class="pzchn" type="button" data-chips="1" aria-label="Émissions suivantes"><I n="right" s={16} /></button>
-        </div>
-      </div>
-      <div class="pzright rise" style="--d:.25s">
-        <div class="pzrh">
-          <div class="pzt" role="tablist" aria-label="Filtrer les podcasts">
-            {[['all', 'Tout'], ...Object.entries(FEED_LABEL)].map(([v, l]) => <button role="tab" type="button" class:list={['pztb', { on: v === 'all' }]} aria-selected={v === 'all' ? 'true' : 'false'} data-filter={v}>{l}</button>)}
-          </div>
-          <span class="pzls" id="pz-title">Derniers épisodes</span>
-        </div>
-        <div class="pzlist" id="pz-list">
-          {list.map((x) => (
-            <button class="pzr2" type="button" data-rm-ep={epJSON(x)} data-epid={x.s.k + ':' + x.i} style={`--c:${x.s.color}`}>
-              <span class="pzr2c"><img src={ausImg(x.e.img)} alt="" loading="lazy" /></span>
-              <span class="pzr2x"><span class="pzrs">{x.s.name}</span><span class="pzr2t">{x.e.title}</span><span class="pzrm">{when(x.e.d)} · {dur(x.e.s)}</span></span>
-              <span class="pzr2p"><I n="play" s={13} /></span>
-              <span class="pzrbar" aria-hidden="true"><i style="width:0%"></i></span>
-            </button>
-          ))}
-        </div>
-        <a href={u('/podcasts/')} class="more" style="margin-top:20px;display:inline-flex;align-items:center;gap:10px;font-size:15px;font-weight:500">Tous les podcasts<I n="right" s={18} /></a>
-      </div>
-    </div>
-    <script type="application/json" id="pz-data" set:html={JSON.stringify({ shows: podData, labels: FEED_LABEL }).replace(/</g, '\\u003c')}></script>
-  </section>
+  <Podcasts />
 
   <!-- 03 · ACTUALITÉS -->
   <section id="actualites" data-reveal style="padding:140px 0 0">

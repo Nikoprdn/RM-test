@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import I from '../components/Icons.astro';
+import Univers from '../components/Univers.astro';
 import { u, asset } from '../lib/url.js';
 import { STATIONS } from '../lib/stations.js';
 // Textes repris de la page « Nos radios » du site actuel
@@ -14,26 +15,37 @@ const PROD = (process.env.PROD_URL || 'https://radio-monaco.com').replace(/\/$/,
 const ld = { '@context': 'https://schema.org', '@type': 'ItemList', name: 'Les radios de Radio Monaco', itemListElement: STATIONS.map((s, i) => ({ '@type': 'ListItem', position: i + 1, item: { '@type': 'RadioChannel', name: 'Radio Monaco ' + s.name, broadcastChannelId: s.bands.map((b) => b.f).join(', '), url: PROD + '/nos-radios/#' + s.key } })) };
 ---
 <Base title="Nos radios — Radio Monaco" description="Monte-Carlo, Paris, 100 % Mix DJ et Night Mood : les quatre radios de Radio Monaco en FM, DAB+ et en ligne." path="/nos-radios/" jsonld={[ld]}>
-  <div class="wrap">
-    <header class="page-hd"><nav class="crumbs" aria-label="Fil d’Ariane"><a href={u('/')}>Accueil</a><span class="sep">/</span><span>Nos radios</span></nav><h1 class="h1">Quatre radios, <b>une signature.</b></h1></header>
-    <div class="radios">
-      {STATIONS.map((s, i) => (
-        <section class="radio" id={s.key} style={`--c:${s.color}`} data-reveal>
-          <div class="rp"><img class="photo" src={asset(s.photo)} alt="" loading={i ? 'lazy' : 'eager'} style={`object-position:${s.pos}`} /><img class="lg" src={asset(s.logo)} alt={'Radio Monaco ' + s.name} /></div>
-          <div class="rt">
-            <h2>Radio Monaco <b>{s.name}</b></h2>
-            <p>{TXT[i]}</p>
-            <div class="fq">{s.bands.map((b) => <span>{b.city && <>{b.city} </>}<b>{b.f}</b></span>)}</div>
-            <div class="now" data-now={i}></div>
-            <button class="btn-play" type="button" data-rm-live={i} style={`--c:${s.color}`}><span class="pi"><I n="play" /></span>Écouter {s.name}</button>
-          </div>
-        </section>
-      ))}
+  <Univers h1 eyebrow="Nos radios" id="univers" />
+
+  <section class="ou" data-reveal>
+    <div class="wrap">
+      <div class="ou-hd">
+        <p class="eb">Où nous écouter</p>
+        <h2 class="ou-h"><span class="m"><span>Partout,</span></span> <span class="m"><span style="font-weight:600">tout le temps.</span></span></h2>
+        <p class="ou-lead">En FM de Bordighera à Saint-Tropez, en DAB+ à Monaco, Nice et Paris, et partout dans le monde sur le site et l’appli.</p>
+      </div>
+      <div class="ou-grid">
+        {STATIONS.map((s, i) => (
+          <article class="ou-st rise" id={s.key} style={`--c:${s.color};--d:${(i * 0.08 + 0.1).toFixed(2)}s`}>
+            <img class="ou-lg" src={asset(s.logoInk)} alt={'Radio Monaco ' + s.name} loading="lazy" />
+            <p class="ou-line">{s.line}</p>
+            <p class="ou-tx">{TXT[i]}</p>
+            <ul class="ou-fq">{s.bands.map((b) => <li><span>{b.city || (b.f === 'DAB+' ? 'Numérique' : 'En ligne')}</span><b>{b.f === 'Web' ? 'Site & appli' : b.f}</b></li>)}</ul>
+            <p class="ou-now" data-now={i}></p>
+            <button class="ou-play" type="button" data-rm-live={i} data-rm-st={i}><span class="pi"><I n="pp" /></span><span data-ou-l>Écouter</span></button>
+          </article>
+        ))}
+      </div>
     </div>
-  </div>
+  </section>
+  <script src="../scripts/home.js"></script>
   <script>
-    // titre en cours pour chaque radio (métadonnées du lecteur)
-    const paint = () => { const m = (window.RM && window.RM.meta) || {}; document.querySelectorAll('[data-now]').forEach((el) => { const x = m[+el.dataset.now]; el.textContent = x && x.title ? 'En ce moment · ' + x.title + (x.artist ? ' — ' + x.artist : '') : ''; }); };
-    document.addEventListener('rm:meta', paint); document.addEventListener('astro:page-load', paint); paint();
+    // titre en cours et état de lecture de chaque radio
+    const paint = () => {
+      const R = window.RM; if (!R) return; const m = R.meta || {}, s = R.state;
+      document.querySelectorAll('[data-now]').forEach((el) => { const x = m[+el.dataset.now]; el.textContent = x && x.title ? 'En ce moment · ' + x.title + (x.artist ? ' — ' + x.artist : '') : ''; });
+      document.querySelectorAll('[data-rm-st]').forEach((b) => { const on = s.mode === 'live' && s.station === +b.dataset.rmSt && s.playing; b.classList.toggle('playing', on); b.querySelector('[data-ou-l]').textContent = on ? 'En écoute' : 'Écouter'; });
+    };
+    ['rm:meta', 'rm:state', 'astro:page-load'].forEach((e) => document.addEventListener(e, paint)); paint();
   </script>
 </Base>

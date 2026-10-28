@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Podcasts from '../../components/Podcasts.astro';
 import { u } from '../../lib/url.js';
 import { getPodcasts, ausImg, FEED_LABEL } from '../../lib/data.js';
 const pods = await getPodcasts();
@@ -8,13 +9,21 @@ const PROD = (process.env.PROD_URL || 'https://radio-monaco.com').replace(/\/$/,
 const ld = { '@context': 'https://schema.org', '@type': 'ItemList', name: 'Podcasts Radio Monaco', itemListElement: pods.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: PROD + '/podcasts/' + p.k + '/', name: p.name })) };
 ---
 <Base title="Podcasts — Radio Monaco" description="Le Morning, les chroniques, l’horoscope et les DJ sets de Radio Monaco à réécouter quand vous voulez." path="/podcasts/" jsonld={[ld]}>
-  <div class="wrap">
-    <header class="page-hd"><nav class="crumbs"><a href={u('/')}>Accueil</a><span class="sep">/</span><span>Podcasts</span></nav><h1 class="h1">Vos rendez-vous préférés, <b>à la demande.</b></h1><p class="lead">{pods.length} émissions, de nouveaux épisodes chaque jour.</p></header>
-    {groups.map(([label, list]) => (
-      <section style="margin-top:40px">
-        <div class="sec-t"><h2><b>{label}</b></h2></div>
-        <div class="show-grid">{list.map((p) => <a class="show-card" href={u('/podcasts/' + p.k + '/')} style={`--c:${p.color}`}><span class="ci"><img src={ausImg(p.eps[0].img)} alt="" loading="lazy" /></span><span class="f">{p.eps.length} épisodes</span><b>{p.name}</b><span>{p.sub}</span></a>)}</div>
-      </section>
-    ))}
-  </div>
+  <Podcasts h1 eyebrow="Podcasts" more={false} />
+
+  <section class="ou" data-reveal>
+    <div class="wrap">
+      <div class="ou-hd">
+        <p class="eb">Toutes nos émissions</p>
+        <h2 class="ou-h"><span class="m"><span>{pods.length} rendez-vous,</span></span> <span class="m"><span style="font-weight:600">à réécouter.</span></span></h2>
+      </div>
+      {groups.map(([label, list]) => (
+        <div class="pg">
+          <p class="pg-t">{label}</p>
+          <div class="show-grid">{list.map((p, i) => <a class="show-card rise" href={u('/podcasts/' + p.k + '/')} style={`--c:${p.color};--d:${Math.min(i, 6) * 0.06}s`}><span class="ci"><img src={ausImg(p.eps[0].img)} alt="" loading="lazy" /></span><span class="f">{p.eps.length} épisodes</span><b>{p.name}</b><span>{p.sub}</span></a>)}</div>
+        </div>
+      ))}
+    </div>
+  </section>
+  <script src="../../scripts/home.js"></script>
 </Base>

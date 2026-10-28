@@ -1,9 +1,9 @@
-// Interactivité de la page d'accueil (relancée à chaque visite de l'accueil).
+// Interactivité des rubriques de l'accueil, aussi utilisées par les pages Nos radios et Podcasts.
 let stop = null;
 
 function init() {
   if (stop) stop();
-  if (!document.querySelector('[data-hero]')) { stop = null; return; }
+  if (!document.querySelector('[data-hero], [data-ux], #pz-data')) { stop = null; return; }
   const ac = new AbortController(); const sig = { signal: ac.signal }; const timers = [];
   stop = () => { ac.abort(); timers.forEach(clearInterval); };
   const every = (ms, fn) => timers.push(setInterval(fn, ms));
@@ -20,7 +20,7 @@ function init() {
     $$('[data-hgo] .bar').forEach((el, k) => (k === hi ? restart(el) : el.classList.remove('on')));
   };
   $$('[data-hgo]').forEach((b) => b.addEventListener('click', () => { hHold = Date.now(); hero(+b.dataset.hgo); }, sig));
-  if (!reduced) every(6000, () => { if (Date.now() - hHold > 9000) hero(hi + 1); });
+  if (!reduced && hn) every(6000, () => { if (Date.now() - hHold > 9000) hero(hi + 1); });
 
   // ---------- en ce moment ----------
   const onair = () => {
@@ -108,7 +108,7 @@ function init() {
   };
   $$('[data-news]').forEach((b) => b.addEventListener('click', () => { nHold = Date.now(); news(ni + +b.dataset.news); }, sig));
   $$('[data-ngo]').forEach((b) => b.addEventListener('click', () => { nHold = Date.now(); news(+b.dataset.ngo); }, sig));
-  if (!reduced) every(7000, () => { if (Date.now() - nHold > 12000) news(ni + 1); });
+  if (!reduced && nn) every(7000, () => { if (Date.now() - nHold > 12000) news(ni + 1); });
 
   // ---------- carrousels (reels, DJs) ----------
   const hold = {};
@@ -130,7 +130,7 @@ function init() {
     $$('[data-tgo]').forEach((b) => { const on = +b.dataset.tgo === ti; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
   };
   $$('[data-tgo]').forEach((b) => b.addEventListener('click', () => { tHold = Date.now(); team(+b.dataset.tgo); }, sig));
-  if (!reduced) every(5000, () => { if (Date.now() - tHold > 15000) team(ti + 1); });
+  if (!reduced && tn) every(5000, () => { if (Date.now() - tHold > 15000) team(ti + 1); });
 
   // vidéo du logo (lecture forcée, silencieuse)
   const v = document.querySelector('[data-hero] video'); if (v) { v.muted = true; const p = v.play(); if (p && p.catch) p.catch(() => {}); }

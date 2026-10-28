@@ -276,7 +276,7 @@ html{scroll-behavior:auto}
 .ux.on .uxc{width:64px;height:64px}.ux.on .uxt1{font-size:18px}
 .uvtop{position:absolute;left:0;right:0;top:0;height:46%;background:linear-gradient(180deg,rgba(10,10,16,.6),rgba(10,10,16,0));pointer-events:none}
 .uvtitle{position:absolute;left:clamp(24px,4vw,56px);right:clamp(24px,4vw,56px);top:clamp(36px,6vh,64px);pointer-events:none}
-.uvtitle h2{margin:0;font-size:clamp(56px,7.6vw,120px);line-height:.92;letter-spacing:-0.04em;font-weight:300;color:#fff}
+.uvtitle .uvh{margin:0;font-size:clamp(56px,7.6vw,120px);line-height:.92;letter-spacing:-0.04em;font-weight:300;color:#fff}
 .uveb{color:rgba(255,255,255,.82)}
 @media (hover:hover) and (min-width:901px){
 .uvrow:hover .ux{flex-grow:.78}
@@ -304,7 +304,7 @@ html{scroll-behavior:auto}
 .uvtitle{order:-1}
 .uvtop{display:none}
 .uvtitle{position:static;padding:0 24px 28px;pointer-events:auto}
-.uvtitle h2{color:#141218;font-size:clamp(40px,11vw,64px)}
+.uvtitle .uvh{color:#141218;font-size:clamp(40px,11vw,64px)}
 .uveb{color:#6A6570}
 .uvrow{position:static;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
 .uvrow::-webkit-scrollbar{display:none}

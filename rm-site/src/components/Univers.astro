@@ -1,0 +1,34 @@
+---
+// Les 4 univers (volets photo plein cadre) — accueil et page « Nos radios »
+import I from './Icons.astro';
+import { asset } from '../lib/url.js';
+import { STATIONS } from '../lib/stations.js';
+const { eyebrow = '01 — Nos webradios', h1 = false, id = 'radios' } = Astro.props;
+const H = h1 ? 'h1' : 'h2';
+---
+  <section id={id} data-full data-reveal class="uvs">
+    <div class="uvrow">
+      {STATIONS.map((r, i) => (
+        <button class:list={['ux', { dk: r.ink === '#141218' }]} type="button" data-rm-live={i} data-ux={i} aria-label={`Écouter Radio Monaco ${r.name}`} style={`--c:${r.color};--w:${r.wash};--d:${(i * 0.09 + 0.12).toFixed(2)}s`}>
+          <img class="uxp" src={asset(r.photo)} alt="" loading="lazy" style={`object-position:${r.pos}`} />
+          <span class="uxt0" aria-hidden="true"></span><span class="uxs" aria-hidden="true"></span><span class="uxw" aria-hidden="true"></span><span class="uxbar" aria-hidden="true"></span>
+          <span class="uxb rise">
+            <span class="uxh"><img class="uxl" src={asset(r.logo)} alt={`Radio Monaco ${r.name}`} width="128" height="46" /><span class="uxpl"><I n="pp" /></span></span>
+            <span class="uxr" aria-hidden="true"></span>
+            <span class="uxlv"><span class="live-dot"></span><span data-ux-status>En direct</span></span>
+            <span class="uxf" aria-label={'Diffusion : ' + r.bands.map((b) => (b.city ? b.city + ' ' : '') + b.f).join(', ')}>{r.bands.map((b) => <span class="bd">{b.city}<b>{b.f}</b></span>)}</span>
+            <span class="uxi"><span><span class="uxn">
+              <span class="uxc"><img data-ux-cover alt="Pochette du titre en cours" hidden /><I n="eq" /></span>
+              <span class="uxt"><span class="uxt1" data-ux-t1>{r.line}</span><span class="uxt2" data-ux-t2>En direct</span></span>
+            </span></span></span>
+          </span>
+        </button>
+      ))}
+    </div>
+    <div class="uvtop" aria-hidden="true"></div>
+    <div class="uvtitle">
+      <p class="eb uveb" style="margin:0 0 18px;font-size:12px;font-weight:500;letter-spacing:.24em;text-transform:uppercase">{eyebrow}</p>
+      <H class="uvh"><span class="m"><span>Découvrez</span></span> <span class="m"><span style="font-weight:600">nos univers.</span></span></H>
+    </div>
+  </section>
+
