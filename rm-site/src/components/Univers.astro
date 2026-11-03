@@ -9,7 +9,7 @@ const H = h1 ? 'h1' : 'h2';
   <section id={id} data-full data-reveal class="uvs">
     <div class="uvrow">
       {STATIONS.map((r, i) => (
-        <button class:list={['ux', { dk: r.ink === '#141218' }]} type="button" data-rm-live={i} data-ux={i} aria-label={`Écouter Radio Monaco ${r.name}`} style={`--c:${r.color};--w:${r.wash};--d:${(i * 0.09 + 0.12).toFixed(2)}s`}>
+        <button class:list={['ux', { dk: r.ink === '#000000' }]} type="button" data-rm-live={i} data-ux={i} aria-label={`Écouter Radio Monaco ${r.name}`} style={`--c:${r.color};--w:${r.wash};--d:${(i * 0.09 + 0.12).toFixed(2)}s`}>
           <img class="uxp" src={asset(r.photo)} alt="" loading="lazy" style={`object-position:${r.pos}`} />
           <span class="uxt0" aria-hidden="true"></span><span class="uxs" aria-hidden="true"></span><span class="uxw" aria-hidden="true"></span><span class="uxbar" aria-hidden="true"></span>
           <span class="uxb rise">
@@ -27,8 +27,7 @@ const H = h1 ? 'h1' : 'h2';
     </div>
     <div class="uvtop" aria-hidden="true"></div>
     <div class="uvtitle">
-      <p class="eb uveb" style="margin:0 0 18px;font-size:12px;font-weight:500;letter-spacing:.24em;text-transform:uppercase">{eyebrow}</p>
-      <H class="uvh"><span class="m"><span>Découvrez</span></span> <span class="m"><span style="font-weight:600">nos univers.</span></span></H>
+      <H class="sh uvh">Nos radios</H>
     </div>
   </section>
 

@@ -20,14 +20,14 @@ const ld = { '@context': 'https://schema.org', '@type': 'RadioSeries', name: sho
       <div>
         <nav class="crumbs" aria-label="Fil d’Ariane"><a href={u('/')}>Accueil</a><span class="sep">/</span><a href={u('/#djs')}>Émissions</a></nav>
         <h1 class="h1"><b>{show.name}</b></h1>
-        {dj && <p class="lead">avec <a href={dj.member ? u(dj.member) : undefined} style="color:var(--ink);font-weight:600">{dj.name}</a>{dj.when ? ' · ' + dj.when : ''}</p>}
+        {dj && <p class="lead">avec <a href={dj.member ? u(dj.member) : undefined} style="color:var(--ink);font-weight:600">{dj.name}</a>{dj.when ? ', ' + dj.when : ''}</p>}
         <div class="bio" set:html={show.html} />
         <button class="btn-play" type="button" data-rm-live={station} style={`--c:${station === 2 ? '#F59C00' : station === 3 ? '#8A5AA1' : '#E4032E'}`}><span class="pi"><I n="play" /></span>Écouter {station === 2 ? '100 % Mix DJ' : station === 3 ? 'Night Mood' : 'le direct'}</button>
       </div>
     </div>
     {pod && (
       <section style="margin-top:96px">
-        <div class="sec-t"><h2>Les derniers <b>épisodes.</b></h2><a href={u('/podcasts/' + pod.k + '/')}>Tous les épisodes<I n="right" s={18} /></a></div>
+        <div class="sec-t"><h2>Derniers épisodes</h2><a href={u('/podcasts/' + pod.k + '/')}>Tous les épisodes</a></div>
         <EpisodeList show={pod} limit={6} />
       </section>
     )}

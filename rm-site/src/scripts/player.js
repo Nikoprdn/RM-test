@@ -58,11 +58,11 @@ audio.addEventListener('timeupdate', () => {
 const fmt = (v) => { v = Math.max(0, Math.floor(v || 0)); const h = Math.floor(v / 3600), m = Math.floor((v % 3600) / 60), s = v % 60; return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(s).padStart(2, '0'); };
 function current() {
   const s = RM.state;
-  if (s.mode === 'pod' && s.ep) return { kind: 'Podcast · ' + s.ep.show, t1: s.ep.title, t2: fmt(audio.currentTime) + ' / ' + fmt(audio.duration || s.ep.s), color: s.ep.color, ink: s.ep.ink || '#FFFFFF', cover: s.ep.img, artist: s.ep.show, art: s.ep.img };
+  if (s.mode === 'pod' && s.ep) return { kind: 'Podcast ' + s.ep.show, t1: s.ep.title, t2: fmt(audio.currentTime) + ' / ' + fmt(audio.duration || s.ep.s), color: s.ep.color, ink: s.ep.ink || '#FFFFFF', cover: s.ep.img, artist: s.ep.show, art: s.ep.img };
   const st = ST[s.station] || ST[0]; const m = RM.meta[s.station];
   const showName = s.station === 0 && RM.onair.now ? RM.onair.now.name : st.line;
   return {
-    kind: 'Direct · ' + st.name, t1: m && m.title ? m.title : showName, t2: m && m.title ? (m.artist || st.name) : 'En direct',
+    kind: st.name + ' en direct', t1: m && m.title ? m.title : showName, t2: m && m.title ? (m.artist || st.name) : 'En direct',
     color: st.color, ink: st.ink, cover: m && m.cover, artist: m && m.artist ? m.artist : 'Radio Monaco ' + st.name, art: (m && m.cover) || st.art
   };
 }
@@ -70,7 +70,7 @@ function progress() {
   const bar = $('dock-prog'); if (!bar) return;
   const d = audio.duration || (RM.state.ep && RM.state.ep.s) || 0;
   bar.firstElementChild.style.width = (d ? (100 * audio.currentTime) / d : 0).toFixed(2) + '%';
-  if (RM.state.mode === 'pod') { const c = current(); const el = $('dock-title'); if (el) el.innerHTML = `<b></b><i></i>`, el.firstChild.textContent = c.t1, el.lastChild.textContent = ' · ' + c.t2; }
+  if (RM.state.mode === 'pod') { const c = current(); const el = $('dock-title'); if (el) el.innerHTML = `<b></b><i></i>`, el.firstChild.textContent = c.t1, el.lastChild.textContent = c.t2; }
 }
 function render() {
   const dock = $('dock'); if (!dock) return;
@@ -79,11 +79,11 @@ function render() {
   dock.classList.toggle('playing', !!s.playing);
   dock.classList.toggle('pod', s.mode === 'pod');
   $('dock-kind').textContent = c.kind;
-  const t = $('dock-title'); t.innerHTML = '<b></b><i></i>'; t.firstChild.textContent = c.t1; t.lastChild.textContent = ' · ' + c.t2;
+  const t = $('dock-title'); t.innerHTML = '<b></b><i></i>'; t.firstChild.textContent = c.t1; t.lastChild.textContent = c.t2;
   const img = $('dock-cover');
   if (c.cover) { if (img.getAttribute('src') !== c.cover) img.src = c.cover; img.hidden = false; } else img.hidden = true;
   const btn = $('dock-play');
-  btn.classList.toggle('ink', c.ink === '#141218');
+  btn.classList.toggle('ink', c.ink === '#000000');
   btn.setAttribute('aria-label', s.playing ? 'Mettre en pause' : (s.mode === 'pod' ? 'Reprendre le podcast' : 'Écouter le direct'));
   $('dock-live').hidden = s.mode !== 'pod';
   progress();

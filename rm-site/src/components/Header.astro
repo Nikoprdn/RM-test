@@ -2,7 +2,7 @@
 import { u, asset } from '../lib/url.js';
 const { hero = false } = Astro.props;
 // Sur l'accueil : ancres vers les rubriques ; ailleurs : les vraies pages
-const NAV = [['radios', 'Radios', '/nos-radios/'], ['podcasts', 'Podcasts', '/podcasts/'], ['actualites', 'Actualités', '/actualites/'], ['reseaux', 'Réseaux', null], ['equipes', 'Équipes', '/lequipe/'], ['djs', 'DJs', '/djs/']];
+const NAV = [['radios', 'Radios', '/nos-radios/'], ['podcasts', 'Podcasts', '/podcasts/'], ['actualites', 'Actualités', '/actualites/'], ['reseaux', 'Instagram', null], ['equipes', 'L’équipe', '/lequipe/'], ['djs', 'DJs', '/djs/']];
 ---
 <header class:list={['hdr', { over: hero, hhero: hero }]} transition:name="header">
   <div class="hdr-in">

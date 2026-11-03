@@ -9,7 +9,7 @@ const { pod } = Astro.props;
 const PROD = (process.env.PROD_URL || 'https://radio-monaco.com').replace(/\/$/, '');
 const ld = { '@context': 'https://schema.org', '@type': 'PodcastSeries', name: pod.name, description: pod.sub, url: PROD + '/podcasts/' + pod.k + '/', image: ausImg(pod.eps[0].img, true), publisher: { '@id': PROD + '/#organisation' },
   hasPart: pod.eps.slice(0, 12).map((e) => ({ '@type': 'PodcastEpisode', name: e.title, datePublished: e.d + ':00Z', timeRequired: 'PT' + Math.round(e.s / 60) + 'M', associatedMedia: { '@type': 'MediaObject', contentUrl: ausAudio(e.au) } })) };
-const first = { id: pod.k + ':0', url: ausAudio(pod.eps[0].au), title: pod.eps[0].title, show: pod.name, color: pod.color, ink: pod.feed === 'mixdj' ? '#141218' : '#FFFFFF', img: ausImg(pod.eps[0].img), s: pod.eps[0].s };
+const first = { id: pod.k + ':0', url: ausAudio(pod.eps[0].au), title: pod.eps[0].title, show: pod.name, color: pod.color, ink: pod.feed === 'mixdj' ? '#000000' : '#FFFFFF', img: ausImg(pod.eps[0].img), s: pod.eps[0].s };
 ---
 <Base title={`${pod.name} — Podcast Radio Monaco`} description={`${pod.name} : ${pod.sub}. Tous les épisodes à réécouter sur Radio Monaco.`} image={ausImg(pod.eps[0].img, true)} path={'/podcasts/' + pod.k + '/'} jsonld={[ld]}>
   <div class="wrap">
@@ -22,6 +22,6 @@ const first = { id: pod.k + ':0', url: ausAudio(pod.eps[0].au), title: pod.eps[0
         <button class="btn-play" type="button" data-rm-ep={JSON.stringify(first)} style={`--c:${pod.color}`}><span class="pi"><I n="play" /></span>Écouter le dernier épisode</button>
       </div>
     </div>
-    <section class="pod-eps"><div class="sec-t"><h2>Tous les <b>épisodes.</b></h2></div><EpisodeList show={pod} limit={12} /></section>
+    <section class="pod-eps"><div class="sec-t"><h2>Épisodes</h2></div><EpisodeList show={pod} limit={12} /></section>
   </div>
 </Base>

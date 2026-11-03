@@ -20,9 +20,8 @@ const ld = { '@context': 'https://schema.org', '@type': 'ItemList', name: 'Les r
   <section class="ou" data-reveal>
     <div class="wrap">
       <div class="ou-hd">
-        <p class="eb">Où nous écouter</p>
-        <h2 class="ou-h"><span class="m"><span>Partout,</span></span> <span class="m"><span style="font-weight:600">tout le temps.</span></span></h2>
-        <p class="ou-lead">En FM de Bordighera à Saint-Tropez, en DAB+ à Monaco, Nice et Paris, et partout dans le monde sur le site et l’appli.</p>
+        <h2 class="sh">Où nous écouter</h2>
+        <p class="sh-d">En FM de Bordighera à Saint-Tropez, en DAB+ à Monaco, Nice et Paris, et partout dans le monde sur le site et l’appli.</p>
       </div>
       <div class="ou-grid">
         {STATIONS.map((s, i) => (
@@ -43,7 +42,7 @@ const ld = { '@context': 'https://schema.org', '@type': 'ItemList', name: 'Les r
     // titre en cours et état de lecture de chaque radio
     const paint = () => {
       const R = window.RM; if (!R) return; const m = R.meta || {}, s = R.state;
-      document.querySelectorAll('[data-now]').forEach((el) => { const x = m[+el.dataset.now]; el.textContent = x && x.title ? 'En ce moment · ' + x.title + (x.artist ? ' — ' + x.artist : '') : ''; });
+      document.querySelectorAll('[data-now]').forEach((el) => { const x = m[+el.dataset.now]; el.textContent = x && x.title ? 'En ce moment : ' + x.title + (x.artist ? ' — ' + x.artist : '') : ''; });
       document.querySelectorAll('[data-rm-st]').forEach((b) => { const on = s.mode === 'live' && s.station === +b.dataset.rmSt && s.playing; b.classList.toggle('playing', on); b.querySelector('[data-ou-l]').textContent = on ? 'En écoute' : 'Écouter'; });
     };
     ['rm:meta', 'rm:state', 'astro:page-load'].forEach((e) => document.addEventListener(e, paint)); paint();

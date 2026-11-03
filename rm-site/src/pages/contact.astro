@@ -13,8 +13,8 @@ const SVC = [
 ---
 <Base title="Contact — Radio Monaco" description="Écrire à Radio Monaco : rédaction, programmation musicale, régie publicitaire, données personnelles." path="/contact/">
   <div class="wrap">
-    <header class="page-hd"><nav class="crumbs" aria-label="Fil d’Ariane"><a href={u('/')}>Accueil</a><span class="sep">/</span><span>Contact</span></nav><h1 class="h1">Écrivez-<b>nous.</b></h1><p class="lead">Choisissez le bon interlocuteur : votre message arrive directement à l’équipe concernée.</p></header>
-    <div class="svc">{SVC.map(([t, d, m]) => <a href={'mailto:' + m + '?subject=' + encodeURIComponent('Radio Monaco — ' + t)}><b>{t}</b><span>{d}</span><em>Écrire<I n="right" s={16} /></em></a>)}</div>
+    <header class="page-hd"><nav class="crumbs" aria-label="Fil d’Ariane"><a href={u('/')}>Accueil</a><span class="sep">/</span><span>Contact</span></nav><h1 class="h1">Contact</h1><p class="lead">Choisissez le bon interlocuteur : votre message arrive directement à l’équipe concernée.</p></header>
+    <div class="svc">{SVC.map(([t, d, m]) => <a href={'mailto:' + m + '?subject=' + encodeURIComponent('Radio Monaco — ' + t)}><b>{t}</b><span>{d}</span><em>Écrire</em></a>)}</div>
     <div class="coord">
       <div><span class="t">Adresse</span>Radio Monaco<br />7 rue du Gabian<br />98000 Monaco</div>
       <div><span class="t">Téléphone</span><a href="tel:+37797700700">+377 97 700 700</a></div>
