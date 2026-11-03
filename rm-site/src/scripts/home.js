@@ -22,30 +22,13 @@ function init() {
   $$('[data-hgo]').forEach((b) => b.addEventListener('click', () => { hHold = Date.now(); hero(+b.dataset.hgo); }, sig));
   if (!reduced && hn) every(6000, () => { if (Date.now() - hHold > 9000) hero(hi + 1); });
 
-  // ---------- à l'antenne : horloge de studio (heure de Monaco) + émission en cours ----------
-  const hmf = new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Monaco', hour: 'numeric', minute: '2-digit', hourCycle: 'h23' });
-  const hm = (t) => { const [h, m] = hmf.format(new Date(t)).split(':'); return +h + 'h' + (m === '00' ? '' : m); };
+  // ---------- en ce moment ----------
   const onair = () => {
     const o = (window.RM && window.RM.onair) || {}; const now = document.getElementById('onair-now'); if (!now) return;
-    if (o.now) now.textContent = o.now.name;
-    const nx = document.getElementById('onair-next'); if (!nx) return;
-    const until = o.now && o.now.end ? 'Jusqu’à ' + hm(o.now.end) : '';
-    const then = o.next ? 'puis ' + o.next.name + (until ? '' : ' à ' + hm(o.next.start)) : '';
-    nx.textContent = until && then ? until + ', ' + then : (until || (then ? then[0].toUpperCase() + then.slice(1) : 'Programme du jour'));
+    if (o.now) { now.textContent = o.now.name; const img = document.getElementById('onair-img'); if (o.now.img) img.src = o.now.img; }
+    const nx = document.getElementById('onair-next');
+    if (o.next) { const d = new Date(o.next.start); nx.textContent = 'À suivre · ' + String(d.getHours()).padStart(2, '0') + 'h' + String(d.getMinutes()).padStart(2, '0') + ' ' + o.next.name; }
   };
-  const clk = document.querySelector('.clk');
-  if (clk) {
-    const dots = clk.querySelectorAll('.cd'), t = document.getElementById('clk-t');
-    const fmt = new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Monaco', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' });
-    let last = -1;
-    const tick = () => {
-      const p = Object.fromEntries(fmt.formatToParts(new Date()).map((x) => [x.type, x.value])); const sec = +p.second;
-      if (sec === last) return; last = sec;
-      t.textContent = p.hour + ':' + p.minute;
-      dots.forEach((d, i) => d.classList.toggle('on', i <= sec));
-    };
-    tick(); every(250, tick);
-  }
   document.addEventListener('rm:onair', onair, sig); onair();
 
   // ---------- univers webradios ----------
@@ -74,7 +57,7 @@ function init() {
     const when = (iso) => { const d = new Date(iso + 'Z'); const dd = new Date(d); dd.setHours(0, 0, 0, 0); const n = Math.round((t0 - dd) / 864e5); return n <= 0 ? 'Aujourd’hui' : n === 1 ? 'Hier' : n < 7 ? `Il y a ${n} jours` : d.getDate() + ' ' + MOIS[d.getMonth()]; };
     const dur = (s) => { const m = Math.round(s / 60); if (m < 1) return s + ' s'; if (m < 60) return m + ' min'; const h = Math.floor(m / 60), r = m % 60; return h + ' h' + (r ? ' ' + String(r).padStart(2, '0') : ''); };
     const img = (id, big) => `https://image.ausha.co/${id}_${big ? '1400x1400' : '400x400'}.jpeg`;
-    const ep = (sh, i) => { const e = sh.e[i]; return { id: sh.k + ':' + i, url: `https://audio.ausha.co/${e[3]}.mp3`, title: e[4], show: sh.n, color: sh.c, ink: sh.f === 'mixdj' ? '#000000' : '#FFFFFF', img: img(e[2]), s: e[1], d: e[0], big: img(e[2], true), sub: sh.sub }; };
+    const ep = (sh, i) => { const e = sh.e[i]; return { id: sh.k + ':' + i, url: `https://audio.ausha.co/${e[3]}.mp3`, title: e[4], show: sh.n, color: sh.c, ink: sh.f === 'mixdj' ? '#141218' : '#FFFFFF', img: img(e[2]), s: e[1], d: e[0], big: img(e[2], true), sub: sh.sub }; };
     const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     const PLAY = '<svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>';
     const EQ = '<span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>';
@@ -84,17 +67,17 @@ function init() {
       const all = []; shows.forEach((s) => s.e.forEach((_, i) => all.push(ep(s, i)))); all.sort((a, b) => (a.d < b.d ? 1 : -1));
       const feat = selShow ? ep(selShow, 0) : (all.find((x) => x.id.startsWith('morning:')) || all[0]);
       const list = selShow ? selShow.e.map((_, i) => ep(selShow, i)).slice(0, 7) : [feat, ...all.filter((x) => x.id !== feat.id)].slice(0, 7);
-      document.getElementById('pz-title').textContent = selShow ? selShow.n : (filt === 'all' ? 'Derniers épisodes' : D.labels[filt]);
-      document.getElementById('pz-list').innerHTML = list.map((x) => `<button class="pzr2" type="button" data-rm-ep='${esc(JSON.stringify(x))}' data-epid="${x.id}" style="--c:${x.color}"><span class="pzr2c"><img src="${x.img}" alt="" loading="lazy"></span><span class="pzr2x"><span class="pzrs">${esc(x.show)}</span><span class="pzr2t">${esc(x.title)}</span><span class="pzrm">${when(x.d)}, ${dur(x.s)}</span></span><span class="pzr2p">${PLAY}</span><span class="pzrbar" aria-hidden="true"><i style="width:0%"></i></span></button>`).join('');
+      document.getElementById('pz-title').textContent = selShow ? selShow.n + ' · ' + selShow.sub : (filt === 'all' ? 'Derniers épisodes' : D.labels[filt]);
+      document.getElementById('pz-list').innerHTML = list.map((x) => `<button class="pzr2" type="button" data-rm-ep='${esc(JSON.stringify(x))}' data-epid="${x.id}" style="--c:${x.color}"><span class="pzr2c"><img src="${x.img}" alt="" loading="lazy"></span><span class="pzr2x"><span class="pzrs">${esc(x.show)}</span><span class="pzr2t">${esc(x.title)}</span><span class="pzrm">${when(x.d)} · ${dur(x.s)}</span></span><span class="pzr2p">${PLAY}</span><span class="pzrbar" aria-hidden="true"><i style="width:0%"></i></span></button>`).join('');
       const F = document.getElementById('pz-feat');
       if (F && feat) {
         F.style.setProperty('--c', feat.color);
         F.querySelectorAll('[data-rm-ep]').forEach((b) => (b.dataset.rmEp = JSON.stringify(feat)));
         const im = F.querySelector('.pzfcv img'); if (im.getAttribute('src') !== feat.big) im.src = feat.big;
         F.querySelector('.live-dot').style.background = feat.color;
-        F.querySelector('[data-f=badge]').textContent = feat.show;
+        F.querySelector('[data-f=badge]').textContent = (when(feat.d) === 'Aujourd’hui' ? 'Nouveau · aujourd’hui' : 'À la une') + ' · ' + feat.show;
         F.querySelector('[data-f=title]').textContent = feat.title;
-        F.querySelector('[data-f=meta]').textContent = when(feat.d) + ', ' + dur(feat.s);
+        F.querySelector('[data-f=meta]').textContent = when(feat.d) + ' · ' + dur(feat.s) + ' · ' + feat.sub;
       }
       $$('.pzchip2').forEach((c) => { const on = c.dataset.show === sel; c.classList.toggle('on', on); c.setAttribute('aria-pressed', on ? 'true' : 'false'); c.hidden = !(filt === 'all' || SH.find((s) => s.k === c.dataset.show).f === filt); });
       $$('[data-filter]').forEach((t) => { const on = t.dataset.filter === filt; t.classList.toggle('on', on); t.setAttribute('aria-selected', on ? 'true' : 'false'); });

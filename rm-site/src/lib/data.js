@@ -164,7 +164,7 @@ export const getTeam = async () => {
     role = role.replace(/^(l[’']|la |le )?(co-)?anim\w+\s+(du|de la|de l[’'])\s*/i, '').replace(/^morning/i, 'Le Morning').split(' et ')[0];
     role = role ? role.charAt(0).toUpperCase() + role.slice(1) : 'L’info de la Principauté et de la Riviera';
     const [first, ...rest] = m.name.split(' ');
-    return { ...m, first, last: rest.join(' '), role: LBL[m.type] + ', ' + role };
+    return { ...m, first, last: rest.join(' '), role: LBL[m.type] + ' · ' + role };
   });
 };
 
@@ -188,7 +188,7 @@ export const getToday = () => once('today', async () => {
 // ---------- podcasts (Ausha) ----------
 export const PODCAST_FEEDS = { emissions: 'https://feed.ausha.co/oZ4LnUZDvP6E', mixdj: 'https://feed.ausha.co/y0lvAIWDdvnm', horoscope: 'https://feed.ausha.co/b7gp6fE419Rl' };
 export const PODCAST_SHOWS = [
-  ['morning', 'emissions', 'Le Morning', 'Made in Monte-Carlo, avec Léo, Giulia et Marie', /^le morning (made in monte[- ]carlo|de l['’]été)/i],
+  ['morning', 'emissions', 'Le Morning', 'Made in Monte-Carlo · Léo, Giulia & Marie', /^le morning (made in monte[- ]carlo|de l['’]été)/i],
   ['echo', 'emissions', 'L’Écho du Rocher', 'L’actualité de la Principauté', /^l['’][ée]cho du rocher/i],
   ['feelgood', 'emissions', 'La Feel Good News', 'La bonne nouvelle du jour', /^(la |les )?feel good news/i],
   ['switchon', 'emissions', 'Switch On', 'Nos vies connectées, décryptées', /^switch on/i],
@@ -257,7 +257,7 @@ export const getPodcasts = () => once('pods', async () => {
 function epTitle(feed, e) {
   if (feed !== 'mixdj') return e.t;
   const d = new Date(e.d + 'Z');
-  return e.t ? `${e.t}, ${d.getDate()} ${MOISC[d.getMonth()]}` : `Émission du ${d.getDate()} ${MOIS[d.getMonth()]}`;
+  return e.t ? `${e.t} · ${d.getDate()} ${MOISC[d.getMonth()]}` : `Émission du ${d.getDate()} ${MOIS[d.getMonth()]}`;
 }
 export const ausImg = (id, big) => `https://image.ausha.co/${id}_${big ? '1400x1400' : '400x400'}.jpeg`;
 export const ausAudio = (id) => `https://audio.ausha.co/${id}.mp3`;

@@ -7,7 +7,7 @@ const hm = (iso) => { const d = new Date(iso); return String(d.getHours()).padSt
 ---
 <Base title="Programme du jour — Radio Monaco" description="Qui est à l’antenne aujourd’hui sur Radio Monaco : le programme heure par heure." path="/programmes/">
   <div class="wrap" style="max-width:980px">
-    <header class="page-hd"><nav class="crumbs"><a href={u('/')}>Accueil</a><span class="sep">/</span><span>Programme</span></nav><h1 class="h1">Programme du jour</h1><p class="lead" id="pg-date">Le programme heure par heure, mis à jour en direct.</p></header>
+    <header class="page-hd"><nav class="crumbs"><a href={u('/')}>Accueil</a><span class="sep">/</span><span>Programme</span></nav><h1 class="h1">Aujourd’hui sur <b>Radio Monaco.</b></h1><p class="lead" id="pg-date">Le programme heure par heure, mis à jour en direct.</p></header>
     <div class="sched" id="sched">
       {today.map((x) => (
         <div class="slot" data-start={x.start} data-end={x.end}>
@@ -27,7 +27,7 @@ const hm = (iso) => { const d = new Date(iso); return String(d.getHours()).padSt
       const box = document.getElementById('sched'); const o = window.RM && window.RM.onair; if (!box || !o || !o.list || !o.list.length) return;
       const now = Date.now();
       box.innerHTML = o.list.map((x) => { const on = x.s <= now && now < x.e; const past = x.e <= now; return `<div class="slot${on ? ' now' : ''}${past ? ' past' : ''}"><span class="h">${hm(x.start)}<i>→ ${hm(x.end)}</i></span>${x.img ? `<img src="${esc(x.img)}" alt="" loading="lazy">` : '<span></span>'}<span><b>${esc(x.name)}</b>${on ? '<span class="live"><span class="live-dot"></span>En ce moment</span>' : ''}${x.desc ? `<p>${esc(x.desc)}</p>` : ''}</span></div>`; }).join('');
-      const d = new Date(); document.getElementById('pg-date').textContent = d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }).replace(/^./, (c) => c.toUpperCase()) + ', mis à jour en direct.';
+      const d = new Date(); document.getElementById('pg-date').textContent = d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }).replace(/^./, (c) => c.toUpperCase()) + ' · mis à jour en direct.';
     }
     document.addEventListener('rm:onair', draw); document.addEventListener('astro:page-load', draw);
   </script>

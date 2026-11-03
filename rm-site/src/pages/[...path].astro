@@ -42,7 +42,7 @@ const crumbs = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', it
         <h1 class="h1 art-t">{p.title}</h1>
         <div class="art-meta">
           {p.catSlug && <a class="cat" href={u('/category/' + p.catSlug + '/')}>{p.cat}</a>}
-          <time datetime={p.date}>{dateLong(p.date)}</time><span>par {p.author}</span>
+          <time datetime={p.date}>{dateLong(p.date)}</time><span>· {p.author}</span>
         </div>
       </div>
     </header>
@@ -50,14 +50,14 @@ const crumbs = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', it
     <div class="prose art-body" set:html={body.html} />
     <div class="share">
       <span class="lbl">Partager</span>
-      <button type="button" data-share>Envoyer le lien</button>
+      <button type="button" data-share>Partager l’article</button>
       <a href={`https://wa.me/?text=${encodeURIComponent(p.title + ' ' + PROD + p.path)}`} rel="noopener" target="_blank">WhatsApp</a>
       <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(PROD + p.path)}`} rel="noopener" target="_blank">Facebook</a>
       <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(PROD + p.path)}`} rel="noopener" target="_blank">LinkedIn</a>
     </div>
   </article>
   <section class="related wrap">
-    <div class="sec-t"><h2>À lire aussi</h2>{p.catSlug && <a href={u('/category/' + p.catSlug + '/')}>Toute la rubrique {p.cat}</a>}</div>
+    <div class="sec-t"><h2>À lire <b>aussi.</b></h2>{p.catSlug && <a href={u('/category/' + p.catSlug + '/')}>Toute la rubrique {p.cat}<I n="right" s={18} /></a>}</div>
     <div class="cards">{more.map((x) => <Card p={x} />)}</div>
   </section>
 </Base>

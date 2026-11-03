@@ -23,7 +23,7 @@ const pages = Array.from({ length: page.lastPage }, (_, i) => i + 1).filter((n) 
   <div class="wrap">
     <header class="page-hd">
       <nav class="crumbs" aria-label="Fil d’Ariane"><a href={u('/')}>Accueil</a><span class="sep">/</span><span>Actualités</span></nav>
-      <h1 class="h1">{name}{page.currentPage > 1 && <span class="pgn">, page {page.currentPage}</span>}</h1>
+      <h1 class="h1"><b>{name}</b>{page.currentPage > 1 && <span style="font-weight:300"> · page {page.currentPage}</span>}</h1>
       <div class="chips">{others.map((c) => <a class="chip" href={u('/category/' + c.slug + '/')}>{catLabel(c)}</a>)}</div>
     </header>
     <div class="cards">

@@ -14,7 +14,7 @@ export const STATIONS = [
     line: 'La webradio Radio Monaco', bands: [{ city: '', f: 'DAB+' }]
   },
   {
-    key: 'mixdj', name: '100 % Mix DJ', color: '#F59C00', ink: '#000000', wash: 'rgba(245,156,0,.55)',
+    key: 'mixdj', name: '100 % Mix DJ', color: '#F59C00', ink: '#141218', wash: 'rgba(245,156,0,.55)',
     stream: 'https://mixdj.ice.infomaniak.ch/mixdj-128.aac',
     logo: 'wr-mixdj-allwhite.png', logoInk: 'wr-mixdj-ink.png', photo: 'rm-dj.jpg', pos: '40% 50%',
     line: 'DJ sets non-stop', bands: [{ city: '', f: 'Web' }]
