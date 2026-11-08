@@ -98,7 +98,7 @@ const radio = { key: src.key, name: 'The Sound of Monte-Carlo', color: src.color
 
       const q = document.getElementById('pl-q');
       const row = (t, day) => `<li class="pl-r"><time class="pl-t" datetime="${new Date(t.date * 1000).toISOString()}">${hhmm(t.date)}</time>${img(t, 'pl-c')}<span class="pl-x"><span class="pl-tt">${esc(t.title)}</span><span class="pl-a">${esc(t.artist)}${day && dayLabel(t.date) ? ' · ' + esc(dayLabel(t.date)) : ''}</span></span></li>`;
-      const listen = (r) => r.departs.map((d) => `<button class="btn-play" type="button" data-rm-live="${d.i}" style="--c:${r.color}"><span class="pi"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="pl-lv">Écouter </span>${esc(d.name)}</button>`).join('');
+      const listen = (r) => r.departs.map((d) => `<button class="btn-play" type="button" data-rm-live="${d.i}" style="--c:${r.color}"><span class="pi"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span><span class="pl-lv">Écouter </span>${esc(d.name)}</span></button>`).join('');
       const draw = () => {
         const r = radio(); if (!r) return;
         const all = (cache[cur] || []).map(parse).filter((t) => !junk(t)).sort((a, b) => b.date - a.date);
