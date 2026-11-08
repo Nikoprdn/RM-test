@@ -83,12 +83,15 @@ const radio = { key: src.key, name: 'The Sound of Monte-Carlo', color: src.color
         const wrap = document.querySelector('.pl-wrap'); const cw = wrap ? wrap.getBoundingClientRect().width : 980;
         const gw = Math.floor((document.documentElement.clientWidth - cw) / 2) - 16;
         const n = gw < 140 || C.length < 8 ? 0 : Math.min(4, Math.max(1, Math.round(gw / 190)));
-        const key = n + ':' + gw;
+        const key = n + ':' + gw + ':' + Math.ceil(innerHeight / 150);
         if (key !== bgCols) {
           bgCols = key; B.style.setProperty('--gw', Math.max(0, gw) + 'px');
           if (!n) { B.innerHTML = ''; return; }
-          shown = new Set(C); const per = Math.max(5, Math.ceil(C.length / (n * 2)));
-          const col = (c) => { let set = C.slice(c * per, (c + 1) * per); if (set.length < 5) set = [...set, ...C.slice(c, c + 5 - set.length)]; return `<div class="pl-bgc" style="--t:${95 + (c % 3) * 25}s">${[...set, ...set].map((x) => `<img src="${esc(x)}" alt="" decoding="async">`).join('')}</div>`; };
+          // chaque colonne doit couvrir toute la hauteur à tout moment du défilement : assez de pochettes,
+          // répétées si besoin, et un point de départ différent par colonne au lieu d'un décalage
+          shown = new Set(C); const per = Math.max(1, Math.ceil(C.length / (n * 2)));
+          const cwid = (gw - 28 - (n - 1) * 14) / n, cell = cwid + 14, need = Math.ceil((innerHeight + 160) / cell) + 1;
+          const col = (c) => { const len = Math.max(per, need), set = []; for (let k = 0; k < len; k++) set.push(C[(c * per + k) % C.length]); const t = 95 + (c % 3) * 25; return `<div class="pl-bgc" style="--t:${t}s;--ph:-${(((c * 0.37) % 1) * t).toFixed(1)}s">${[...set, ...set].map((x) => `<img src="${esc(x)}" alt="" decoding="async">`).join('')}</div>`; };
           let l = '', r = ''; for (let c = 0; c < n; c++) { l += col(c); r += col(n + c); }
           B.innerHTML = `<div class="pl-sd pl-l">${l}</div><div class="pl-sd pl-r">${r}</div>`;
           const cx = innerWidth / 2, cy = innerHeight / 2, ims = [...B.querySelectorAll('img')];

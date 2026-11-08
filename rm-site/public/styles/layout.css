@@ -614,8 +614,8 @@ body:has(.pl-bg){background:var(--bg)}
 .pl-l{left:0;--fd:90deg}
 .pl-r{right:0;--fd:270deg}
 .pl-sd::after{content:"";position:absolute;inset:0;z-index:1;background:rgba(246,243,238,.42)}
-.pl-bgc{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:14px;animation:plv var(--t,110s) linear infinite;will-change:transform}
-.pl-bgc:nth-child(even){animation-direction:reverse;margin-top:-90px}
+.pl-bgc{flex:1 1 0;min-width:0;align-self:flex-start;height:max-content;display:flex;flex-direction:column;gap:14px;padding-bottom:14px;animation:plv var(--t,110s) linear var(--ph,0s) infinite;will-change:transform}
+.pl-bgc:nth-child(even){animation-direction:reverse}
 .pl-bg img{display:block;width:100%;aspect-ratio:1;object-fit:cover;border-radius:14px;background:transparent;opacity:0;transform:scale(.86);filter:blur(12px) saturate(.9)}
 /* apparition douce, du centre de la page vers l'extérieur (délai selon la distance au centre) */
 .pl-bg img.in{animation:plIn 1.4s cubic-bezier(.16,.84,.12,1) var(--dl,0s) both}
