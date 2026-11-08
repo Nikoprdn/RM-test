@@ -74,20 +74,29 @@ const radio = { key: src.key, name: 'The Sound of Monte-Carlo', color: src.color
       const img = (t, cls) => { const src = coverOf(t); return `<img class="${cls}" src="${esc(src || D.mark)}" alt="" loading="lazy" ${src ? '' : `data-need data-raw="${esc(t.raw)}" data-a="${esc(t.artist)}" data-t="${esc(t.title)}"`} />`; };
 
       // ---------- fond : mosaïque des pochettes passées à l'antenne ----------
-      const B = document.getElementById('pl-bg'); let bgCols = 0, shown = new Set(), bgT = 0;
+      const B = document.getElementById('pl-bg'); let bgCols = '', shown = new Set(), bgT = 0;
       const bgCovers = () => { const seen = new Set(), out = []; (cache[cur] || []).map(parse).sort((a, b) => b.date - a.date).forEach((t) => { const c = t.cover || store[t.raw]; if (c && !seen.has(c)) { seen.add(c); out.push(c); } }); return out; };
       const paintBg = () => {
-        if (!B) return; const C = bgCovers(); if (C.length < 8) return;
-        const n = innerWidth < 640 ? 4 : innerWidth < 1100 ? 6 : 8;
-        if (n !== bgCols) {
-          bgCols = n; shown = new Set(C); const per = Math.max(5, Math.ceil(C.length / n)); let h = '';
-          for (let c = 0; c < n; c++) { let set = C.slice(c * per, (c + 1) * per); if (set.length < 5) set = [...set, ...C.slice(c, c + 5 - set.length)]; h += `<div class="pl-bgc" style="--t:${95 + (c % 3) * 25}s">${[...set, ...set].map((x) => `<img src="${esc(x)}" alt="" decoding="async">`).join('')}</div>`; }
-          B.style.setProperty('--n', n); B.innerHTML = h; void B.offsetWidth; B.classList.add('on'); return;
+        if (!B) return; const C = bgCovers();
+        // mosaïque dans les marges, à gauche et à droite de la colonne de lecture
+        const wrap = document.querySelector('.pl-wrap'); const cw = wrap ? wrap.getBoundingClientRect().width : 980;
+        const gw = Math.floor((document.documentElement.clientWidth - cw) / 2) - 16;
+        const n = gw < 140 || C.length < 8 ? 0 : Math.min(4, Math.max(1, Math.round(gw / 190)));
+        const key = n + ':' + gw;
+        if (key !== bgCols) {
+          bgCols = key; B.style.setProperty('--gw', Math.max(0, gw) + 'px');
+          if (!n) { B.innerHTML = ''; return; }
+          shown = new Set(C); const per = Math.max(5, Math.ceil(C.length / (n * 2)));
+          const col = (c) => { let set = C.slice(c * per, (c + 1) * per); if (set.length < 5) set = [...set, ...C.slice(c, c + 5 - set.length)]; return `<div class="pl-bgc" style="--t:${95 + (c % 3) * 25}s">${[...set, ...set].map((x) => `<img src="${esc(x)}" alt="" decoding="async">`).join('')}</div>`; };
+          let l = '', r = ''; for (let c = 0; c < n; c++) { l += col(c); r += col(n + c); }
+          B.innerHTML = `<div class="pl-sd pl-l">${l}</div><div class="pl-sd pl-r">${r}</div>`; return;
         }
+        if (!n) return;
         // nouveaux titres : leur pochette remplace une case au hasard, en fondu
+        const cols = B.querySelectorAll('.pl-bgc');
         C.filter((x) => !shown.has(x)).slice(0, 6).forEach((x) => {
-          shown.add(x); const col = B.children[Math.floor(Math.random() * B.children.length)]; if (!col) return;
-          const im = col.children, half = im.length / 2, k = Math.floor(Math.random() * half);
+          shown.add(x); const colEl = cols[Math.floor(Math.random() * cols.length)]; if (!colEl) return;
+          const im = colEl.children, half = im.length / 2, k = Math.floor(Math.random() * half);
           [im[k], im[k + half]].forEach((el) => { if (!el) return; el.classList.add('sw'); setTimeout(() => { el.src = x; el.classList.remove('sw'); }, 450); });
         });
       };

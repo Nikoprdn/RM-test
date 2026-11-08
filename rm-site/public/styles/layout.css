@@ -604,18 +604,20 @@ html.menu-open{overflow:hidden} /* sur html seulement : sur body, l’en-tête c
 @keyframes pulseC{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--c,#E4032E) 55%,transparent)}100%{box-shadow:0 0 0 10px color-mix(in srgb,var(--c,#E4032E) 0%,transparent)}}
 .ux .live-dot,.ou-st .live-dot,.pl-nk .live-dot{background:var(--c,#E4032E);animation-name:pulseC}
 
-/* playlist : fond en mosaïque des pochettes passées, colonnes droites qui glissent en sens alternés */
+/* playlist : mosaïque des pochettes passées dans les marges, à gauche et à droite de la page,
+   en couleurs naturelles adoucies ; colonnes qui glissent lentement en sens alternés */
 body:has(.pl-bg){background:var(--bg)}
 .rm:has(.pl-bg){background:transparent}
 .rm:has(.pl-bg) .ftr{background:var(--bg)}
-.pl-bg{--n:8;position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:14px;padding:0 14px;isolation:isolate;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%)}
-.pl-bgc{display:flex;flex-direction:column;gap:14px;animation:plv var(--t,110s) linear infinite;will-change:transform}
+.pl-bg{--gw:0px;position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.pl-sd{position:absolute;top:0;bottom:0;width:var(--gw);display:flex;gap:14px;padding:0 14px;isolation:isolate;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 14%,#000 86%,transparent 100%),linear-gradient(var(--fd),#000 45%,transparent 100%);-webkit-mask-composite:source-in;mask-image:linear-gradient(180deg,transparent 0,#000 14%,#000 86%,transparent 100%),linear-gradient(var(--fd),#000 45%,transparent 100%);mask-composite:intersect}
+.pl-l{left:0;--fd:90deg}
+.pl-r{right:0;--fd:270deg}
+.pl-sd::after{content:"";position:absolute;inset:0;z-index:1;background:rgba(246,243,238,.42)}
+.pl-bgc{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:14px;animation:plv var(--t,110s) linear infinite;will-change:transform}
 .pl-bgc:nth-child(even){animation-direction:reverse;margin-top:-90px}
-.pl-bg img{display:block;width:100%;aspect-ratio:1;object-fit:cover;border-radius:14px;background:#E9E9EB;filter:grayscale(1) contrast(1.15) brightness(1.05);transition:opacity .45s ease}
+.pl-bg img{display:block;width:100%;aspect-ratio:1;object-fit:cover;border-radius:14px;background:#E9E9EB;filter:saturate(.9);transition:opacity .45s ease}
 .pl-bg img.sw{opacity:0}
-.pl-bg::before{content:"";position:absolute;inset:0;z-index:1;background:#E4032E;mix-blend-mode:screen;opacity:.6}
-.pl-bg::after{content:"";position:absolute;inset:0;z-index:2;background:rgba(246,243,238,.8)}
 @keyframes plv{to{transform:translateY(-50%)}}
 @media (prefers-reduced-motion:reduce){.pl-bgc{animation:none}}
-@media (max-width:640px){.pl-bg{gap:10px;padding:0 10px}.pl-bgc{gap:10px}.pl-bg img{border-radius:10px}.pl-bgc:nth-child(even){margin-top:-50px}}
 @media (max-width:640px){.pl-lv{display:none}}
