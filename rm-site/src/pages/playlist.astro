@@ -11,6 +11,7 @@ const radio = { key: src.key, name: 'The Sound of Monte-Carlo', color: src.color
 ---
 <Base title="The Sound of Monte-Carlo : la playlist — Radio Monaco" description="Les titres passés sur The Sound of Monte-Carlo, à Monte-Carlo et à Paris : heure de passage, artiste et pochette, mis à jour en direct." path="/playlist/">
   <div class="pl-bg" id="pl-bg" aria-hidden="true"></div>
+  <div class="pl-tint" id="pl-tint" aria-hidden="true"></div>
   <div class="wrap pl-wrap">
     <header class="page-hd">
       <nav class="crumbs"><a href={u('/')}>Accueil</a><span class="sep">/</span><span>Playlist</span></nav>
@@ -66,7 +67,7 @@ const radio = { key: src.key, name: 'The Sound of Monte-Carlo', color: src.color
       };
       const io = 'IntersectionObserver' in window ? new IntersectionObserver((es) => es.forEach((e) => {
         if (!e.isIntersecting) return; io.unobserve(e.target); const img = e.target; const t = { raw: img.dataset.raw, artist: img.dataset.a, title: img.dataset.t };
-        const set = (src) => { if (src) { img.src = src; img.removeAttribute('data-need'); } };
+        const set = (src) => { if (src) { img.src = src; img.removeAttribute('data-need'); schedBg(); } };
         if (store[t.raw] !== undefined) { set(store[t.raw]); return; }
         lookup(t).then(set);
       }), { rootMargin: '300px 0px' }) : null;
@@ -89,7 +90,12 @@ const radio = { key: src.key, name: 'The Sound of Monte-Carlo', color: src.color
           shown = new Set(C); const per = Math.max(5, Math.ceil(C.length / (n * 2)));
           const col = (c) => { let set = C.slice(c * per, (c + 1) * per); if (set.length < 5) set = [...set, ...C.slice(c, c + 5 - set.length)]; return `<div class="pl-bgc" style="--t:${95 + (c % 3) * 25}s">${[...set, ...set].map((x) => `<img src="${esc(x)}" alt="" decoding="async">`).join('')}</div>`; };
           let l = '', r = ''; for (let c = 0; c < n; c++) { l += col(c); r += col(n + c); }
-          B.innerHTML = `<div class="pl-sd pl-l">${l}</div><div class="pl-sd pl-r">${r}</div>`; return;
+          B.innerHTML = `<div class="pl-sd pl-l">${l}</div><div class="pl-sd pl-r">${r}</div>`;
+          const cx = innerWidth / 2, cy = innerHeight / 2, ims = [...B.querySelectorAll('img')];
+          const ds = ims.map((i) => { const b = i.getBoundingClientRect(); return Math.hypot(b.left + b.width / 2 - cx, b.top + b.height / 2 - cy); });
+          const min = Math.min(...ds), span = Math.max(1, Math.min(innerWidth * 0.75, Math.max(...ds)) - min);
+          ims.forEach((i, k) => { i.style.setProperty('--dl', Math.min(2.2, ((ds[k] - min) / span) * 1.8).toFixed(2) + 's'); reveal(i); });
+          return;
         }
         if (!n) return;
         // nouveaux titres : leur pochette remplace une case au hasard, en fondu
@@ -97,10 +103,24 @@ const radio = { key: src.key, name: 'The Sound of Monte-Carlo', color: src.color
         C.filter((x) => !shown.has(x)).slice(0, 6).forEach((x) => {
           shown.add(x); const colEl = cols[Math.floor(Math.random() * cols.length)]; if (!colEl) return;
           const im = colEl.children, half = im.length / 2, k = Math.floor(Math.random() * half);
-          [im[k], im[k + half]].forEach((el) => { if (!el) return; el.classList.add('sw'); setTimeout(() => { el.src = x; el.classList.remove('sw'); }, 450); });
+          [im[k], im[k + half]].forEach((el) => { if (!el) return; el.style.setProperty('--dl', '0s'); el.classList.remove('in'); void el.offsetWidth; el.src = x; reveal(el); });
         });
       };
-      const schedBg = () => { clearTimeout(bgT); bgT = setTimeout(paintBg, 600); };
+      const reveal = (i) => { const go = () => i.classList.add('in'); if (i.complete && i.naturalWidth) go(); else i.addEventListener('load', go, { once: true }); };
+
+      // ---------- teinte d'ambiance : la pochette en cours, très floutée, au milieu de la page ----------
+      const T = document.getElementById('pl-tint'); let tintSrc = '';
+      const tint = () => {
+        if (!T) return; const all = (cache[cur] || []).map(parse).filter((t) => !junk(t)).sort((a, b) => b.date - a.date);
+        const now = all[0]; const src = now ? coverOf(now) : '';
+        if (!src || src === tintSrc) return; tintSrc = src;
+        const im = new Image(); im.alt = ''; im.decoding = 'async'; im.src = src;
+        im.onload = () => { T.appendChild(im); void im.offsetWidth; im.classList.add('on'); [...T.children].slice(0, -1).forEach((o) => { o.classList.remove('on'); setTimeout(() => o.remove(), 1600); }); };
+      };
+      const fade = () => { if (T) T.style.opacity = Math.max(0, 1 - scrollY / (innerHeight * 0.55)).toFixed(3); };
+      let fq = 0; window.addEventListener('scroll', () => { if (!fq) fq = requestAnimationFrame(() => { fq = 0; fade(); }); }, { passive: true, ...sig }); fade();
+
+      const schedBg = () => { clearTimeout(bgT); bgT = setTimeout(() => { paintBg(); tint(); }, 600); };
       window.addEventListener('resize', schedBg, sig);
       let warmed = false;
       const warm = () => { if (warmed) return; warmed = true; (cache[cur] || []).map(parse).filter((t) => !junk(t) && !t.cover && store[t.raw] === undefined).sort((a, b) => b.date - a.date).slice(0, 30).forEach((t) => lookup(t, true).then(schedBg)); };
