@@ -13,7 +13,7 @@ const list = feat ? [feat, ...all.filter((x) => x !== feat)].slice(0, 7) : [];
 const epJSON = (x) => JSON.stringify({ id: x.s.k + ':' + x.i, url: ausAudio(x.e.au), title: x.e.title, show: x.s.name, color: x.s.color, ink: x.s.feed === 'mixdj' ? '#141218' : '#FFFFFF', img: ausImg(x.e.img), s: x.e.s });
 const when = (iso) => { const d = new Date(iso + 'Z'), t = new Date(); const diff = Math.round((new Date(t.getFullYear(), t.getMonth(), t.getDate()) - new Date(d.getFullYear(), d.getMonth(), d.getDate())) / 864e5); return diff <= 0 ? 'Aujourd’hui' : diff === 1 ? 'Hier' : diff < 7 ? `Il y a ${diff} jours` : dateShort(iso); };
 ---
-  <section id="podcasts" data-full data-reveal class="pzs">
+  <section id="podcasts" data-full data-reveal data-snap class="pzs">
     <div class="pzw">
       <div class="pzleft">
         <p class="eb" style="margin:0 0 18px;font-size:12px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:#6A6570">{eyebrow}</p>

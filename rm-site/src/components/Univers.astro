@@ -1,54 +1,69 @@
 ---
-// Les univers (volets photo plein cadre) — accueil et page « Nos radios ».
-// The Sound of Monte-Carlo réunit les départs Monte-Carlo et Paris, avec sa playlist.
+// Les univers en volets (accordéon photo) : un volet ouvert en grand, les autres réduits.
+// Accueil et page « Nos radios ». Les crochets data-ux* sont alimentés par scripts/home.js.
 import I from './Icons.astro';
 import { u, asset } from '../lib/url.js';
 import { UNIVERS } from '../lib/stations.js';
 const { eyebrow = 'Nos webradios', h1 = false, id = 'radios' } = Astro.props;
 const H = h1 ? 'h1' : 'h2';
-const bandsLabel = (bands) => bands.map((b) => (b.city ? b.city + ' ' : '') + b.f).join(', ');
+const accroche = (s) => { const i = s.lastIndexOf(' '); return [s.slice(0, i + 1), s.slice(i + 1)]; };
+const court = (bands) => [...new Set(bands.map((b) => (b.f === 'Web' ? 'Web' : /FM/.test(b.f) ? 'FM' : b.f)))].join(' · ');
 ---
-  <section id={id} data-full data-reveal class="uvs">
-    <div class="uvrow">
-      {UNIVERS.map((r, g) => (
-        <article class:list={['ux', { dk: r.ink === '#141218', 'ux-g': r.playlist !== null }]} data-ux={r.ids[0]} data-ux-st={r.ids.join(',')} style={`--c:${r.color};--w:${r.wash};--d:${(g * 0.09 + 0.12).toFixed(2)}s`}>
-          <img class="uxp" src={asset(r.photo)} alt="" loading="lazy" style={`object-position:${r.pos}`} />
-          <span class="uxt0" aria-hidden="true"></span><span class="uxs" aria-hidden="true"></span><span class="uxw" aria-hidden="true"></span><span class="uxbar" aria-hidden="true"></span>
-          <button class="ux-hit" type="button" data-rm-live={r.ids[0]} aria-label={`Écouter ${r.departs ? r.name + ', départ Monte-Carlo' : 'Radio Monaco ' + r.name}`}></button>
-          <span class="uxb rise">
-            <span class="uxh"><img class="uxl" src={asset(r.logo)} alt={r.departs ? r.name : `Radio Monaco ${r.name}`} width="128" height="46" /><span class="uxpl" aria-hidden="true"><I n="pp" /></span></span>
-            <span class="uxr" aria-hidden="true"></span>
-            <span class="uxlv"><span class="live-dot"></span><span data-ux-status>En direct</span></span>
-            {r.departs ? (
-              <span class="uxf uxd" aria-label="Deux départs">
-                {r.departs.map((d) => (
-                  <button class="uxdp" type="button" data-rm-live={d.i} data-ux-dep={d.i} aria-label={`Écouter ${r.name}, départ ${d.name}`}>
-                    <span class="uxdn"><span class="uxdi"><I n="pp" /></span>{d.name}</span>
-                    <span class="uxdb">{d.bands.map((b) => <span class="bd">{b.city}<b>{b.f}</b></span>)}{d.note && <span class="uxdnote">{d.note}</span>}</span>
-                  </button>
-                ))}
-              </span>
-            ) : (
-              <span class="uxf" aria-label={'Diffusion : ' + bandsLabel(r.bands)}>{r.bands.map((b) => <span class="bd">{b.city}<b>{b.f}</b></span>)}</span>
-            )}
-            <span class="uxi"><span><span class="uxn">
-              <span class="uxc"><img data-ux-cover alt="Pochette du titre en cours" hidden /><I n="eq" /></span>
-              <span class="uxt"><span class="uxt1" data-ux-t1>{r.line}</span><span class="uxt2" data-ux-t2>En direct</span></span>
-            </span></span></span>
-            {r.playlist !== null && (
-              <span class="uxq" data-ux-pl={r.playlist} data-mark={asset('rm-mark.png')} hidden>
-                <span class="uxqh">Déjà passés</span>
-                <span class="uxql" data-ux-pll></span>
-                <a class="uxqa" href={u('/playlist/')}>Toute la playlist<I n="right" s={14} /></a>
-              </span>
-            )}
-          </span>
-        </article>
-      ))}
+  <section id={id} data-full data-reveal data-snap class="vbs">
+    <div class="vbhd">
+      <p class="eb vbeb">{eyebrow}</p>
+      <H class="vbh"><span class="m"><span>Découvrez</span></span> <span class="m"><span><b>nos univers.</b></span></span></H>
     </div>
-    <div class="uvtop" aria-hidden="true"></div>
-    <div class="uvtitle">
-      <p class="eb uveb" style="margin:0 0 18px;font-size:12px;font-weight:500;letter-spacing:.24em;text-transform:uppercase">{eyebrow}</p>
-      <H class="uvh"><span class="m"><span>Découvrez</span></span> <span class="m"><span style="font-weight:600">nos univers.</span></span></H>
+    <div class="vbrow" data-vb>
+      {UNIVERS.map((r, g) => {
+        const nm = r.departs ? r.name : 'Radio Monaco ' + r.name;
+        const [a, b] = accroche(r.line);
+        return (
+          <article class:list={['vb', { op: g === 0, dk: r.ink === '#141218' }]} data-ux={r.ids[0]} data-ux-st={r.ids.join(',')} style={`--c:${r.color};--d:${(g * 0.08 + 0.1).toFixed(2)}s`}>
+            <img class="vbp" src={asset(r.photo)} alt="" loading={g ? 'lazy' : 'eager'} style={`object-position:${r.pos}`} />
+            <span class="vbsh" aria-hidden="true"></span>
+            <button class="vbtg" type="button" aria-expanded={g === 0 ? 'true' : 'false'} aria-controls={'vb-' + r.key} aria-label={'Afficher ' + nm}></button>
+            <span class="vbv" aria-hidden="true">{r.name}<i>{court(r.bands)}</i></span>
+            <div class="vbc">
+              <img class="vbl" src={asset(r.logo)} alt={nm} width="128" height="46" />
+              <div class="vbo" id={'vb-' + r.key}><div class="vbi">
+                <p class="vba">{a}<b>{b}.</b></p>
+                <div class="vbg">
+                  <div class="vbm">
+                    <p class="vblv"><span class="live-dot"></span><span data-ux-status>En direct</span></p>
+                    <p class="vbn"><span class="vbcv"><img data-ux-cover alt="" hidden /></span><span><b data-ux-t1>{r.line}</b><i data-ux-t2>En direct</i></span></p>
+                    <ul class="vbf">{r.bands.map((x) => <li>{x.city && <span>{x.city}</span>}<b>{x.f === 'Web' ? 'Site & appli' : x.f}</b></li>)}</ul>
+                    <button class="vbgo" type="button" data-rm-live={r.ids[0]}><span class="vbpi"><I n="pp" /></span>Écouter {r.name}</button>
+                  </div>
+                  {r.playlist !== null && (
+                    <span class="uxq vbq" data-ux-pl={r.playlist} data-mark={asset('rm-mark.png')} hidden>
+                      <span class="uxqh">Déjà passés</span>
+                      <span class="uxql" data-ux-pll></span>
+                      <a class="uxqa" href={u('/playlist/')}>Toute la playlist<I n="right" s={14} /></a>
+                    </span>
+                  )}
+                </div>
+              </div></div>
+              <button class="vbpl" type="button" data-rm-live={r.ids[0]} aria-label={'Écouter ' + nm}><I n="pp" /></button>
+            </div>
+          </article>
+        );
+      })}
     </div>
   </section>
+
+<script>
+  // un seul volet ouvert : survol (souris), toucher ou clavier ; le dernier ouvert reste ouvert
+  const init = () => document.querySelectorAll('[data-vb]').forEach((row) => {
+    if (row.dataset.ok) return; row.dataset.ok = '1';
+    const items = [...row.children]; const fine = matchMedia('(hover: hover) and (min-width: 901px)'); let t = 0;
+    const open = (el) => items.forEach((x) => { const o = x === el; x.classList.toggle('op', o); x.querySelector('.vbtg').setAttribute('aria-expanded', o ? 'true' : 'false'); });
+    items.forEach((x) => {
+      x.addEventListener('mouseenter', () => { if (!fine.matches) return; clearTimeout(t); t = setTimeout(() => open(x), 90); });
+      x.addEventListener('mouseleave', () => clearTimeout(t));
+      x.querySelector('.vbtg').addEventListener('click', () => open(x));
+      x.querySelector('.vbpl').addEventListener('click', () => open(x));
+    });
+  });
+  document.addEventListener('astro:page-load', init); init();
+</script>

@@ -82,6 +82,38 @@ function init() {
     const step = (now) => { const t = Math.min(1, (now - t0) / dur); se().scrollTop = from + dist * ez(t); if (t < 1 && !ctrl.signal.aborted) gliding = requestAnimationFrame(step); else { gliding = 0; onScroll(); } };
     cancelAnimationFrame(gliding); gliding = requestAnimationFrame(step);
   };
+  // ---- magnétisme des sections : quand le défilement s'arrête entre deux rubriques, on glisse vers la plus proche ----
+  // Les rubriques marquées data-snap ; à l'intérieur d'une rubrique plus haute que l'écran, on reste libre.
+  const snaps = [...document.querySelectorAll('[data-snap]')];
+  if (snaps.length > 1 && !reduced) {
+    let lastY = se().scrollTop, dir = 1, timer = 0, anim = 0, busy = false, touching = false;
+    const view = (el) => { const top = el.getBoundingClientRect().top + se().scrollTop; const pt = parseFloat(getComputedStyle(el).paddingTop) || 0;
+      return el.hasAttribute('data-hero') ? 0 : el.hasAttribute('data-full') ? top - 84 : el.classList.contains('hsec') ? top + pt - 84 - 52 : top - 84; };
+    const zones = () => { const vh = innerHeight, max = se().scrollHeight - vh; const z = [];
+      snaps.forEach((el, i) => { const a = Math.max(0, view(el)); const end = (snaps[i + 1] ? snaps[i + 1].getBoundingClientRect().top + se().scrollTop : se().scrollHeight) - vh; z.push([Math.min(a, max), Math.min(max, Math.max(a, end))]); });
+      const ft = z[z.length - 1]; if (ft) ft[1] = max; return z; };
+    const stopAnim = () => { if (anim) { cancelAnimationFrame(anim); anim = 0; busy = false; } };
+    const go = (to) => { const from = se().scrollTop, d = to - from; if (Math.abs(d) < 3) return; busy = true; const dur = Math.min(900, 420 + Math.abs(d) * 0.5), t0 = performance.now();
+      const ez = (t) => 1 - Math.pow(1 - t, 4);
+      const st = (n) => { const t = Math.min(1, (n - t0) / dur); se().scrollTop = from + d * ez(t); if (t < 1 && !ctrl.signal.aborted) anim = requestAnimationFrame(st); else { anim = 0; setTimeout(() => { busy = false; lastY = se().scrollTop; }, 60); } };
+      anim = requestAnimationFrame(st); };
+    const settle = () => {
+      if (busy || gliding || touching || doc.classList.contains('menu-open')) return;
+      const y = se().scrollTop, z = zones(); const vh = innerHeight;
+      if (z.some(([a, b]) => y >= a - 2 && y <= b + 2)) return; // on est sur un bon point de vue
+      // entre deux rubriques : bord de la zone précédente ou début de la suivante, selon le sens et la distance
+      let prev = null, next = null; z.forEach(([a, b]) => { if (b < y) prev = b; if (a > y && next === null) next = a; });
+      if (prev === null) return go(next); if (next === null) return go(prev);
+      const k = (y - prev) / Math.max(1, next - prev);
+      go(dir > 0 ? (k > 0.12 ? next : prev) : (k < 0.88 ? prev : next));
+    };
+    window.addEventListener('scroll', () => { const y = se().scrollTop; if (!busy) { if (Math.abs(y - lastY) > 1) dir = y > lastY ? 1 : -1; lastY = y; }
+      clearTimeout(timer); timer = setTimeout(settle, 'onscrollend' in window ? 400 : 180); }, { passive: true, ...sig });
+    if ('onscrollend' in window) window.addEventListener('scrollend', () => { clearTimeout(timer); timer = setTimeout(settle, 60); }, sig);
+    ['wheel', 'keydown'].forEach((e) => window.addEventListener(e, stopAnim, { passive: true, ...sig }));
+    window.addEventListener('touchstart', () => { touching = true; stopAnim(); }, { passive: true, ...sig });
+    window.addEventListener('touchend', () => { touching = false; clearTimeout(timer); timer = setTimeout(settle, 220); }, { passive: true, ...sig });
+  }
   document.addEventListener('click', (e) => {
     const a = e.target.closest && e.target.closest('a[href*="#"]'); if (!a || e.defaultPrevented) return;
     const url = new URL(a.href, location.href); if (url.pathname !== location.pathname || !url.hash) return;
