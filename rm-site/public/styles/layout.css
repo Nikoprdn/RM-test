@@ -608,8 +608,7 @@ html.menu-open{overflow:hidden} /* sur html seulement : sur body, l’en-tête c
 body:has(.pl-bg){background:var(--bg)}
 .rm:has(.pl-bg){background:transparent}
 .rm:has(.pl-bg) .ftr{background:var(--bg)}
-.pl-bg{--n:8;position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:14px;padding:0 14px;isolation:isolate;opacity:0;transition:opacity 1.4s ease;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%)}
-.pl-bg.on{opacity:1}
+.pl-bg{--n:8;position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:14px;padding:0 14px;isolation:isolate;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%)}
 .pl-bgc{display:flex;flex-direction:column;gap:14px;animation:plv var(--t,110s) linear infinite;will-change:transform}
 .pl-bgc:nth-child(even){animation-direction:reverse;margin-top:-90px}
 .pl-bg img{display:block;width:100%;aspect-ratio:1;object-fit:cover;border-radius:14px;background:#E9E9EB;filter:grayscale(1) contrast(1.15) brightness(1.05);transition:opacity .45s ease}
