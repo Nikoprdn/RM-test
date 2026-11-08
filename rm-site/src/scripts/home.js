@@ -58,7 +58,8 @@ function init() {
     const st = window.RM ? window.RM.stations[+plBox.dataset.uxPl] : null;
     const id = st ? new URL(st.stream).hostname.split('.')[0] : 'radiomonaco';
     const esc = (x) => String(x || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-    const nice = (x) => { x = (x || '').replace(/\s+/g, ' ').trim(); const l = x.replace(/[^A-Za-zÀ-ÿ]/g, ''); const up = l.replace(/[^A-ZÀ-Þ]/g, '').length; if (l.length && up / l.length > 0.6) x = x.toLowerCase().replace(/(^|[\s(\-&/"«])([a-zà-ÿ])/g, (m, a, b) => a + b.toUpperCase()); return x.replace(/ (Feat|Ft)\.? /gi, ' feat. ').replace(/ X /g, ' x '); };
+    const nice1 = (x) => { x = (x || '').replace(/\s+/g, ' ').trim(); const l = x.replace(/[^A-Za-zÀ-ÿ]/g, ''); const up = l.replace(/[^A-ZÀ-Þ]/g, '').length; if (l.length && up / l.length > 0.6) x = x.toLowerCase().replace(/(^|[\s(\-&/"«])([a-zà-ÿ])/g, (m, a, b) => a + b.toUpperCase()); return x.replace(/ (Feat|Ft)\.? /gi, ' feat. ').replace(/ X /g, ' x '); };
+const nice = (x) => { const k = (x || '').indexOf(' ('); return k > 0 ? nice1(x.slice(0, k)) + ' ' + nice1(x.slice(k + 1)) : nice1(x); };
     const fT = new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Monaco', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
     const loadPl = async () => {
       try {

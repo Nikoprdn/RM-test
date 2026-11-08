@@ -42,7 +42,8 @@ const radio = { key: src.key, name: 'The Sound of Monte-Carlo', color: src.color
 
       // mise en forme : « DUA LIPA x X - TITRE » → artiste / titre, sans tout en capitales
       const esc = (s) => String(s || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-      const nice = (s) => { s = (s || '').replace(/\s+/g, ' ').trim(); const l = s.replace(/[^A-Za-zÀ-ÿ]/g, ''); const up = l.replace(/[^A-ZÀ-Þ]/g, '').length; if (l.length && up / l.length > 0.6) s = s.toLowerCase().replace(/(^|[\s(\-&/"«])([a-zà-ÿ])/g, (m, a, b) => a + b.toUpperCase()); return s.replace(/ (Feat|Ft)\.? /gi, ' feat. ').replace(/ X /g, ' x ').replace(/ Vs\.? /gi, ' vs '); };
+      const nice1 = (s) => { s = (s || '').replace(/\s+/g, ' ').trim(); const l = s.replace(/[^A-Za-zÀ-ÿ]/g, ''); const up = l.replace(/[^A-ZÀ-Þ]/g, '').length; if (l.length && up / l.length > 0.6) s = s.toLowerCase().replace(/(^|[\s(\-&/"«])([a-zà-ÿ])/g, (m, a, b) => a + b.toUpperCase()); return s.replace(/ (Feat|Ft)\.? /gi, ' feat. ').replace(/ X /g, ' x ').replace(/ Vs\.? /gi, ' vs '); };
+const nice = (x) => { const k = (x || '').indexOf(' ('); return k > 0 ? nice1(x.slice(0, k)) + ' ' + nice1(x.slice(k + 1)) : nice1(x); };
       const parse = ([date, dur, raw, cover]) => { const i = raw.indexOf(' - '); const artist = i > 0 ? raw.slice(0, i) : ''; const title = i > 0 ? raw.slice(i + 3) : raw; return { date, dur, raw, cover, artist: nice(artist), title: nice(title) }; };
       const junk = (t) => !t.title || /^radio monaco$/i.test(t.title) || /^radio monaco$/i.test(t.artist) || (t.dur && t.dur < 45 && !t.artist);
 
