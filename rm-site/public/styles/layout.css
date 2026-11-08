@@ -627,3 +627,5 @@ body:has(.pl-bg){background:var(--bg)}
 @keyframes plv{to{transform:translateY(-50%)}}
 @media (prefers-reduced-motion:reduce){.pl-bgc{animation:none}.pl-bg img,.pl-bg img.in{animation:none;opacity:1;transform:none;filter:saturate(.9)}.pl-tint img{transition:none}}
 @media (max-width:640px){.pl-lv{display:none}}
+.pl-bg img.done{animation:none;opacity:1;transform:none;filter:saturate(.9)}
+.pl-tint img.done{transition:none;opacity:.5}

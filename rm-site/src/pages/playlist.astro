@@ -95,6 +95,7 @@ const radio = { key: src.key, name: 'The Sound of Monte-Carlo', color: src.color
           const ds = ims.map((i) => { const b = i.getBoundingClientRect(); return Math.hypot(b.left + b.width / 2 - cx, b.top + b.height / 2 - cy); });
           const min = Math.min(...ds), span = Math.max(1, Math.min(innerWidth * 0.75, Math.max(...ds)) - min);
           ims.forEach((i, k) => { i.style.setProperty('--dl', Math.min(2.2, ((ds[k] - min) / span) * 1.8).toFixed(2) + 's'); reveal(i); });
+          setTimeout(settle, 4500);
           return;
         }
         if (!n) return;
@@ -106,6 +107,8 @@ const radio = { key: src.key, name: 'The Sound of Monte-Carlo', color: src.color
           [im[k], im[k + half]].forEach((el) => { if (!el) return; el.style.setProperty('--dl', '0s'); el.classList.remove('in'); void el.offsetWidth; el.src = x; reveal(el); });
         });
       };
+      // garde-fou : si le navigateur n'a pas joué l'animation (onglet en veille…), on affiche directement
+      const settle = () => { B.querySelectorAll('img.in').forEach((i) => { if (+getComputedStyle(i).opacity < 0.5) i.classList.add('done'); }); T && [...T.querySelectorAll('img.on')].forEach((i) => { if (+getComputedStyle(i).opacity < 0.1) i.classList.add('done'); }); };
       const reveal = (i) => { const go = () => i.classList.add('in'); if (i.complete && i.naturalWidth) go(); else i.addEventListener('load', go, { once: true }); };
 
       // ---------- teinte d'ambiance : la pochette en cours, très floutée, au milieu de la page ----------
@@ -115,7 +118,7 @@ const radio = { key: src.key, name: 'The Sound of Monte-Carlo', color: src.color
         const now = all[0]; const src = now ? coverOf(now) : '';
         if (!src || src === tintSrc) return; tintSrc = src;
         const im = new Image(); im.alt = ''; im.decoding = 'async'; im.src = src;
-        im.onload = () => { T.appendChild(im); void im.offsetWidth; im.classList.add('on'); [...T.children].slice(0, -1).forEach((o) => { o.classList.remove('on'); setTimeout(() => o.remove(), 1600); }); };
+        im.onload = () => { T.appendChild(im); void im.offsetWidth; im.classList.add('on'); setTimeout(settle, 2500); [...T.children].slice(0, -1).forEach((o) => { o.classList.remove('on'); setTimeout(() => o.remove(), 1600); }); };
       };
       const fade = () => { if (T) T.style.opacity = Math.max(0, 1 - scrollY / (innerHeight * 0.55)).toFixed(3); };
       let fq = 0; window.addEventListener('scroll', () => { if (!fq) fq = requestAnimationFrame(() => { fq = 0; fade(); }); }, { passive: true, ...sig }); fade();
