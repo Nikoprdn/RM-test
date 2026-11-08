@@ -25,11 +25,16 @@ const ld = { '@context': 'https://schema.org', '@type': 'ItemList', name: 'Les r
         <h2 class="ou-h"><span class="m"><span>Partout,</span></span> <span class="m"><span style="font-weight:600">tout le temps.</span></span></h2>
         <p class="ou-lead">En FM de Bordighera à Saint-Tropez, en DAB+ à Monaco, Nice et Paris, et partout dans le monde sur le site et l’appli.</p>
       </div>
-      <div class="ou-grid">
+      <div class="ou-grid ou-vl">
         {UNIVERS.map((s, g) => (
-          <article class:list={['ou-st rise', { 'ou-g': s.departs }]} id={s.key} style={`--c:${s.color};--d:${(g * 0.08 + 0.1).toFixed(2)}s`}>
-            <img class="ou-lg" src={asset(s.logoInk)} alt={s.departs ? s.name : 'Radio Monaco ' + s.name} loading="lazy" />
-            <p class="ou-line">{s.departs ? s.name : s.line}</p>
+          <article class:list={['ou-st rise', { 'ou-g': s.departs, on: g === 0 }]} id={s.key} style={`--c:${s.color};--d:${(g * 0.08 + 0.1).toFixed(2)}s`}>
+            <button class="ou-tg" type="button" aria-expanded={g === 0 ? 'true' : 'false'} aria-controls={'ou-b-' + s.key}>
+              <img class="ou-lg" src={asset(s.logoInk)} alt={s.departs ? s.name : 'Radio Monaco ' + s.name} loading="lazy" />
+              <span class="ou-line">{s.departs ? s.name : s.line}</span>
+              <span class="ou-sum" aria-hidden="true">{[...new Set((s.departs ? s.departs.flatMap((d) => d.bands) : s.bands).map((b) => b.f === 'Web' ? 'Site & appli' : b.f))].map((f) => <i>{f}</i>)}</span>
+              <span class="ou-pl" aria-hidden="true"></span>
+            </button>
+            <div class="ou-body" id={'ou-b-' + s.key}>
             <p class="ou-tx">{UTXT[g]}</p>
             {s.departs ? s.departs.map((d) => (
               <div class="ou-dep">
@@ -45,6 +50,7 @@ const ld = { '@context': 'https://schema.org', '@type': 'ItemList', name: 'Les r
               </>
             )}
             {s.departs && <p class="ou-now" data-now={s.ids[0]}></p>}
+            </div>
           </article>
         ))}
       </div>
@@ -59,5 +65,17 @@ const ld = { '@context': 'https://schema.org', '@type': 'ItemList', name: 'Les r
       document.querySelectorAll('[data-rm-st]').forEach((b) => { const on = s.mode === 'live' && s.station === +b.dataset.rmSt && s.playing; b.classList.toggle('playing', on); const l = b.querySelector('[data-ou-l]'); l.textContent = on ? 'En écoute' : 'Écouter' + (l.dataset.ouN ? ' ' + l.dataset.ouN : ''); });
     };
     ['rm:meta', 'rm:state', 'astro:page-load'].forEach((e) => document.addEventListener(e, paint)); paint();
+    // volets « Où nous écouter » : un seul ouvert à la fois, au survol (ordinateur), au toucher ou au clavier
+    const volets = () => {
+      const vl = document.querySelector('.ou-vl'); if (!vl || vl.dataset.ok) return; vl.dataset.ok = '1';
+      const items = [...vl.children]; const wide = matchMedia('(min-width: 901px)');
+      const open = (el) => items.forEach((x) => { const on = x === el; x.classList.toggle('on', on); x.querySelector('.ou-tg').setAttribute('aria-expanded', on ? 'true' : 'false'); });
+      items.forEach((x) => {
+        x.addEventListener('mouseenter', () => { if (wide.matches) open(x); });
+        x.querySelector('.ou-tg').addEventListener('click', () => open(x));
+        x.addEventListener('focusin', () => open(x));
+      });
+    };
+    document.addEventListener('astro:page-load', volets); volets();
   </script>
 </Base>

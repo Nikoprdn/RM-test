@@ -629,3 +629,53 @@ body:has(.pl-bg){background:var(--bg)}
 .uxqr b{font-weight:600;color:#fff}
 .uxqr i{font-style:normal;color:rgba(255,255,255,.72)}
 .uxq{max-height:260px}
+
+/* « Où nous écouter » en volets : un volet ouvert (texte, fréquences, écoute), les autres réduits au logo */
+.ou-tg{display:flex;flex-direction:column;align-items:flex-start;gap:0;width:100%;margin:0;padding:0;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.ou-tg .ou-line{display:block}
+.ou-pl{display:none}
+@media (min-width:901px){
+  .ou-vl{display:flex;gap:16px;min-height:560px}
+  .ou-vl .ou-st{flex:1 1 0;min-width:0;padding:30px 28px;border:0;border-radius:24px;background:#fff;overflow:hidden;box-shadow:0 24px 50px -40px rgba(0,0,0,.4);transition:flex-grow .9s cubic-bezier(.65,0,.12,1),box-shadow .6s}
+  .ou-vl .ou-st.on{flex-grow:2.6;box-shadow:0 30px 60px -36px rgba(0,0,0,.45)}
+  .ou-vl .ou-st::before{left:0;right:0;top:0;width:auto;height:5px;border-radius:0;transition:height .6s}
+  .ou-vl .ou-st.on::before{height:8px}
+  .ou-vl .ou-st:hover::before{width:auto}
+  .ou-vl .ou-lg{max-width:100%}
+  .ou-vl .ou-body{display:flex;flex-direction:column;flex:1;width:max(420px,100%);opacity:0;transform:translateY(14px);pointer-events:none;transition:opacity .35s ease,transform .6s cubic-bezier(.16,.84,.12,1)}
+  .ou-vl .ou-st.on .ou-body{opacity:1;transform:none;pointer-events:auto;transition-delay:.3s}
+  .ou-vl .ou-st:not(.on) .ou-tg{height:100%}
+  .ou-vl .ou-st:not(.on) .ou-pl{display:block;margin-top:auto;width:40px;height:40px;border-radius:50%;border:1px solid rgba(20,18,24,.15);position:relative}
+  .ou-vl .ou-st:not(.on) .ou-pl::before,.ou-vl .ou-st:not(.on) .ou-pl::after{content:"";position:absolute;left:50%;top:50%;width:12px;height:1.6px;margin:-.8px 0 0 -6px;background:currentColor;border-radius:2px}
+  .ou-vl .ou-st:not(.on) .ou-pl::after{transform:rotate(90deg)}
+  .ou-vl .ou-st:not(.on) .ou-body{position:absolute;visibility:hidden}
+}
+@media (max-width:900px){
+  .ou-vl{display:flex;flex-direction:column;gap:12px}
+  .ou-vl .ou-st{padding:22px 20px;border:0;border-radius:20px;background:#fff}
+  .ou-vl .ou-st::before{left:0;right:0;top:0;width:auto;height:4px;border-radius:0}
+  .ou-vl .ou-st{overflow:hidden}
+  .ou-tg{position:relative;padding-right:52px}
+  .ou-pl{display:block;position:absolute;right:0;top:50%;width:38px;height:38px;margin-top:-19px;border-radius:50%;border:1px solid rgba(20,18,24,.15)}
+  .ou-pl::before,.ou-pl::after{content:"";position:absolute;left:50%;top:50%;width:12px;height:1.6px;margin:-.8px 0 0 -6px;background:currentColor;border-radius:2px;transition:transform .35s}
+  .ou-pl::after{transform:rotate(90deg)}
+  .ou-st.on .ou-pl::after{transform:rotate(0)}
+  .ou-vl .ou-st:not(.on) .ou-body{display:none}
+  .ou-vl .ou-lg{height:46px}
+}
+
+/* « Déjà passés » : pochettes plus petites */
+.uxql{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.uxqr img{width:58px;height:58px;aspect-ratio:auto;border-radius:9px}
+@media (max-width:900px){.uxqr img{width:50px;height:50px}}
+.ou-sum{display:none}
+@media (min-width:901px){
+  .ou-vl{min-height:500px}
+  .ou-vl .ou-st.on{background:linear-gradient(160deg,color-mix(in srgb,var(--c) 9%,#fff) 0%,#fff 55%)}
+  .ou-vl .ou-st:not(.on){cursor:pointer}
+  .ou-vl .ou-st:not(.on):hover{box-shadow:0 30px 56px -38px rgba(0,0,0,.45)}
+  .ou-vl .ou-st:not(.on) .ou-sum{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-bottom:16px}
+  .ou-vl .ou-st:not(.on) .ou-sum i{font-style:normal;font-size:12px;font-weight:600;letter-spacing:.02em;padding:5px 10px;border-radius:99px;background:color-mix(in srgb,var(--c) 10%,#fff);color:color-mix(in srgb,var(--c) 75%,#141218)}
+  .ou-vl .ou-st:not(.on) .ou-pl{margin-top:0}
+  .ou-vl .ou-tx{max-width:46ch}
+}
