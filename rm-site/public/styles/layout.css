@@ -275,7 +275,7 @@ html.menu-open{overflow:hidden} /* sur html seulement : sur body, l’en-tête c
 .ou-hd{max-width:760px;margin-bottom:clamp(48px,7vh,80px)}
 .ou-h{margin:0;font-size:clamp(40px,5.2vw,76px);line-height:1.02;font-weight:300;letter-spacing:-.035em}
 .ou-lead{margin:24px 0 0;font-size:clamp(17px,1.3vw,19px);line-height:1.55;color:#6A6570;max-width:58ch}
-.ou-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(24px,2.6vw,40px)}
+.ou-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(20px,2vw,32px)}
 .ou-st{position:relative;display:flex;flex-direction:column;padding:34px 0 0;border-top:1px solid var(--line)}
 .ou-st::before{content:"";position:absolute;left:0;top:-1px;width:56px;height:4px;border-radius:0 0 4px 4px;background:var(--c);transition:width .9s cubic-bezier(.16,.84,.12,1)}
 .ou-st:hover::before{width:100%}
@@ -290,7 +290,7 @@ html.menu-open{overflow:hidden} /* sur html seulement : sur body, l’en-tête c
 .ou-play .pi{width:36px;height:36px;border-radius:50%;background:var(--c);color:#fff;display:inline-flex;align-items:center;justify-content:center}
 .ou-play .ic-pause{display:none}.ou-play.playing .ic-pause{display:block}.ou-play.playing .ic-play{display:none}
 .ou-play:hover{transform:translateY(-2px)}.ou-play.playing{background:var(--c)}.ou-play.playing .pi{background:rgba(255,255,255,.22)}
-@media (max-width:900px){.ou-grid{grid-template-columns:1fr;row-gap:56px}}
+@media (max-width:1100px){.ou-grid{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:56px}}
 @media (max-width:640px){.ou-grid{grid-template-columns:1fr;row-gap:48px}}
 /* contact */
 .svc{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));gap:16px}
@@ -590,3 +590,16 @@ html.menu-open{overflow:hidden} /* sur html seulement : sur body, l’en-tête c
   .pl-gh{font-size:16px;min-width:52px}
 }
 .ux-g .uxs{background:linear-gradient(180deg,rgba(10,10,16,.45) 0%,rgba(10,10,16,.08) 22%,rgba(10,10,16,.5) 44%,rgba(10,10,16,.93) 100%)}
+
+/* menu mobile sans numéros */
+.hdr.open .nav a::before{content:none!important}
+
+/* logos des radios plus grands */
+.uxl{width:min(184px,calc(100% - 64px))}
+.ou-lg{height:56px}
+@media (max-width:900px){.uxl{width:158px!important}}
+@media (max-width:380px){.uxl{width:138px!important}}
+
+/* point « en direct » à la couleur de chaque radio */
+@keyframes pulseC{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--c,#E4032E) 55%,transparent)}100%{box-shadow:0 0 0 10px color-mix(in srgb,var(--c,#E4032E) 0%,transparent)}}
+.ux .live-dot,.ou-st .live-dot,.pl-nk .live-dot{background:var(--c,#E4032E);animation-name:pulseC}

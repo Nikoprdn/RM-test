@@ -3,7 +3,7 @@
 import I from './Icons.astro';
 import { u } from '../lib/url.js';
 import { getPodcasts, ausImg, ausAudio, dur, dateShort, FEED_LABEL } from '../lib/data.js';
-const { eyebrow = '02 — Podcasts', h1 = false, more = true } = Astro.props;
+const { eyebrow = 'Podcasts', h1 = false, more = true } = Astro.props;
 const H = h1 ? 'h1' : 'h2';
 const pods = await getPodcasts();
 const podData = pods.map((s) => ({ k: s.k, f: s.feed, n: s.name, sub: s.sub, c: s.color, e: s.eps.slice(0, 7).map((e) => [e.d, e.s, e.img, e.au, e.title]) }));

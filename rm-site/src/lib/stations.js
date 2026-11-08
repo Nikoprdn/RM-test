@@ -27,17 +27,7 @@ export const STATIONS = [
   }
 ];
 
-// Présentation : Monte-Carlo et Paris sont deux départs du même programme, « The Sound of Monte-Carlo »
-// (Paris ajoute l'information de Paris et d'Île-de-France). Les flux restent distincts dans le lecteur.
-const [MC, PA, DJ, NM] = STATIONS;
-export const UNIVERS = [
-  {
-    ...MC, key: 'thesound', name: 'The Sound of Monte-Carlo', ids: [0, 1], playlist: true,
-    departs: [
-      { i: 0, name: 'Monte-Carlo', bands: MC.bands },
-      { i: 1, name: 'Paris', bands: PA.bands.map((b) => ({ ...b, city: 'Paris' })), note: 'Infos de Paris et d’Île-de-France' }
-    ]
-  },
-  { ...DJ, ids: [2] },
-  { ...NM, ids: [3] }
-];
+// Présentation des volets : une carte par radio. Monte-Carlo et Paris diffusent le même programme,
+// The Sound of Monte-Carlo (Paris ajoute l'info de Paris et d'Île-de-France) : ils affichent la même
+// playlist, celle publiée par Infomaniak pour le flux Monte-Carlo.
+export const UNIVERS = STATIONS.map((s, i) => ({ ...s, ids: [i], playlist: i <= 1 ? 0 : null }));

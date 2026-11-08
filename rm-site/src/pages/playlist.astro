@@ -3,12 +3,11 @@
 // historique Infomaniak du flux Monte-Carlo, heure de passage, titre, artiste, pochette.
 import Base from '../layouts/Base.astro';
 import { u, asset } from '../lib/url.js';
-import { STATIONS, UNIVERS } from '../lib/stations.js';
+import { STATIONS } from '../lib/stations.js';
 import { getPlaylist, metaId } from '../lib/data.js';
-const TS = UNIVERS[0];
-const src = STATIONS[TS.ids[0]];
+const src = STATIONS[0];
 const snap = await getPlaylist([src]);
-const radio = { key: src.key, name: TS.name, color: TS.color, id: metaId(src.stream), departs: TS.departs.map((d) => ({ i: d.i, name: d.name })) };
+const radio = { key: src.key, name: 'The Sound of Monte-Carlo', color: src.color, id: metaId(src.stream), departs: [0, 1].map((i) => ({ i, name: STATIONS[i].name })) };
 ---
 <Base title="The Sound of Monte-Carlo : la playlist — Radio Monaco" description="Les titres passés sur The Sound of Monte-Carlo, à Monte-Carlo et à Paris : heure de passage, artiste et pochette, mis à jour en direct." path="/playlist/">
   <div class="wrap pl-wrap">

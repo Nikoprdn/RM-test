@@ -53,7 +53,7 @@ function init() {
   ['rm:state', 'rm:meta', 'rm:onair'].forEach((e) => document.addEventListener(e, univers, sig)); univers();
 
   // ---------- playlist dans le volet The Sound of Monte-Carlo (historique Infomaniak) ----------
-  const plBox = document.querySelector('[data-ux-pl]');
+  const plBoxes = $$('[data-ux-pl]'); const plBox = plBoxes[0];
   if (plBox) {
     const st = window.RM ? window.RM.stations[+plBox.dataset.uxPl] : null;
     const id = st ? new URL(st.stream).hostname.split('.')[0] : 'radiomonaco';
@@ -66,8 +66,8 @@ function init() {
         const list = (j.data || []).map((x) => { const raw = x.title || ''; const k = raw.indexOf(' - '); return { date: x.date, dur: x.duration || 0, artist: nice(k > 0 ? raw.slice(0, k) : ''), title: nice(k > 0 ? raw.slice(k + 3) : raw) }; })
           .filter((t) => t.title && !/^radio monaco$/i.test(t.title) && !/^radio monaco$/i.test(t.artist)).sort((a, b) => b.date - a.date);
         const past = (list[0] && !list[0].dur ? list.slice(1) : list).slice(0, 3);
-        plBox.querySelector('[data-ux-pll]').innerHTML = past.map((t) => `<span class="uxqr"><time>${fT.format(new Date(t.date * 1000))}</time><span><b>${esc(t.title)}</b> ${esc(t.artist)}</span></span>`).join('');
-        plBox.hidden = !past.length;
+        const html = past.map((t) => `<span class="uxqr"><time>${fT.format(new Date(t.date * 1000))}</time><span><b>${esc(t.title)}</b> ${esc(t.artist)}</span></span>`).join('');
+        plBoxes.forEach((bx) => { bx.querySelector('[data-ux-pll]').innerHTML = html; bx.hidden = !past.length; });
       } catch (e) {}
     };
     loadPl(); every(30000, () => { if (!document.hidden) loadPl(); });

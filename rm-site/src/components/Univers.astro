@@ -4,14 +4,14 @@
 import I from './Icons.astro';
 import { u, asset } from '../lib/url.js';
 import { UNIVERS } from '../lib/stations.js';
-const { eyebrow = '01 — Nos webradios', h1 = false, id = 'radios' } = Astro.props;
+const { eyebrow = 'Nos webradios', h1 = false, id = 'radios' } = Astro.props;
 const H = h1 ? 'h1' : 'h2';
 const bandsLabel = (bands) => bands.map((b) => (b.city ? b.city + ' ' : '') + b.f).join(', ');
 ---
   <section id={id} data-full data-reveal class="uvs">
     <div class="uvrow">
       {UNIVERS.map((r, g) => (
-        <article class:list={['ux', { dk: r.ink === '#141218', 'ux-g': r.departs }]} data-ux={r.ids[0]} data-ux-st={r.ids.join(',')} style={`--c:${r.color};--w:${r.wash};--d:${(g * 0.09 + 0.12).toFixed(2)}s`}>
+        <article class:list={['ux', { dk: r.ink === '#141218', 'ux-g': r.playlist !== null }]} data-ux={r.ids[0]} data-ux-st={r.ids.join(',')} style={`--c:${r.color};--w:${r.wash};--d:${(g * 0.09 + 0.12).toFixed(2)}s`}>
           <img class="uxp" src={asset(r.photo)} alt="" loading="lazy" style={`object-position:${r.pos}`} />
           <span class="uxt0" aria-hidden="true"></span><span class="uxs" aria-hidden="true"></span><span class="uxw" aria-hidden="true"></span><span class="uxbar" aria-hidden="true"></span>
           <button class="ux-hit" type="button" data-rm-live={r.ids[0]} aria-label={`Écouter ${r.departs ? r.name + ', départ Monte-Carlo' : 'Radio Monaco ' + r.name}`}></button>
@@ -35,8 +35,8 @@ const bandsLabel = (bands) => bands.map((b) => (b.city ? b.city + ' ' : '') + b.
               <span class="uxc"><img data-ux-cover alt="Pochette du titre en cours" hidden /><I n="eq" /></span>
               <span class="uxt"><span class="uxt1" data-ux-t1>{r.line}</span><span class="uxt2" data-ux-t2>En direct</span></span>
             </span></span></span>
-            {r.playlist && (
-              <span class="uxq" data-ux-pl={r.ids[0]} hidden>
+            {r.playlist !== null && (
+              <span class="uxq" data-ux-pl={r.playlist} hidden>
                 <span class="uxqh">Déjà passés</span>
                 <span class="uxql" data-ux-pll></span>
                 <a class="uxqa" href={u('/playlist/')}>Toute la playlist<I n="right" s={14} /></a>
