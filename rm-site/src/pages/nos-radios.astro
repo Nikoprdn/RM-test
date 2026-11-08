@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import I from '../components/Icons.astro';
 import Univers from '../components/Univers.astro';
 import { u, asset } from '../lib/url.js';
-import { STATIONS } from '../lib/stations.js';
+import { STATIONS, UNIVERS } from '../lib/stations.js';
 // Textes repris de la page « Nos radios » du site actuel
 const TXT = [
   'Créée en 2007, Radio Monaco est une radio musicale qui diffuse également des news et des émissions thématiques. En FM, les fréquences 95.4, 98.2 et 103.2 couvrent un territoire entre Bordighera et Saint-Tropez. En DAB+, Radio Monaco propose une qualité numérique pour Paris et Nice.',
@@ -11,10 +11,12 @@ const TXT = [
   'Chaque jour, toute la team DJ de Radio Monaco avec des sets nu-disco, house, deep-house, future-soul et electro-pop.',
   'La programmation musicale de nuit, disponible 24 h/24 : house, pop, urban pop et chill-out, une sélection tendance pour plonger dans une expérience nocturne.'
 ];
+// textes des volets regroupés : The Sound of Monte-Carlo (Monte-Carlo + Paris), 100 % Mix DJ, Night Mood
+const UTXT = [TXT[0] + ' Le départ Paris diffuse le même programme, avec l’information de Paris et d’Île-de-France, en DAB+ à Paris et partout sur le site et l’appli.', TXT[2], TXT[3]];
 const PROD = (process.env.PROD_URL || 'https://radio-monaco.com').replace(/\/$/, '');
 const ld = { '@context': 'https://schema.org', '@type': 'ItemList', name: 'Les radios de Radio Monaco', itemListElement: STATIONS.map((s, i) => ({ '@type': 'ListItem', position: i + 1, item: { '@type': 'RadioChannel', name: 'Radio Monaco ' + s.name, broadcastChannelId: s.bands.map((b) => b.f).join(', '), url: PROD + '/nos-radios/#' + s.key } })) };
 ---
-<Base title="Nos radios — Radio Monaco" description="Monte-Carlo, Paris, 100 % Mix DJ et Night Mood : les quatre radios de Radio Monaco en FM, DAB+ et en ligne." path="/nos-radios/" jsonld={[ld]}>
+<Base title="Nos radios — Radio Monaco" description="The Sound of Monte-Carlo (départs Monte-Carlo et Paris), 100 % Mix DJ et Night Mood : les radios de Radio Monaco en FM, DAB+ et en ligne." path="/nos-radios/" jsonld={[ld]}>
   <Univers h1 eyebrow="Nos radios" id="univers" />
 
   <section class="ou" data-reveal>
@@ -25,14 +27,25 @@ const ld = { '@context': 'https://schema.org', '@type': 'ItemList', name: 'Les r
         <p class="ou-lead">En FM de Bordighera à Saint-Tropez, en DAB+ à Monaco, Nice et Paris, et partout dans le monde sur le site et l’appli.</p>
       </div>
       <div class="ou-grid">
-        {STATIONS.map((s, i) => (
-          <article class="ou-st rise" id={s.key} style={`--c:${s.color};--d:${(i * 0.08 + 0.1).toFixed(2)}s`}>
-            <img class="ou-lg" src={asset(s.logoInk)} alt={'Radio Monaco ' + s.name} loading="lazy" />
-            <p class="ou-line">{s.line}</p>
-            <p class="ou-tx">{TXT[i]}</p>
-            <ul class="ou-fq">{s.bands.map((b) => <li><span>{b.city || (b.f === 'DAB+' ? 'Numérique' : 'En ligne')}</span><b>{b.f === 'Web' ? 'Site & appli' : b.f}</b></li>)}</ul>
-            <p class="ou-now" data-now={i}></p>
-            <button class="ou-play" type="button" data-rm-live={i} data-rm-st={i}><span class="pi"><I n="pp" /></span><span data-ou-l>Écouter</span></button>
+        {UNIVERS.map((s, g) => (
+          <article class:list={['ou-st rise', { 'ou-g': s.departs }]} id={s.key} style={`--c:${s.color};--d:${(g * 0.08 + 0.1).toFixed(2)}s`}>
+            <img class="ou-lg" src={asset(s.logoInk)} alt={s.departs ? s.name : 'Radio Monaco ' + s.name} loading="lazy" />
+            <p class="ou-line">{s.departs ? s.name : s.line}</p>
+            <p class="ou-tx">{UTXT[g]}</p>
+            {s.departs ? s.departs.map((d) => (
+              <div class="ou-dep">
+                <p class="ou-dn">Départ {d.name}{d.note && <span>{d.note}</span>}</p>
+                <ul class="ou-fq">{d.bands.map((b) => <li><span>{b.city || (b.f === 'DAB+' ? 'Numérique' : 'En ligne')}</span><b>{b.f === 'Web' ? 'Site & appli' : b.f}</b></li>)}</ul>
+                <button class="ou-play" type="button" data-rm-live={d.i} data-rm-st={d.i}><span class="pi"><I n="pp" /></span><span data-ou-l data-ou-n={d.name}>Écouter {d.name}</span></button>
+              </div>
+            )) : (
+              <>
+                <ul class="ou-fq">{s.bands.map((b) => <li><span>{b.city || (b.f === 'DAB+' ? 'Numérique' : 'En ligne')}</span><b>{b.f === 'Web' ? 'Site & appli' : b.f}</b></li>)}</ul>
+                <p class="ou-now" data-now={s.ids[0]}></p>
+                <button class="ou-play" type="button" data-rm-live={s.ids[0]} data-rm-st={s.ids[0]}><span class="pi"><I n="pp" /></span><span data-ou-l>Écouter</span></button>
+              </>
+            )}
+            {s.departs && <p class="ou-now" data-now={s.ids[0]}></p>}
           </article>
         ))}
       </div>
@@ -44,7 +57,7 @@ const ld = { '@context': 'https://schema.org', '@type': 'ItemList', name: 'Les r
     const paint = () => {
       const R = window.RM; if (!R) return; const m = R.meta || {}, s = R.state;
       document.querySelectorAll('[data-now]').forEach((el) => { const x = m[+el.dataset.now]; el.textContent = x && x.title ? 'En ce moment · ' + x.title + (x.artist ? ' — ' + x.artist : '') : ''; });
-      document.querySelectorAll('[data-rm-st]').forEach((b) => { const on = s.mode === 'live' && s.station === +b.dataset.rmSt && s.playing; b.classList.toggle('playing', on); b.querySelector('[data-ou-l]').textContent = on ? 'En écoute' : 'Écouter'; });
+      document.querySelectorAll('[data-rm-st]').forEach((b) => { const on = s.mode === 'live' && s.station === +b.dataset.rmSt && s.playing; b.classList.toggle('playing', on); const l = b.querySelector('[data-ou-l]'); l.textContent = on ? 'En écoute' : 'Écouter' + (l.dataset.ouN ? ' ' + l.dataset.ouN : ''); });
     };
     ['rm:meta', 'rm:state', 'astro:page-load'].forEach((e) => document.addEventListener(e, paint)); paint();
   </script>

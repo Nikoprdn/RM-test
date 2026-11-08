@@ -26,3 +26,18 @@ export const STATIONS = [
     line: 'La playlist de Pampa', bands: [{ city: '', f: 'Web' }]
   }
 ];
+
+// Présentation : Monte-Carlo et Paris sont deux départs du même programme, « The Sound of Monte-Carlo »
+// (Paris ajoute l'information de Paris et d'Île-de-France). Les flux restent distincts dans le lecteur.
+const [MC, PA, DJ, NM] = STATIONS;
+export const UNIVERS = [
+  {
+    ...MC, key: 'thesound', name: 'The Sound of Monte-Carlo', ids: [0, 1], playlist: true,
+    departs: [
+      { i: 0, name: 'Monte-Carlo', bands: MC.bands },
+      { i: 1, name: 'Paris', bands: PA.bands.map((b) => ({ ...b, city: 'Paris' })), note: 'Infos de Paris et d’Île-de-France' }
+    ]
+  },
+  { ...DJ, ids: [2] },
+  { ...NM, ids: [3] }
+];

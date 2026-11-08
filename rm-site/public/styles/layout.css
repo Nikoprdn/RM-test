@@ -275,7 +275,7 @@ html.menu-open{overflow:hidden} /* sur html seulement : sur body, l’en-tête c
 .ou-hd{max-width:760px;margin-bottom:clamp(48px,7vh,80px)}
 .ou-h{margin:0;font-size:clamp(40px,5.2vw,76px);line-height:1.02;font-weight:300;letter-spacing:-.035em}
 .ou-lead{margin:24px 0 0;font-size:clamp(17px,1.3vw,19px);line-height:1.55;color:#6A6570;max-width:58ch}
-.ou-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(20px,2vw,32px)}
+.ou-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(24px,2.6vw,40px)}
 .ou-st{position:relative;display:flex;flex-direction:column;padding:34px 0 0;border-top:1px solid var(--line)}
 .ou-st::before{content:"";position:absolute;left:0;top:-1px;width:56px;height:4px;border-radius:0 0 4px 4px;background:var(--c);transition:width .9s cubic-bezier(.16,.84,.12,1)}
 .ou-st:hover::before{width:100%}
@@ -290,7 +290,7 @@ html.menu-open{overflow:hidden} /* sur html seulement : sur body, l’en-tête c
 .ou-play .pi{width:36px;height:36px;border-radius:50%;background:var(--c);color:#fff;display:inline-flex;align-items:center;justify-content:center}
 .ou-play .ic-pause{display:none}.ou-play.playing .ic-pause{display:block}.ou-play.playing .ic-play{display:none}
 .ou-play:hover{transform:translateY(-2px)}.ou-play.playing{background:var(--c)}.ou-play.playing .pi{background:rgba(255,255,255,.22)}
-@media (max-width:1100px){.ou-grid{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:56px}}
+@media (max-width:900px){.ou-grid{grid-template-columns:1fr;row-gap:56px}}
 @media (max-width:640px){.ou-grid{grid-template-columns:1fr;row-gap:48px}}
 /* contact */
 .svc{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));gap:16px}
@@ -490,7 +490,7 @@ html.menu-open{overflow:hidden} /* sur html seulement : sur body, l’en-tête c
 .pl-nk i{font-style:normal;font-weight:500;letter-spacing:.06em;text-transform:none;color:var(--muted);font-size:13px}
 .pl-nt{display:block;margin-top:14px;font-size:clamp(26px,3vw,38px);font-weight:500;letter-spacing:-.02em;line-height:1.1}
 .pl-na{display:block;margin-top:8px;font-size:18px;color:var(--muted)}
-.pl-now .btn-play{grid-column:2;align-self:start;justify-self:start;margin-top:22px}
+
 .pl-h{margin:40px 0 4px;padding-bottom:10px;border-bottom:1px solid var(--ink);font-size:22px;font-weight:600;letter-spacing:-.01em}
 .pl-list>.pl-h:first-child{margin-top:0}
 .pl-ol{list-style:none;margin:0;padding:0}
@@ -515,7 +515,6 @@ html.menu-open{overflow:hidden} /* sur html seulement : sur body, l’en-tête c
   .pl-nk i{font-size:12px}
   .pl-nt{margin-top:6px;font-size:21px}
   .pl-na{margin-top:3px;font-size:15px}
-  .pl-now .btn-play{grid-column:1 / -1;justify-self:stretch;justify-content:center;margin-top:14px}
   .pl-h{margin-top:32px;font-size:19px}
   .pl-r{grid-template-columns:44px 48px minmax(0,1fr);gap:12px;padding:10px 0}
   .pl-t{font-size:14px}
@@ -523,3 +522,71 @@ html.menu-open{overflow:hidden} /* sur html seulement : sur body, l’en-tête c
   .pl-tt{font-size:15.5px}
   .pl-a{font-size:13.5px}
 }
+
+/* ---- volets : The Sound of Monte-Carlo (deux départs + playlist) ---- */
+.ux{display:block}
+.ux-hit{position:absolute;inset:0;z-index:1;width:100%;height:100%;margin:0;padding:0;border:0;background:transparent;cursor:pointer}
+.ux-hit:focus-visible{outline:2px solid #fff;outline-offset:-6px}
+.uxb{z-index:2;pointer-events:none}
+.uxb a,.uxb button{pointer-events:auto}
+.uxf.uxd{display:flex;flex-direction:column;gap:8px;min-height:0;max-height:240px}
+.uxdp{display:flex;flex-direction:column;align-items:flex-start;gap:7px;width:100%;padding:10px 12px;border:1px solid rgba(255,255,255,.2);border-radius:14px;background:rgba(20,18,24,.34);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:#fff;font:inherit;text-align:left;cursor:pointer;transition:background .3s,border-color .3s}
+.uxdp:hover{background:rgba(20,18,24,.55);border-color:rgba(255,255,255,.45)}
+.uxdp.on{border-color:#fff;background:rgba(228,3,46,.35)}
+.uxdn{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;letter-spacing:.01em}
+.uxdi{flex:0 0 auto;width:24px;height:24px;border-radius:50%;background:#fff;color:#141218;display:inline-flex;align-items:center;justify-content:center}
+.uxdi svg{width:11px;height:11px}
+.uxdb{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px}
+.uxdb .bd{height:auto;padding:0;border:0;border-radius:0;background:none;backdrop-filter:none;-webkit-backdrop-filter:none;font-size:12.5px}
+.uxdnote{font-size:12.5px;color:rgba(255,255,255,.8)}
+.uxq{display:flex;flex-direction:column;gap:6px;max-height:220px;overflow:hidden;padding-top:12px;border-top:1px solid rgba(255,255,255,.22);transition:opacity .45s ease,max-height .9s cubic-bezier(.65,0,.12,1),padding .9s cubic-bezier(.65,0,.12,1)}
+.uxq[hidden]{display:none}
+.uxqh{font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.75)}
+.uxql{display:flex;flex-direction:column;gap:4px}
+.uxqr{display:flex;gap:10px;min-width:0;font-size:13px;line-height:1.35;color:rgba(255,255,255,.78)}
+.uxqr time{flex:0 0 auto;font-weight:600;font-variant-numeric:tabular-nums;color:#fff}
+.uxqr>span{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.uxqr b{font-weight:600;color:#fff}
+.uxqa{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;margin-top:4px;font-size:13px;font-weight:600;color:#fff;text-decoration:underline;text-underline-offset:3px}
+.uvrow:hover .ux:not(:hover) .uxq{opacity:0;max-height:0;padding-top:0;border-top-color:transparent}
+@media (max-width:900px){
+  /* la carte grandit avec son contenu (photo en fond), toutes les cartes à la même hauteur */
+  .ux{aspect-ratio:auto;height:auto;min-height:min(76vh,540px);max-height:none;display:flex;flex-direction:column}
+  .uxb{position:relative;inset:auto;flex:1 1 auto;display:flex;flex-direction:column;padding:20px 20px 24px}
+  .uxq{order:3;margin-top:14px;padding-top:12px}
+  .uxf.uxd{order:4;margin-top:14px;padding-top:0;border-top:0;display:flex;gap:6px;max-height:none}
+  .uxdp{padding:8px 10px;gap:5px;border-radius:12px}
+  .uxdn{font-size:13.5px}
+  .uxdb .bd{font-size:12px}
+  .uxdnote{font-size:12px}
+}
+
+/* fiche The Sound of Monte-Carlo : deux départs */
+.ou-dep{margin-top:26px}
+.ou-dep+.ou-dep{margin-top:30px}
+.ou-dn{margin:0;display:flex;flex-direction:column;gap:3px;font-size:15px;font-weight:600}
+.ou-dn span{font-size:13.5px;font-weight:400;color:var(--muted)}
+.ou-dep .ou-fq{margin-top:10px}
+.ou-dep .ou-play{margin-top:16px}
+/* playlist The Sound of Monte-Carlo : deux boutons d'écoute, heures regroupées */
+.pl-nb{grid-column:2;align-self:start;display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.pl-nb .btn-play{margin-top:0}
+.pl-h2{margin-top:48px}
+.pl-g{border-bottom:1px solid var(--line)}
+.pl-g>summary{list-style:none;display:flex;align-items:center;gap:14px;min-height:56px;padding:6px 0;cursor:pointer}
+.pl-g>summary::-webkit-details-marker{display:none}
+.pl-gh{font-size:18px;font-weight:600;min-width:64px;font-variant-numeric:tabular-nums}
+.pl-gn{flex:1;font-size:14px;color:var(--muted)}
+.pl-gv{width:34px;height:34px;border-radius:50%;border:1px solid rgba(20,18,24,.15);position:relative;flex:0 0 auto;transition:transform .35s,background .3s}
+.pl-gv::before,.pl-gv::after{content:"";position:absolute;left:50%;top:50%;width:11px;height:1.6px;margin:-.8px 0 0 -5.5px;background:currentColor;border-radius:2px}
+.pl-gv::after{transform:rotate(90deg);transition:transform .35s}
+.pl-g[open] .pl-gv::after{transform:rotate(0)}
+.pl-g>summary:hover .pl-gv{background:#fff}
+.pl-g .pl-ol{padding-bottom:8px}
+.pl-g .pl-r:last-child{border-bottom:0}
+@media (max-width:640px){
+  .pl-nb{grid-column:1 / -1;margin-top:14px;gap:8px}
+  .pl-nb .btn-play{flex:1 1 0;justify-content:center;padding:0 16px 0 6px;font-size:14px}
+  .pl-gh{font-size:16px;min-width:52px}
+}
+.ux-g .uxs{background:linear-gradient(180deg,rgba(10,10,16,.45) 0%,rgba(10,10,16,.08) 22%,rgba(10,10,16,.5) 44%,rgba(10,10,16,.93) 100%)}

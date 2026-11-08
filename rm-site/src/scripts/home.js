@@ -35,11 +35,15 @@ function init() {
   const univers = () => {
     const RM = window.RM; if (!RM) return; const s = RM.state;
     $$('[data-ux]').forEach((el) => {
-      const i = +el.dataset.ux; const on = s.mode === 'live' && s.station === i && s.playing;
+      // un volet peut réunir plusieurs départs (The Sound of Monte-Carlo : Monte-Carlo et Paris)
+      const ids = (el.dataset.uxSt || el.dataset.ux).split(',').map(Number);
+      const live = s.mode === 'live' && s.playing && ids.includes(s.station);
+      const i = live ? s.station : ids[0]; const on = live;
       el.classList.toggle('on', on); el.classList.toggle('playing', on);
-      el.querySelector('[data-ux-status]').textContent = on ? 'En écoute' : 'En direct';
+      el.querySelector('[data-ux-status]').textContent = on ? (ids.length > 1 ? 'En écoute · ' + RM.stations[i].name : 'En écoute') : 'En direct';
+      el.querySelectorAll('[data-ux-dep]').forEach((b) => b.classList.toggle('on', on && +b.dataset.uxDep === s.station));
       const m = RM.meta[i]; const st = RM.stations[i];
-      const t1 = m && m.title ? m.title : (i === 0 && RM.onair.now ? RM.onair.now.name : st.line);
+      const t1 = m && m.title ? m.title : (ids.includes(0) && RM.onair.now ? RM.onair.now.name : st.line);
       el.querySelector('[data-ux-t1]').textContent = t1;
       el.querySelector('[data-ux-t2]').textContent = m && m.title ? (m.artist || st.name) : 'En direct';
       const c = el.querySelector('[data-ux-cover]');
@@ -47,6 +51,27 @@ function init() {
     });
   };
   ['rm:state', 'rm:meta', 'rm:onair'].forEach((e) => document.addEventListener(e, univers, sig)); univers();
+
+  // ---------- playlist dans le volet The Sound of Monte-Carlo (historique Infomaniak) ----------
+  const plBox = document.querySelector('[data-ux-pl]');
+  if (plBox) {
+    const st = window.RM ? window.RM.stations[+plBox.dataset.uxPl] : null;
+    const id = st ? new URL(st.stream).hostname.split('.')[0] : 'radiomonaco';
+    const esc = (x) => String(x || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const nice = (x) => { x = (x || '').replace(/\s+/g, ' ').trim(); const l = x.replace(/[^A-Za-zÀ-ÿ]/g, ''); const up = l.replace(/[^A-ZÀ-Þ]/g, '').length; if (l.length && up / l.length > 0.6) x = x.toLowerCase().replace(/(^|[\s(\-&/"'«])([a-zà-ÿ])/g, (m, a, b) => a + b.toUpperCase()); return x.replace(/ (Feat|Ft)\.? /gi, ' feat. ').replace(/ X /g, ' x '); };
+    const fT = new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Monaco', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
+    const loadPl = async () => {
+      try {
+        const j = await (await fetch(`https://metadata.infomaniak.com/api/radio/${id}/metadata`, { cache: 'no-store', ...sig })).json();
+        const list = (j.data || []).map((x) => { const raw = x.title || ''; const k = raw.indexOf(' - '); return { date: x.date, dur: x.duration || 0, artist: nice(k > 0 ? raw.slice(0, k) : ''), title: nice(k > 0 ? raw.slice(k + 3) : raw) }; })
+          .filter((t) => t.title && !/^radio monaco$/i.test(t.title) && !/^radio monaco$/i.test(t.artist)).sort((a, b) => b.date - a.date);
+        const past = (list[0] && !list[0].dur ? list.slice(1) : list).slice(0, 3);
+        plBox.querySelector('[data-ux-pll]').innerHTML = past.map((t) => `<span class="uxqr"><time>${fT.format(new Date(t.date * 1000))}</time><span><b>${esc(t.title)}</b> ${esc(t.artist)}</span></span>`).join('');
+        plBox.hidden = !past.length;
+      } catch (e) {}
+    };
+    loadPl(); every(30000, () => { if (!document.hidden) loadPl(); });
+  }
 
   // ---------- podcasts ----------
   const dataEl = document.getElementById('pz-data');
