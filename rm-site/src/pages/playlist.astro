@@ -10,6 +10,7 @@ const snap = await getPlaylist([src]);
 const radio = { key: src.key, name: 'The Sound of Monte-Carlo', color: src.color, id: metaId(src.stream), departs: [0, 1].map((i) => ({ i, name: STATIONS[i].name })) };
 ---
 <Base title="The Sound of Monte-Carlo : la playlist — Radio Monaco" description="Les titres passés sur The Sound of Monte-Carlo, à Monte-Carlo et à Paris : heure de passage, artiste et pochette, mis à jour en direct." path="/playlist/">
+  <div class="pl-bg" id="pl-bg" aria-hidden="true"></div>
   <div class="wrap pl-wrap">
     <header class="page-hd">
       <nav class="crumbs"><a href={u('/')}>Accueil</a><span class="sep">/</span><span>Playlist</span></nav>
@@ -72,9 +73,32 @@ const radio = { key: src.key, name: 'The Sound of Monte-Carlo', color: src.color
       const coverOf = (t) => t.cover || store[t.raw] || '';
       const img = (t, cls) => { const src = coverOf(t); return `<img class="${cls}" src="${esc(src || D.mark)}" alt="" loading="lazy" ${src ? '' : `data-need data-raw="${esc(t.raw)}" data-a="${esc(t.artist)}" data-t="${esc(t.title)}"`} />`; };
 
+      // ---------- fond : mosaïque des pochettes passées à l'antenne ----------
+      const B = document.getElementById('pl-bg'); let bgCols = 0, shown = new Set(), bgT = 0;
+      const bgCovers = () => { const seen = new Set(), out = []; (cache[cur] || []).map(parse).sort((a, b) => b.date - a.date).forEach((t) => { const c = t.cover || store[t.raw]; if (c && !seen.has(c)) { seen.add(c); out.push(c); } }); return out; };
+      const paintBg = () => {
+        if (!B) return; const C = bgCovers(); if (C.length < 8) return;
+        const n = innerWidth < 640 ? 4 : innerWidth < 1100 ? 6 : 8;
+        if (n !== bgCols) {
+          bgCols = n; shown = new Set(C); const per = Math.max(5, Math.ceil(C.length / n)); let h = '';
+          for (let c = 0; c < n; c++) { let set = C.slice(c * per, (c + 1) * per); if (set.length < 5) set = [...set, ...C.slice(c, c + 5 - set.length)]; h += `<div class="pl-bgc" style="--t:${95 + (c % 3) * 25}s">${[...set, ...set].map((x) => `<img src="${esc(x)}" alt="" loading="lazy" decoding="async">`).join('')}</div>`; }
+          B.style.setProperty('--n', n); B.innerHTML = h; requestAnimationFrame(() => B.classList.add('on')); return;
+        }
+        // nouveaux titres : leur pochette remplace une case au hasard, en fondu
+        C.filter((x) => !shown.has(x)).slice(0, 6).forEach((x) => {
+          shown.add(x); const col = B.children[Math.floor(Math.random() * B.children.length)]; if (!col) return;
+          const im = col.children, half = im.length / 2, k = Math.floor(Math.random() * half);
+          [im[k], im[k + half]].forEach((el) => { if (!el) return; el.classList.add('sw'); setTimeout(() => { el.src = x; el.classList.remove('sw'); }, 450); });
+        });
+      };
+      const schedBg = () => { clearTimeout(bgT); bgT = setTimeout(paintBg, 600); };
+      window.addEventListener('resize', schedBg, sig);
+      let warmed = false;
+      const warm = () => { if (warmed) return; warmed = true; (cache[cur] || []).map(parse).filter((t) => !junk(t) && !t.cover && store[t.raw] === undefined).sort((a, b) => b.date - a.date).slice(0, 30).forEach((t) => lookup(t).then(schedBg)); };
+
       const q = document.getElementById('pl-q');
       const row = (t, day) => `<li class="pl-r"><time class="pl-t" datetime="${new Date(t.date * 1000).toISOString()}">${hhmm(t.date)}</time>${img(t, 'pl-c')}<span class="pl-x"><span class="pl-tt">${esc(t.title)}</span><span class="pl-a">${esc(t.artist)}${day && dayLabel(t.date) ? ' · ' + esc(dayLabel(t.date)) : ''}</span></span></li>`;
-      const listen = (r) => r.departs.map((d) => `<button class="btn-play" type="button" data-rm-live="${d.i}" style="--c:${r.color}"><span class="pi"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span>Écouter ${esc(d.name)}</button>`).join('');
+      const listen = (r) => r.departs.map((d) => `<button class="btn-play" type="button" data-rm-live="${d.i}" style="--c:${r.color}"><span class="pi"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="pl-lv">Écouter </span>${esc(d.name)}</button>`).join('');
       const draw = () => {
         const r = radio(); if (!r) return;
         const all = (cache[cur] || []).map(parse).filter((t) => !junk(t)).sort((a, b) => b.date - a.date);
@@ -100,12 +124,13 @@ const radio = { key: src.key, name: 'The Sound of Monte-Carlo', color: src.color
           L.querySelectorAll('details.pl-g').forEach((d) => d.addEventListener('toggle', () => { if (d.open) { open.add(d.dataset.k); d.querySelectorAll('img[data-need]').forEach((i) => io && io.observe(i)); } else open.delete(d.dataset.k); }));
         }
         if (io) document.querySelectorAll('#pl-list .pl-ol img[data-need], #pl-now img[data-need]').forEach((i) => { if (!i.closest('details:not([open])')) io.observe(i); });
+        schedBg();
       };
 
       const load = async () => {
         const r = radio(); if (!r) return;
         try { const res = await fetch(`https://metadata.infomaniak.com/api/radio/${r.id}/metadata-all-cover`, { cache: 'no-store', ...sig }); const j = await res.json(); if (Array.isArray(j.data)) cache[cur] = j.data.map((x) => [x.date, x.duration || 0, x.title || '', x.cover || '']); } catch (e) {}
-        draw();
+        draw(); warm();
       };
       q.addEventListener('input', draw, sig);
       document.addEventListener('visibilitychange', () => { if (!document.hidden) load(); }, sig);
