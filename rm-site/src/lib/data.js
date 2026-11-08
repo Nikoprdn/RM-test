@@ -276,3 +276,20 @@ export const getPages = () => once('pages', async () => {
       .replace(/<img[^>]*>/gi, '').replace(/\n\s*\n+/g, '\n')
   }));
 });
+
+// ---------- playlist : titres diffusés (historique public Infomaniak, 100 derniers par radio) ----------
+// L'identifiant Infomaniak est le nom du flux (radiomonaco, mixdj…). Récupéré à la construction pour
+// un premier affichage immédiat ; la page se met ensuite à jour en direct depuis le navigateur.
+export const metaId = (stream) => new URL(stream).hostname.split('.')[0];
+export const getPlaylist = (stations) => once('playlist', async () => {
+  if (FIX) return {};
+  const out = {};
+  await Promise.all(stations.map(async (s) => {
+    try {
+      const r = await fetch(`https://metadata.infomaniak.com/api/radio/${metaId(s.stream)}/metadata-all-cover`, { signal: AbortSignal.timeout(10000) });
+      const j = r.ok ? await r.json() : null;
+      out[s.key] = (j && Array.isArray(j.data) ? j.data : []).map((x) => [x.date, x.duration || 0, x.title || '', x.cover || '']);
+    } catch (e) { out[s.key] = []; } // la playlist ne doit jamais bloquer la construction du site
+  }));
+  return out;
+});

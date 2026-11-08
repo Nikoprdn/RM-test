@@ -13,6 +13,7 @@ const NAV = [['radios', 'Radios', '/nos-radios/'], ['podcasts', 'Podcasts', '/po
     <nav class="nav" id="nav" aria-label="Navigation principale">
       {NAV.map(([id, label, page]) => hero || !page ? <a href={u('/#' + id)} data-sec={hero ? id : undefined}>{label}</a> : <a href={u(page)} data-page={page}>{label}</a>)}
       <a href={u('/programmes/')} data-page="/programmes/">Programme</a>
+      <a href={u('/playlist/')} data-page="/playlist/">Playlist</a>
       <span class="ind" aria-hidden="true"></span>
     </nav>
     <div style="display:flex;align-items:center;gap:10px">
