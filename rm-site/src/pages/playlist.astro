@@ -81,7 +81,7 @@ const radio = { key: src.key, name: 'The Sound of Monte-Carlo', color: src.color
         const n = innerWidth < 640 ? 4 : innerWidth < 1100 ? 6 : 8;
         if (n !== bgCols) {
           bgCols = n; shown = new Set(C); const per = Math.max(5, Math.ceil(C.length / n)); let h = '';
-          for (let c = 0; c < n; c++) { let set = C.slice(c * per, (c + 1) * per); if (set.length < 5) set = [...set, ...C.slice(c, c + 5 - set.length)]; h += `<div class="pl-bgc" style="--t:${95 + (c % 3) * 25}s">${[...set, ...set].map((x) => `<img src="${esc(x)}" alt="" loading="lazy" decoding="async">`).join('')}</div>`; }
+          for (let c = 0; c < n; c++) { let set = C.slice(c * per, (c + 1) * per); if (set.length < 5) set = [...set, ...C.slice(c, c + 5 - set.length)]; h += `<div class="pl-bgc" style="--t:${95 + (c % 3) * 25}s">${[...set, ...set].map((x) => `<img src="${esc(x)}" alt="" decoding="async">`).join('')}</div>`; }
           B.style.setProperty('--n', n); B.innerHTML = h; void B.offsetWidth; B.classList.add('on'); return;
         }
         // nouveaux titres : leur pochette remplace une case au hasard, en fondu
