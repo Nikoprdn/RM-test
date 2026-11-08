@@ -607,23 +607,18 @@ body:has(.pl-bg){background:var(--bg)}
 .rm:has(.pl-bg) .ftr{background:var(--bg)}
 .pl-bg{--n:8;--cw:980px;position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:14px;padding:0 14px;isolation:isolate;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 10%,#000 90%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 10%,#000 90%,transparent 100%)}
 /* voile : léger sur les bords, presque opaque à partir de la colonne de texte */
-.pl-bg::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(246,243,238,.38) 0,rgba(246,243,238,.38) calc(50% - var(--cw) / 2 - 160px),rgba(246,243,238,.93) calc(50% - var(--cw) / 2 + 40px),rgba(246,243,238,.93) calc(50% + var(--cw) / 2 - 40px),rgba(246,243,238,.38) calc(50% + var(--cw) / 2 + 160px),rgba(246,243,238,.38) 100%)}
+.pl-bg::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(246,243,238,.38) 0,rgba(246,243,238,.38) calc(50% - var(--cw) / 2 - 180px),rgba(246,243,238,.97) calc(50% - var(--cw) / 2),rgba(246,243,238,.97) calc(50% + var(--cw) / 2),rgba(246,243,238,.38) calc(50% + var(--cw) / 2 + 180px),rgba(246,243,238,.38) 100%)}
 .pl-bgc{flex:1 1 0;min-width:0;align-self:flex-start;height:max-content;display:flex;flex-direction:column;gap:14px;padding-bottom:14px;animation:plv var(--t,110s) linear var(--ph,0s) infinite;will-change:transform}
 .pl-bgc:nth-child(even){animation-direction:reverse}
 .pl-bg img{display:block;width:100%;aspect-ratio:1;object-fit:cover;border-radius:14px;background:transparent;opacity:0;transform:scale(.86);filter:blur(12px) saturate(.9)}
 /* apparition douce, du centre de la page vers l'extérieur (délai selon la distance au centre) */
 .pl-bg img.in{animation:plIn 1.4s cubic-bezier(.16,.84,.12,1) var(--dl,0s) both}
 @keyframes plIn{from{opacity:0;transform:scale(.86);filter:blur(12px) saturate(.9)}to{opacity:1;transform:none;filter:blur(0) saturate(.9)}}
-/* teinte d'ambiance : la pochette en cours, floutée, au centre ; s'efface au défilement */
-.pl-tint{position:fixed;left:50%;top:-6vh;z-index:-1;width:min(1200px,130vw);height:92vh;transform:translateX(-50%);pointer-events:none;-webkit-mask-image:radial-gradient(closest-side,#000 25%,transparent 100%);mask-image:radial-gradient(closest-side,#000 25%,transparent 100%)}
-.pl-tint img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(80px) saturate(1.6);opacity:0;transition:opacity 1.6s ease}
-.pl-tint img.on{opacity:.5}
 @keyframes plv{to{transform:translateY(-50%)}}
-@media (max-width:640px){.pl-bg{gap:10px;padding:0 10px}.pl-bgc{gap:10px;padding-bottom:10px}.pl-bg img{border-radius:10px}.pl-bg::after{background:rgba(246,243,238,.9)}}
-@media (prefers-reduced-motion:reduce){.pl-bgc{animation:none}.pl-bg img,.pl-bg img.in{animation:none;opacity:1;transform:none;filter:saturate(.9)}.pl-tint img{transition:none}}
+@media (max-width:640px){.pl-bg{gap:10px;padding:0 10px}.pl-bgc{gap:10px;padding-bottom:10px}.pl-bg img{border-radius:10px}.pl-bg::after{background:rgba(246,243,238,.95)}}
+@media (prefers-reduced-motion:reduce){.pl-bgc{animation:none}.pl-bg img,.pl-bg img.in{animation:none;opacity:1;transform:none;filter:saturate(.9)}}
 @media (max-width:640px){.pl-lv{display:none}}
 .pl-bg img.done{animation:none;opacity:1;transform:none;filter:saturate(.9)}
-.pl-tint img.done{transition:none;opacity:.5}
 
 /* « Déjà passés » : les 3 dernières pochettes avec leur titre */
 .uxql{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}

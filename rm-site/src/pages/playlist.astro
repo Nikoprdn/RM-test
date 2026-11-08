@@ -11,7 +11,6 @@ const radio = { key: src.key, name: 'The Sound of Monte-Carlo', color: src.color
 ---
 <Base title="The Sound of Monte-Carlo : la playlist — Radio Monaco" description="Les titres passés sur The Sound of Monte-Carlo, à Monte-Carlo et à Paris : heure de passage, artiste et pochette, mis à jour en direct." path="/playlist/">
   <div class="pl-bg" id="pl-bg" aria-hidden="true"></div>
-  <div class="pl-tint" id="pl-tint" aria-hidden="true"></div>
   <div class="wrap pl-wrap">
     <header class="page-hd">
       <nav class="crumbs"><a href={u('/')}>Accueil</a><span class="sep">/</span><span>Playlist</span></nav>
@@ -93,7 +92,7 @@ const nice = (x) => { const k = (x || '').indexOf(' ('); return k > 0 ? nice1(x.
           shown = new Set(C); const per = Math.max(1, Math.ceil(C.length / n));
           const gap = vw < 640 ? 10 : 14, cwid = (vw - 2 * gap - (n - 1) * gap) / n, cell = cwid + gap, need = Math.ceil((innerHeight + 160) / cell) + 1;
           let h = '';
-          for (let c = 0; c < n; c++) { const len = Math.max(per, need), set = []; for (let k = 0; k < len; k++) set.push(C[(c * per + k) % C.length]); const t = 95 + (c % 3) * 25; h += `<div class="pl-bgc" style="--t:${t}s;--ph:-${(((c * 0.37) % 1) * t).toFixed(1)}s">${[...set, ...set].map((x) => `<img src="${esc(x)}" alt="" decoding="async">`).join('')}</div>`; }
+          for (let c = 0; c < n; c++) { const len = Math.max(per, need), set = []; for (let k = 0; k < len; k++) set.push(C[(c * per + k) % C.length]); const t = 240 + (c % 3) * 60; h += `<div class="pl-bgc" style="--t:${t}s;--ph:-${(((c * 0.37) % 1) * t).toFixed(1)}s">${[...set, ...set].map((x) => `<img src="${esc(x)}" alt="" decoding="async">`).join('')}</div>`; }
           B.innerHTML = h;
           const cx = innerWidth / 2, cy = innerHeight / 2, ims = [...B.querySelectorAll('img')];
           const ds = ims.map((i) => { const r = i.getBoundingClientRect(); return Math.hypot(r.left + r.width / 2 - cx, r.top + r.height / 2 - cy); });
@@ -112,22 +111,10 @@ const nice = (x) => { const k = (x || '').indexOf(' ('); return k > 0 ? nice1(x.
         });
       };
       // garde-fou : si le navigateur n'a pas joué l'animation (onglet en veille…), on affiche directement
-      const settle = () => { B.querySelectorAll('img.in').forEach((i) => { if (+getComputedStyle(i).opacity < 0.5) i.classList.add('done'); }); T && [...T.querySelectorAll('img.on')].forEach((i) => { if (+getComputedStyle(i).opacity < 0.1) i.classList.add('done'); }); };
+      const settle = () => { B.querySelectorAll('img.in').forEach((i) => { if (+getComputedStyle(i).opacity < 0.5) i.classList.add('done'); }); };
       const reveal = (i) => { const go = () => i.classList.add('in'); if (i.complete && i.naturalWidth) go(); else i.addEventListener('load', go, { once: true }); };
 
-      // ---------- teinte d'ambiance : la pochette en cours, très floutée, au milieu de la page ----------
-      const T = document.getElementById('pl-tint'); let tintSrc = '';
-      const tint = () => {
-        if (!T) return; const all = (cache[cur] || []).map(parse).filter((t) => !junk(t)).sort((a, b) => b.date - a.date);
-        const now = all[0]; const src = now ? coverOf(now) : '';
-        if (!src || src === tintSrc) return; tintSrc = src;
-        const im = new Image(); im.alt = ''; im.decoding = 'async'; im.src = src;
-        im.onload = () => { T.appendChild(im); void im.offsetWidth; im.classList.add('on'); setTimeout(settle, 2500); [...T.children].slice(0, -1).forEach((o) => { o.classList.remove('on'); setTimeout(() => o.remove(), 1600); }); };
-      };
-      const fade = () => { if (T) T.style.opacity = Math.max(0, 1 - scrollY / (innerHeight * 0.55)).toFixed(3); };
-      let fq = 0; window.addEventListener('scroll', () => { if (!fq) fq = requestAnimationFrame(() => { fq = 0; fade(); }); }, { passive: true, ...sig }); fade();
-
-      const schedBg = () => { clearTimeout(bgT); bgT = setTimeout(() => { paintBg(); tint(); }, 600); };
+      const schedBg = () => { clearTimeout(bgT); bgT = setTimeout(paintBg, 600); };
       window.addEventListener('resize', schedBg, sig);
       let warmed = false;
       const warm = () => { if (warmed) return; warmed = true; (cache[cur] || []).map(parse).filter((t) => !junk(t) && !t.cover && store[t.raw] === undefined).sort((a, b) => b.date - a.date).slice(0, 30).forEach((t) => lookup(t, true).then(schedBg)); };
