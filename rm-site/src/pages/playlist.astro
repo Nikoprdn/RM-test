@@ -80,23 +80,23 @@ const nice = (x) => { const k = (x || '').indexOf(' ('); return k > 0 ? nice1(x.
       const bgCovers = () => { const seen = new Set(), out = []; (cache[cur] || []).map(parse).sort((a, b) => b.date - a.date).forEach((t) => { const c = t.cover || store[t.raw]; if (c && !seen.has(c)) { seen.add(c); out.push(c); } }); return out; };
       const paintBg = () => {
         if (!B) return; const C = bgCovers();
-        // mosaïque dans les marges, à gauche et à droite de la colonne de lecture
-        const wrap = document.querySelector('.pl-wrap'); const cw = wrap ? wrap.getBoundingClientRect().width : 980;
-        const gw = Math.floor((document.documentElement.clientWidth - cw) / 2) - 16;
-        const n = gw < 140 || C.length < 8 ? 0 : Math.min(4, Math.max(1, Math.round(gw / 190)));
-        const key = n + ':' + gw + ':' + Math.ceil(innerHeight / 150);
+        // mosaïque sur toute la largeur ; un voile la rend presque opaque derrière la colonne de texte
+        const vw = document.documentElement.clientWidth;
+        const wrap = document.querySelector('.pl-wrap'); const cw = wrap ? Math.min(vw, wrap.getBoundingClientRect().width) : 980;
+        const n = C.length < 8 ? 0 : Math.max(3, Math.min(14, Math.round(vw / 185)));
+        const key = n + ':' + vw + ':' + Math.ceil(innerHeight / 150);
         if (key !== bgCols) {
-          bgCols = key; B.style.setProperty('--gw', Math.max(0, gw) + 'px');
+          bgCols = key; B.style.setProperty('--cw', Math.round(cw) + 'px'); B.style.setProperty('--n', n);
           if (!n) { B.innerHTML = ''; return; }
-          // chaque colonne doit couvrir toute la hauteur à tout moment du défilement : assez de pochettes,
-          // répétées si besoin, et un point de départ différent par colonne au lieu d'un décalage
-          shown = new Set(C); const per = Math.max(1, Math.ceil(C.length / (n * 2)));
-          const cwid = (gw - 28 - (n - 1) * 14) / n, cell = cwid + 14, need = Math.ceil((innerHeight + 160) / cell) + 1;
-          const col = (c) => { const len = Math.max(per, need), set = []; for (let k = 0; k < len; k++) set.push(C[(c * per + k) % C.length]); const t = 95 + (c % 3) * 25; return `<div class="pl-bgc" style="--t:${t}s;--ph:-${(((c * 0.37) % 1) * t).toFixed(1)}s">${[...set, ...set].map((x) => `<img src="${esc(x)}" alt="" decoding="async">`).join('')}</div>`; };
-          let l = '', r = ''; for (let c = 0; c < n; c++) { l += col(c); r += col(n + c); }
-          B.innerHTML = `<div class="pl-sd pl-l">${l}</div><div class="pl-sd pl-r">${r}</div>`;
+          // chaque colonne couvre toute la hauteur à tout moment du défilement (pochettes répétées si besoin),
+          // avec un point de départ différent par colonne
+          shown = new Set(C); const per = Math.max(1, Math.ceil(C.length / n));
+          const gap = vw < 640 ? 10 : 14, cwid = (vw - 2 * gap - (n - 1) * gap) / n, cell = cwid + gap, need = Math.ceil((innerHeight + 160) / cell) + 1;
+          let h = '';
+          for (let c = 0; c < n; c++) { const len = Math.max(per, need), set = []; for (let k = 0; k < len; k++) set.push(C[(c * per + k) % C.length]); const t = 95 + (c % 3) * 25; h += `<div class="pl-bgc" style="--t:${t}s;--ph:-${(((c * 0.37) % 1) * t).toFixed(1)}s">${[...set, ...set].map((x) => `<img src="${esc(x)}" alt="" decoding="async">`).join('')}</div>`; }
+          B.innerHTML = h;
           const cx = innerWidth / 2, cy = innerHeight / 2, ims = [...B.querySelectorAll('img')];
-          const ds = ims.map((i) => { const b = i.getBoundingClientRect(); return Math.hypot(b.left + b.width / 2 - cx, b.top + b.height / 2 - cy); });
+          const ds = ims.map((i) => { const r = i.getBoundingClientRect(); return Math.hypot(r.left + r.width / 2 - cx, r.top + r.height / 2 - cy); });
           const min = Math.min(...ds), span = Math.max(1, Math.min(innerWidth * 0.75, Math.max(...ds)) - min);
           ims.forEach((i, k) => { i.style.setProperty('--dl', Math.min(2.2, ((ds[k] - min) / span) * 1.8).toFixed(2) + 's'); reveal(i); });
           setTimeout(settle, 4500);

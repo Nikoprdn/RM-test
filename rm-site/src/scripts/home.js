@@ -61,13 +61,27 @@ function init() {
     const nice1 = (x) => { x = (x || '').replace(/\s+/g, ' ').trim(); const l = x.replace(/[^A-Za-zÀ-ÿ]/g, ''); const up = l.replace(/[^A-ZÀ-Þ]/g, '').length; if (l.length && up / l.length > 0.6) x = x.toLowerCase().replace(/(^|[\s(\-&/"«])([a-zà-ÿ])/g, (m, a, b) => a + b.toUpperCase()); return x.replace(/ (Feat|Ft)\.? /gi, ' feat. ').replace(/ X /g, ' x '); };
 const nice = (x) => { const k = (x || '').indexOf(' ('); return k > 0 ? nice1(x.slice(0, k)) + ' ' + nice1(x.slice(k + 1)) : nice1(x); };
     const fT = new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Monaco', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
+    // pochettes : celles d'Infomaniak, sinon recherche iTunes (mémorisée pour la session, partagée avec la page Playlist)
+    let store = {}; try { store = JSON.parse(sessionStorage.getItem('rm-covers') || '{}'); } catch (e) {}
+    const save = () => { try { sessionStorage.setItem('rm-covers', JSON.stringify(store)); } catch (e) {} };
+    const mark = plBox.dataset.mark || '';
+    const find = async (t) => {
+      if (store[t.raw] !== undefined) return store[t.raw];
+      try {
+        const q = encodeURIComponent((t.artist.split(/ x | feat\. | & | vs |, /i)[0] + ' ' + t.title).replace(/\(.*?\)|\[.*?\]/g, ' ').replace(/\s+/g, ' ').trim());
+        const j = await (await fetch('https://itunes.apple.com/search?media=music&entity=song&limit=1&country=fr&term=' + q, sig)).json();
+        const a = j.results && j.results[0] && j.results[0].artworkUrl100; store[t.raw] = a ? a.replace('100x100', '300x300') : ''; save();
+      } catch (e) { return ''; }
+      return store[t.raw];
+    };
     const loadPl = async () => {
       try {
-        const j = await (await fetch(`https://metadata.infomaniak.com/api/radio/${id}/metadata`, { cache: 'no-store', ...sig })).json();
-        const list = (j.data || []).map((x) => { const raw = x.title || ''; const k = raw.indexOf(' - '); return { date: x.date, dur: x.duration || 0, artist: nice(k > 0 ? raw.slice(0, k) : ''), title: nice(k > 0 ? raw.slice(k + 3) : raw) }; })
+        const j = await (await fetch(`https://metadata.infomaniak.com/api/radio/${id}/metadata-all-cover`, { cache: 'no-store', ...sig })).json();
+        const list = (j.data || []).map((x) => { const raw = x.title || ''; const k = raw.indexOf(' - '); return { raw, date: x.date, dur: x.duration || 0, cover: x.cover || '', artist: nice(k > 0 ? raw.slice(0, k) : ''), title: nice(k > 0 ? raw.slice(k + 3) : raw) }; })
           .filter((t) => t.title && !/^radio monaco$/i.test(t.title) && !/^radio monaco$/i.test(t.artist)).sort((a, b) => b.date - a.date);
         const past = (list[0] && !list[0].dur ? list.slice(1) : list).slice(0, 3);
-        const html = past.map((t) => `<span class="uxqr"><time>${fT.format(new Date(t.date * 1000))}</time><span><b>${esc(t.title)}</b> ${esc(t.artist)}</span></span>`).join('');
+        await Promise.all(past.map(async (t) => { if (!t.cover) t.cover = await find(t); }));
+        const html = past.map((t) => `<span class="uxqr"><img src="${esc(t.cover || mark)}" alt=""${t.cover ? '' : ' class="ph"'} loading="lazy" /><b>${esc(t.title)}</b><i>${esc(t.artist)}</i></span>`).join('');
         plBoxes.forEach((bx) => { bx.querySelector('[data-ux-pll]').innerHTML = html; bx.hidden = !past.length; });
       } catch (e) {}
     };

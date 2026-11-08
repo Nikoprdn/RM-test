@@ -36,7 +36,7 @@ const bandsLabel = (bands) => bands.map((b) => (b.city ? b.city + ' ' : '') + b.
               <span class="uxt"><span class="uxt1" data-ux-t1>{r.line}</span><span class="uxt2" data-ux-t2>En direct</span></span>
             </span></span></span>
             {r.playlist !== null && (
-              <span class="uxq" data-ux-pl={r.playlist} hidden>
+              <span class="uxq" data-ux-pl={r.playlist} data-mark={asset('rm-mark.png')} hidden>
                 <span class="uxqh">Déjà passés</span>
                 <span class="uxql" data-ux-pll></span>
                 <a class="uxqa" href={u('/playlist/')}>Toute la playlist<I n="right" s={14} /></a>

@@ -518,6 +518,7 @@ html.menu-open{overflow:hidden} /* sur html seulement : sur body, l’en-tête c
   .pl-h{margin-top:32px;font-size:19px}
   .pl-r{grid-template-columns:44px 48px minmax(0,1fr);gap:12px;padding:10px 0}
   .pl-t{font-size:14px}
+    .pl-t{font-size:14px}
   .pl-c{width:48px;height:48px;border-radius:10px}
   .pl-tt{font-size:15.5px}
   .pl-a{font-size:13.5px}
@@ -542,11 +543,6 @@ html.menu-open{overflow:hidden} /* sur html seulement : sur body, l’en-tête c
 .uxq{display:flex;flex-direction:column;gap:6px;max-height:220px;overflow:hidden;padding-top:12px;border-top:1px solid rgba(255,255,255,.22);transition:opacity .45s ease,max-height .9s cubic-bezier(.65,0,.12,1),padding .9s cubic-bezier(.65,0,.12,1)}
 .uxq[hidden]{display:none}
 .uxqh{font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.75)}
-.uxql{display:flex;flex-direction:column;gap:4px}
-.uxqr{display:flex;gap:10px;min-width:0;font-size:13px;line-height:1.35;color:rgba(255,255,255,.78)}
-.uxqr time{flex:0 0 auto;font-weight:600;font-variant-numeric:tabular-nums;color:#fff}
-.uxqr>span{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.uxqr b{font-weight:600;color:#fff}
 .uxqa{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;margin-top:4px;font-size:13px;font-weight:600;color:#fff;text-decoration:underline;text-underline-offset:3px}
 .uvrow:hover .ux:not(:hover) .uxq{opacity:0;max-height:0;padding-top:0;border-top-color:transparent}
 @media (max-width:900px){
@@ -609,11 +605,9 @@ html.menu-open{overflow:hidden} /* sur html seulement : sur body, l’en-tête c
 body:has(.pl-bg){background:var(--bg)}
 .rm:has(.pl-bg){background:transparent}
 .rm:has(.pl-bg) .ftr{background:var(--bg)}
-.pl-bg{--gw:0px;position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
-.pl-sd{position:absolute;top:0;bottom:0;width:var(--gw);display:flex;gap:14px;padding:0 14px;isolation:isolate;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 14%,#000 86%,transparent 100%),linear-gradient(var(--fd),#000 45%,transparent 100%);-webkit-mask-composite:source-in;mask-image:linear-gradient(180deg,transparent 0,#000 14%,#000 86%,transparent 100%),linear-gradient(var(--fd),#000 45%,transparent 100%);mask-composite:intersect}
-.pl-l{left:0;--fd:90deg}
-.pl-r{right:0;--fd:270deg}
-.pl-sd::after{content:"";position:absolute;inset:0;z-index:1;background:rgba(246,243,238,.42)}
+.pl-bg{--n:8;--cw:980px;position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:14px;padding:0 14px;isolation:isolate;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 10%,#000 90%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 10%,#000 90%,transparent 100%)}
+/* voile : léger sur les bords, presque opaque à partir de la colonne de texte */
+.pl-bg::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(246,243,238,.38) 0,rgba(246,243,238,.38) calc(50% - var(--cw) / 2 - 160px),rgba(246,243,238,.93) calc(50% - var(--cw) / 2 + 40px),rgba(246,243,238,.93) calc(50% + var(--cw) / 2 - 40px),rgba(246,243,238,.38) calc(50% + var(--cw) / 2 + 160px),rgba(246,243,238,.38) 100%)}
 .pl-bgc{flex:1 1 0;min-width:0;align-self:flex-start;height:max-content;display:flex;flex-direction:column;gap:14px;padding-bottom:14px;animation:plv var(--t,110s) linear var(--ph,0s) infinite;will-change:transform}
 .pl-bgc:nth-child(even){animation-direction:reverse}
 .pl-bg img{display:block;width:100%;aspect-ratio:1;object-fit:cover;border-radius:14px;background:transparent;opacity:0;transform:scale(.86);filter:blur(12px) saturate(.9)}
@@ -625,7 +619,18 @@ body:has(.pl-bg){background:var(--bg)}
 .pl-tint img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(80px) saturate(1.6);opacity:0;transition:opacity 1.6s ease}
 .pl-tint img.on{opacity:.5}
 @keyframes plv{to{transform:translateY(-50%)}}
+@media (max-width:640px){.pl-bg{gap:10px;padding:0 10px}.pl-bgc{gap:10px;padding-bottom:10px}.pl-bg img{border-radius:10px}.pl-bg::after{background:rgba(246,243,238,.9)}}
 @media (prefers-reduced-motion:reduce){.pl-bgc{animation:none}.pl-bg img,.pl-bg img.in{animation:none;opacity:1;transform:none;filter:saturate(.9)}.pl-tint img{transition:none}}
 @media (max-width:640px){.pl-lv{display:none}}
 .pl-bg img.done{animation:none;opacity:1;transform:none;filter:saturate(.9)}
 .pl-tint img.done{transition:none;opacity:.5}
+
+/* « Déjà passés » : les 3 dernières pochettes avec leur titre */
+.uxql{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.uxqr{min-width:0;display:flex;flex-direction:column;gap:5px;font-size:12.5px;line-height:1.25}
+.uxqr img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;background:rgba(255,255,255,.12);box-shadow:0 10px 24px -14px rgba(0,0,0,.7)}
+.uxqr img.ph{object-fit:contain;padding:22%;opacity:.6}
+.uxqr b,.uxqr i{display:block;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.uxqr b{font-weight:600;color:#fff}
+.uxqr i{font-style:normal;color:rgba(255,255,255,.72)}
+.uxq{max-height:260px}
