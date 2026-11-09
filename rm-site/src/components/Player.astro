@@ -14,6 +14,36 @@ const cfg = {
 ---
 <div class="dock" id="dock" role="region" aria-label="Lecteur" transition:persist="player" transition:name="player">
   <audio id="rm-audio" preload="none" x-webkit-airplay="allow"></audio>
+  <!-- styles du bandeau « à l'antenne » : ils voyagent avec le lecteur (persistant), même si une page en cache a une feuille plus ancienne -->
+  <style is:inline>
+.dock{transition:border-radius .5s cubic-bezier(.16,.84,.12,1)}
+.doa{position:absolute;left:0;right:0;bottom:calc(100% - 1px);display:flex;align-items:stretch;background:#fff;border-radius:26px 26px 0 0;border-bottom:1px solid rgba(20,18,24,.08);box-shadow:0 0 0 1px rgba(20,18,24,.06),0 -22px 44px -26px rgba(20,18,24,.4);clip-path:inset(-60px -60px 0 -60px);overflow:visible;opacity:0;visibility:hidden;transform:translateY(16px);transform-origin:bottom center;pointer-events:none;transition:opacity .35s ease,transform .5s cubic-bezier(.16,.84,.12,1),visibility 0s linear .5s}
+.dock.home{border-radius:0 0 30px 30px}
+.dock.home .doa{opacity:1;visibility:visible;transform:none;pointer-events:auto;transition:opacity .45s ease .1s,transform .6s cubic-bezier(.16,.84,.12,1) .05s,visibility 0s}
+.doa-now{flex:1 1 auto;min-width:0;display:flex;align-items:center;gap:14px;padding:12px 18px 12px 12px;border:0;background:none;color:var(--ink);font:inherit;text-align:left;cursor:pointer;border-radius:26px 0 0 0}
+.doa-img{flex:none;width:52px;height:52px;border-radius:14px;overflow:hidden;background:#E4032E}
+.doa-img img{width:100%;height:100%;object-fit:cover;display:block}
+.doa-t{min-width:0;flex:1;display:flex;flex-direction:column;gap:4px}
+.doa-k{display:flex;align-items:center;gap:8px;font-size:10.5px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.doa .live-dot{background:#E4032E}
+.doa-h{letter-spacing:.04em;font-weight:500}
+.doa-h:not(:empty)::before{content:"·";margin:0 7px 0 1px}
+.doa-n{font-size:16px;font-weight:600;letter-spacing:-.01em;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.doa-p{display:block;height:3px;border-radius:3px;background:rgba(20,18,24,.1);overflow:hidden;margin-top:3px}
+.doa-p i{display:block;height:100%;width:0;background:#E4032E;border-radius:3px;transition:width 1s ease}
+.doa-next{flex:0 0 34%;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:5px;padding:12px 20px 12px 18px;border-left:1px solid rgba(20,18,24,.08);color:var(--ink);text-decoration:none;border-radius:0 26px 0 0}
+.doa-now:hover,.doa-next:hover{background:rgba(20,18,24,.035)}
+.doa-n2{font-size:14px;font-weight:500;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+@media (max-width:640px){
+  .doa{flex-direction:column;border-radius:22px 22px 0 0}
+  .dock.home{border-radius:0 0 28px 28px}
+  .doa-now{padding:10px 14px 8px 10px;border-radius:22px 22px 0 0;gap:12px}
+  .doa-img{width:44px;height:44px;border-radius:12px}
+  .doa-n{font-size:15px}
+  .doa-next{flex:none;flex-direction:row;align-items:center;justify-content:space-between;gap:12px;padding:6px 16px 10px;border-left:0;border-radius:0}
+  .doa-n2{font-size:13px;-webkit-line-clamp:1;text-align:right}
+}
+  </style>
   <!-- émission à l'antenne : rattachée au lecteur, visible seulement sur l'accueil -->
   <div class="doa" id="dock-oa">
     <button class="doa-now" type="button" data-rm-live="0" aria-label="Écouter le direct">
