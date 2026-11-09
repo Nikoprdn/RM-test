@@ -142,7 +142,30 @@ document.addEventListener('click', (e) => {
 
 // ---------- titres en cours (Icecast .xspf) + pochettes (iTunes) ----------
 const nice = (s) => { s = (s || '').replace(/\s+/g, ' ').trim(); const l = s.replace(/[^A-Za-zÀ-ÿ]/g, ''); const up = l.replace(/[^A-ZÀ-Þ]/g, '').length; if (l.length && up / l.length > 0.6) s = s.toLowerCase().replace(/(^|[\s(\-&/])([a-zà-ÿ])/g, (m, a, b) => a + b.toUpperCase()); return s; };
-const covers = {};
+// pochettes : celle d'Infomaniak (historique de la radio), sinon iTunes France ; mémorisées pour la session
+// (même mémoire que les volets et la page Playlist). Pas trouvée : on réessaie aux lectures suivantes, et en attendant le visuel de la radio.
+let covers = {}; try { covers = JSON.parse(sessionStorage.getItem('rm-covers') || '{}'); } catch (e) {}
+const saveCovers = () => { try { sessionStorage.setItem('rm-covers', JSON.stringify(covers)); } catch (e) {} };
+const tries = {};
+async function findCover(st, raw, artist, title) {
+  if (covers[raw]) return covers[raw];
+  if ((tries[raw] = (tries[raw] || 0) + 1) > 6) return '';
+  try {
+    const id = new URL(st.stream).hostname.split('.')[0];
+    const j = await (await fetch(`https://metadata.infomaniak.com/api/radio/${id}/metadata-all-cover`, { cache: 'no-store' })).json();
+    const hit = (j.data || []).find((x) => (x.title || '').trim().toLowerCase() === raw.toLowerCase() && x.cover);
+    if (hit) { covers[raw] = hit.cover; saveCovers(); return hit.cover; }
+  } catch (e) {}
+  if (artist && tries[raw] <= 2) {
+    try {
+      const q = encodeURIComponent((artist.split(/ x | feat\. | & | vs |, /i)[0] + ' ' + title).replace(/\(.*?\)|\[.*?\]|feat\.?.*$/gi, ' ').replace(/\s+/g, ' ').trim());
+      const j = await (await fetch('https://itunes.apple.com/search?media=music&entity=song&limit=1&country=fr&term=' + q)).json();
+      const a = j.results && j.results[0] && j.results[0].artworkUrl100;
+      if (a) { covers[raw] = a.replace('100x100bb', '600x600bb'); saveCovers(); return covers[raw]; }
+    } catch (e) {}
+  }
+  return '';
+}
 async function readMeta() {
   await Promise.all(ST.map(async (st, i) => {
     try {
@@ -150,12 +173,10 @@ async function readMeta() {
       const x = new DOMParser().parseFromString(await r.text(), 'text/xml'); const raw = ((x.querySelector('track > title') || {}).textContent || '').trim();
       if (!raw) { RM.meta[i] = null; return; }
       const parts = raw.split(' - '); const artist = nice(parts.length > 1 ? parts[0] : ''); const title = nice(parts.length > 1 ? parts.slice(1).join(' - ') : raw);
-      // 100 % Mix DJ : toujours la pochette jaune ; ailleurs, la pochette de la radio si aucune n'est trouvée
+      // 100 % Mix DJ : toujours la pochette jaune
       if (st.key === 'mixdj') { RM.meta[i] = { artist, title, cover: st.fb || null }; return; }
-      if (covers[raw] === undefined && artist) {
-        try { const q = encodeURIComponent((artist + ' ' + title).replace(/\(.*?\)|feat\.?.*$/gi, ' ').trim()); const j = await (await fetch('https://itunes.apple.com/search?media=music&entity=song&limit=1&term=' + q)).json(); const a = j.results && j.results[0] && j.results[0].artworkUrl100; covers[raw] = a ? a.replace('100x100bb', '600x600bb') : null; } catch (e) { covers[raw] = null; }
-      }
-      RM.meta[i] = { artist, title, cover: covers[raw] || st.fb || null };
+      const found = await findCover(st, raw, artist, title);
+      RM.meta[i] = { artist, title, cover: found || st.fb || null, real: !!found };
     } catch (e) {}
   }));
   emit('rm:meta', RM.meta); render();

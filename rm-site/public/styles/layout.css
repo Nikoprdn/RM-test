@@ -728,3 +728,7 @@ body:has(.pl-bg){background:var(--bg)}
 .djday:first-of-type{margin-top:8px}
 .djd-h{display:flex;align-items:baseline;gap:14px;margin:0 0 22px;padding-bottom:14px;border-bottom:1px solid rgba(20,18,24,.12);font-size:clamp(26px,3vw,38px);font-weight:300;letter-spacing:-.02em}
 .djd-h span{font-size:13px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+/* volets : le vu-mètre reste visible sur la pochette, légèrement voilée */
+.uxc .eq{position:relative;z-index:1;color:#fff}
+.uxc:has(img:not([hidden]))::after{content:"";position:absolute;inset:0;background:rgba(10,10,16,.34);border-radius:inherit}

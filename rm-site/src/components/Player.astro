@@ -22,7 +22,12 @@ html[data-astro-transition] #dock{view-transition-name:player}
 /* verre calme : capsule en verre dépoli clair, sans reflet ; texte foncé lisible partout ; rouge réservé au point « en direct » */
 #dock{width:min(560px,calc(100% - 24px));height:54px;padding:0 7px;gap:12px;border:0;border-radius:999px;background:rgba(255,255,255,.62);-webkit-backdrop-filter:blur(22px) saturate(1.4);backdrop-filter:blur(22px) saturate(1.4);box-shadow:inset 0 0 0 1px rgba(255,255,255,.45),0 0 0 1px rgba(20,18,24,.05),0 12px 30px -14px rgba(0,0,0,.35)}
 #dock .dcv{width:40px;height:40px;border-radius:50%;background:rgba(20,18,24,.08)}
-#dock .dcv .eq{color:#141218}
+/* vu-mètre posé sur la pochette, légèrement voilée pour qu'il se lise */
+#dock .dcv .eq{position:relative;z-index:1;color:#141218}
+#dock .dcv:has(img:not([hidden])) .eq{color:#fff}
+#dock .dcv:has(img:not([hidden]))::after{content:"";position:absolute;inset:0;background:rgba(10,10,16,.32);border-radius:inherit}
+#dock .dcv img{filter:saturate(.95)}
+#dock .dcv .eq{display:flex!important}
 #dock .dbtn,#dock .dbtn.ink{width:40px;height:40px;background:#141218;color:#fff}
 #dock .dk{color:rgba(20,18,24,.55);transition:opacity .3s ease}
 #dock .dk .live-dot{background:#E4032E}
@@ -31,7 +36,7 @@ html[data-astro-transition] #dock{view-transition-name:player}
 #dock > .eq{color:rgba(20,18,24,.38)}
 #dock .dsm{border-color:rgba(20,18,24,.14)}
   </style>
-  <span class="dcv" aria-hidden="true"><img id="dock-cover" alt="" hidden /><span class="eq" style="color:#fff"><i></i><i></i><i></i><i></i></span></span>
+  <span class="dcv" aria-hidden="true"><img id="dock-cover" alt="" hidden /><span class="eq"><i></i><i></i><i></i><i></i></span></span>
   <span class="dtx">
     <span class="dk"><span class="live-dot"></span><span id="dock-kind">Direct · Monte-Carlo</span></span>
     <span class="dt" id="dock-title"><b>The sound of Monte-Carlo</b><i> · En direct</i></span>
