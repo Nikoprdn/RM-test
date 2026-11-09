@@ -21,6 +21,9 @@ const cfg = {
 html[data-astro-transition] #dock{view-transition-name:player}
 /* ----- verre liquide (façon Apple) : un seul corps de verre pour la goutte « à l'antenne » et la barre du lecteur ----- */
 #dock{--lge:0px;width:min(640px,calc(100% - 24px - var(--lge)));transform:translateX(calc(-50% + var(--lge) / 2));transition:background-color .5s ease,box-shadow .5s ease,color .4s ease}
+#dock.glass{padding:5px 6px 5px 5px}
+#dock.glass .dcv,#dock.glass .dbtn{width:42px;height:42px}
+#dock.glass .dcv{border-radius:12px}
 #dock .lg{position:absolute;top:0;bottom:0;right:0;left:calc(-1 * var(--lgx,0px));z-index:-1;pointer-events:none;opacity:0;transition:opacity .45s ease}
 #dock .lg-b{position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.04) 55%,rgba(255,255,255,.1));-webkit-backdrop-filter:blur(5px) saturate(1.9) brightness(.96) contrast(1.05);backdrop-filter:blur(5px) saturate(1.9) brightness(.96) contrast(1.05);-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
 #dock .lg-s{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
@@ -34,7 +37,7 @@ html[data-astro-transition] #dock{view-transition-name:player}
 /* la goutte : visuel de l'émission en cours, anneau de progression ; « à suivre » au survol */
 #dock .lgd{position:absolute;top:0;left:calc(-1 * var(--lgx,0px));width:var(--lgD,64px);height:var(--lgD,64px);border-radius:50%;opacity:0;transform:scale(.6);transform-origin:right center;pointer-events:none;color:#fff;text-decoration:none;transition:opacity .25s ease,transform .25s ease}
 #dock.drop .lgd{pointer-events:auto}
-#dock .lgd img{position:absolute;inset:7px;width:calc(100% - 14px);height:calc(100% - 14px);border-radius:50%;object-fit:cover;box-shadow:0 4px 14px -6px rgba(0,0,0,.6)}
+#dock .lgd img{position:absolute;inset:5px;width:calc(100% - 10px);height:calc(100% - 10px);border-radius:50%;object-fit:cover;box-shadow:0 4px 14px -6px rgba(0,0,0,.6)}
 #dock .lgd-r{position:absolute;inset:2px;width:calc(100% - 4px);height:calc(100% - 4px);transform:rotate(-90deg)}
 #dock .lgd-r circle{fill:none;stroke-width:2.6;stroke-linecap:round}
 #dock .lgd-r .bg{stroke:rgba(255,255,255,.22)}
@@ -51,19 +54,19 @@ html[data-astro-transition] #dock{view-transition-name:player}
     <svg class="lg-s" id="lg-s" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <filter id="lgf" x="-30%" y="-80%" width="160%" height="260%" color-interpolation-filters="sRGB">
-          <feGaussianBlur in="SourceAlpha" stdDeviation="2.4" result="bl" />
-          <feSpecularLighting in="bl" surfaceScale="5" specularConstant="1.3" specularExponent="24" lighting-color="#ffffff" result="sp"><feDistantLight azimuth="235" elevation="40" /></feSpecularLighting>
+          <feGaussianBlur in="SourceAlpha" stdDeviation="1.1" result="bl" />
+          <feSpecularLighting in="bl" surfaceScale="2.2" specularConstant="1.1" specularExponent="30" lighting-color="#ffffff" result="sp"><feDistantLight azimuth="235" elevation="40" /></feSpecularLighting>
           <feComposite in="sp" in2="SourceAlpha" operator="in" result="spi" />
-          <feMorphology in="SourceAlpha" operator="erode" radius="1" result="er" />
+          <feMorphology in="SourceAlpha" operator="erode" radius=".6" result="er" />
           <feComposite in="SourceAlpha" in2="er" operator="out" result="rim" />
-          <feFlood flood-color="#ffffff" flood-opacity=".5" /><feComposite in2="rim" operator="in" result="rimc" />
+          <feFlood flood-color="#ffffff" flood-opacity=".35" /><feComposite in2="rim" operator="in" result="rimc" />
           <feOffset in="SourceAlpha" dy="-5" result="up" /><feGaussianBlur in="up" stdDeviation="5" result="upb" />
           <feComposite in="SourceAlpha" in2="upb" operator="out" result="low" />
           <feFlood flood-color="#0a0a14" flood-opacity=".22" /><feComposite in2="low" operator="in" result="lowc" />
-          <feGaussianBlur in="SourceAlpha" stdDeviation="13" result="ds" /><feOffset in="ds" dy="14" result="dso" />
-          <feFlood flood-color="#05050c" flood-opacity=".42" /><feComposite in2="dso" operator="in" result="dsc" />
+          <feGaussianBlur in="SourceAlpha" stdDeviation="10" result="ds" /><feOffset in="ds" dy="10" result="dso" />
+          <feFlood flood-color="#05050c" flood-opacity=".3" /><feComposite in2="dso" operator="in" result="dsc" />
           <feComposite in="dsc" in2="SourceAlpha" operator="out" result="dsout" />
-          <feMerge><feMergeNode in="dsout" /><feMergeNode in="lowc" /><feMergeNode in="spi" /><feMergeNode in="rimc" /></feMerge>
+          <feMerge><feMergeNode in="dsout" /><feMergeNode in="spi" /><feMergeNode in="rimc" /></feMerge>
         </filter>
         <linearGradient id="lgrb" x1="0" x2="1" y1="0" y2="0">
           <stop offset="0" stop-color="#fff" stop-opacity="0" /><stop offset=".3" stop-color="#ffd6f0" stop-opacity=".9" /><stop offset=".5" stop-color="#fff6c8" stop-opacity=".9" /><stop offset=".7" stop-color="#bff3ff" stop-opacity=".9" /><stop offset="1" stop-color="#fff" stop-opacity="0" />
