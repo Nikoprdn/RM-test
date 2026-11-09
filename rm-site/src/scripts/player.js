@@ -150,10 +150,12 @@ async function readMeta() {
       const x = new DOMParser().parseFromString(await r.text(), 'text/xml'); const raw = ((x.querySelector('track > title') || {}).textContent || '').trim();
       if (!raw) { RM.meta[i] = null; return; }
       const parts = raw.split(' - '); const artist = nice(parts.length > 1 ? parts[0] : ''); const title = nice(parts.length > 1 ? parts.slice(1).join(' - ') : raw);
+      // 100 % Mix DJ : toujours la pochette jaune ; ailleurs, la pochette de la radio si aucune n'est trouvée
+      if (st.key === 'mixdj') { RM.meta[i] = { artist, title, cover: st.fb || null }; return; }
       if (covers[raw] === undefined && artist) {
         try { const q = encodeURIComponent((artist + ' ' + title).replace(/\(.*?\)|feat\.?.*$/gi, ' ').trim()); const j = await (await fetch('https://itunes.apple.com/search?media=music&entity=song&limit=1&term=' + q)).json(); const a = j.results && j.results[0] && j.results[0].artworkUrl100; covers[raw] = a ? a.replace('100x100bb', '600x600bb') : null; } catch (e) { covers[raw] = null; }
       }
-      RM.meta[i] = { artist, title, cover: covers[raw] || null };
+      RM.meta[i] = { artist, title, cover: covers[raw] || st.fb || null };
     } catch (e) {}
   }));
   emit('rm:meta', RM.meta); render();

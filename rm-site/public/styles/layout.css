@@ -497,7 +497,7 @@ html.menu-open{overflow:hidden} /* sur html seulement : sur body, l’en-tête c
 .pl-r{display:grid;grid-template-columns:64px 56px minmax(0,1fr);gap:18px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
 .pl-t{font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
 .pl-c{width:56px;height:56px;border-radius:12px;object-fit:cover;background:#E9E9EB;display:block}
-.pl-c[data-need],.pl-nc[data-need]{object-fit:contain;padding:14%;opacity:.5}
+/* pochette absente : visuel de la radio, affiché tel quel */
 .pl-x{min-width:0;display:flex;flex-direction:column;gap:2px}
 .pl-tt,.pl-a{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pl-tt{font-size:17px;font-weight:500;line-height:1.3}
@@ -624,7 +624,7 @@ body:has(.pl-bg){background:var(--bg)}
 .uxql{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .uxqr{min-width:0;display:flex;flex-direction:column;gap:5px;font-size:12.5px;line-height:1.25}
 .uxqr img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;background:rgba(255,255,255,.12);box-shadow:0 10px 24px -14px rgba(0,0,0,.7)}
-.uxqr img.ph{object-fit:contain;padding:22%;opacity:.6}
+
 .uxqr b,.uxqr i{display:block;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .uxqr b{font-weight:600;color:#fff}
 .uxqr i{font-style:normal;color:rgba(255,255,255,.72)}

@@ -27,7 +27,7 @@ const radio = { key: src.key, name: 'The Sound of Monte-Carlo', color: src.color
     <p class="pl-note">Les 100 derniers titres diffusés. L’heure est celle de Monaco.</p>
   </div>
 
-  <script type="application/json" id="pl-data" set:html={JSON.stringify({ radio, snap, mark: asset('rm-mark.png') }).replace(/</g, '\\u003c')}></script>
+  <script type="application/json" id="pl-data" set:html={JSON.stringify({ radio, snap, mark: asset('rm-cover-mc.png') }).replace(/</g, '\\u003c')}></script>
   <script>
     // ---------- playlist en direct ----------
     let stopPl = null;

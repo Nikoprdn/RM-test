@@ -73,7 +73,7 @@ const nice = (x) => { const k = (x || '').indexOf(' ('); return k > 0 ? nice1(x.
           .filter((t) => t.title && !/^radio monaco$/i.test(t.title) && !/^radio monaco$/i.test(t.artist)).sort((a, b) => b.date - a.date);
         const past = (list[0] && !list[0].dur ? list.slice(1) : list).slice(0, 3);
         await Promise.all(past.map(async (t) => { if (!t.cover) t.cover = await find(t); }));
-        const html = past.map((t) => `<span class="uxqr"><img src="${esc(t.cover || mark)}" alt=""${t.cover ? '' : ' class="ph"'} loading="lazy" /><b>${esc(t.title)}</b><i>${esc(t.artist)}</i></span>`).join('');
+        const html = past.map((t) => `<span class="uxqr"><img src="${esc(t.cover || mark)}" alt="" loading="lazy" /><b>${esc(t.title)}</b><i>${esc(t.artist)}</i></span>`).join('');
         plBoxes.forEach((bx) => { bx.querySelector('[data-ux-pll]').innerHTML = html; bx.hidden = !past.length; });
       } catch (e) {}
     };

@@ -7,7 +7,7 @@ import { getToday, WP } from '../lib/data.js';
 const today = await getToday().catch(() => []);
 const cfg = {
   wp: WP,
-  stations: STATIONS.map((s) => ({ key: s.key, name: s.name, color: s.color, ink: s.ink, stream: s.stream, line: s.line, art: asset(s.logoInk), photo: asset(s.photo) })),
+  stations: STATIONS.map((s) => ({ key: s.key, name: s.name, color: s.color, ink: s.ink, stream: s.stream, line: s.line, art: asset(s.logoInk), photo: asset(s.photo), fb: asset(s.cover) })),
   today,
   icon: asset('icon-512.png')
 };
