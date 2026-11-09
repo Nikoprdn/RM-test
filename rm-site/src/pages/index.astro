@@ -44,10 +44,20 @@ const jsonld = [{
         <span style="width:40px;height:40px;border-radius:50%;background:#E4032E;color:#fff;display:inline-flex;align-items:center;justify-content:center"><I n="pp" /></span>
         <span data-rm-label data-rm-idle="Écouter le direct" data-rm-playing="Pause">Écouter le direct</span>
       </button>
-      <button class="onair fade f3" type="button" data-rm-live="0" id="onair" style="margin-top:22px" aria-label="Écouter le direct">
-        <img id="onair-img" src={asset('rm-mark.png')} alt="" width="44" height="44" />
-        <span class="oa"><span class="k"><span class="live-dot"></span>En ce moment</span><span class="n" id="onair-now">The sound of Monte-Carlo</span><span class="x" id="onair-next">Programme du jour</span></span>
-      </button>
+      <div class="oa2 fade f3" id="onair">
+        <button class="oa2-now" type="button" data-rm-live="0" aria-label="Écouter le direct">
+          <span class="oa2-img"><img id="onair-img" src={asset('rm-mark.png')} alt="" width="56" height="56" /><span class="oa2-pi" aria-hidden="true"><I n="pp" /></span></span>
+          <span class="oa2-t">
+            <span class="oa2-k"><span class="live-dot"></span>En ce moment<span class="oa2-h" id="onair-time"></span></span>
+            <span class="oa2-n" id="onair-now">The sound of Monte-Carlo</span>
+            <span class="oa2-p" aria-hidden="true"><i id="onair-prog"></i></span>
+          </span>
+        </button>
+        <a class="oa2-next" href={u('/programmes/')}>
+          <span class="oa2-k">À suivre<span class="oa2-h" id="onair-nt"></span></span>
+          <span class="oa2-n2" id="onair-next">Le programme du jour</span>
+        </a>
+      </div>
     </div>
     <div class="fade f3" style="position:absolute;left:0;right:0;bottom:36px">
       <div class="wrap" style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:20px 40px">
@@ -184,9 +194,10 @@ const jsonld = [{
         <a href={u(d.path)} data-card class="tile rise" style={`--d:${(0.2 + Math.min(i, 5) * 0.08).toFixed(2)}s;flex:0 0 280px;scroll-snap-align:start;display:flex;flex-direction:column;gap:16px`}>
           <span style="position:relative;display:block;aspect-ratio:840/1080;border-radius:20px;overflow:hidden;background:#E4032E">
             {d.img && <img class="ph zm" src={d.img.card} alt={d.name} loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 20%" />}
+            {d.slot && <span class="djb"><b>{d.slot.day}</b>{d.slot.time}</span>}
             <span class="pb" style="position:absolute;right:14px;bottom:14px;width:44px;height:44px;border-radius:50%;background:#fff;color:#141218;display:inline-flex;align-items:center;justify-content:center"><I n="right" s={16} /></span>
           </span>
-          <span style="display:flex;flex-direction:column;gap:3px"><span style="font-size:20px;font-weight:500">{d.name}</span><span style="font-size:14px;color:#6A6570">{d.show}{d.when ? ' · ' + d.when : ''}</span></span>
+          <span style="display:flex;flex-direction:column;gap:3px"><span style="font-size:20px;font-weight:500">{d.name}</span><span style="font-size:14px;color:#6A6570">{d.show}</span></span>
         </a>
       ))}
     </div>

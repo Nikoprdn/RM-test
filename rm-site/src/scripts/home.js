@@ -25,10 +25,18 @@ function init() {
   // ---------- en ce moment ----------
   const onair = () => {
     const o = (window.RM && window.RM.onair) || {}; const now = document.getElementById('onair-now'); if (!now) return;
-    if (o.now) { now.textContent = o.now.name; const img = document.getElementById('onair-img'); if (o.now.img) img.src = o.now.img; }
-    const nx = document.getElementById('onair-next');
-    if (o.next) { const d = new Date(o.next.start); nx.textContent = 'À suivre · ' + String(d.getHours()).padStart(2, '0') + 'h' + String(d.getMinutes()).padStart(2, '0') + ' ' + o.next.name; }
+    const hm = (t) => { const d = new Date(t); return d.getHours() + 'h' + (d.getMinutes() ? String(d.getMinutes()).padStart(2, '0') : ''); };
+    const tm = document.getElementById('onair-time'), pr = document.getElementById('onair-prog');
+    if (o.now) {
+      now.textContent = o.now.name; const img = document.getElementById('onair-img'); if (o.now.img && img.getAttribute('src') !== o.now.img) img.src = o.now.img;
+      tm.textContent = hm(o.now.s || o.now.start) + ' – ' + hm(o.now.e || o.now.end);
+      const s = o.now.s || Date.parse(o.now.start), e = o.now.e || Date.parse(o.now.end);
+      pr.style.width = Math.max(2, Math.min(100, ((Date.now() - s) / Math.max(1, e - s)) * 100)).toFixed(1) + '%';
+    } else { tm.textContent = ''; pr.style.width = '0%'; }
+    const nx = document.getElementById('onair-next'), nt = document.getElementById('onair-nt');
+    if (o.next) { nx.textContent = o.next.name; nt.textContent = hm(o.next.s || o.next.start); }
   };
+  every(30000, onair);
   document.addEventListener('rm:onair', onair, sig); onair();
 
   // ---------- univers webradios ----------

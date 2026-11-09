@@ -4,8 +4,10 @@
 import I from './Icons.astro';
 import { u, asset } from '../lib/url.js';
 import { UNIVERS } from '../lib/stations.js';
-const { eyebrow = 'Nos webradios', h1 = false, id = 'radios' } = Astro.props;
+const { eyebrow = 'Nos radios', h1 = false, id = 'radios' } = Astro.props;
 const H = h1 ? 'h1' : 'h2';
+// résumé des fréquences sur une ligne (le détail par ville apparaît au survol)
+const resume = (bands) => { const fm = [...new Set(bands.filter((b) => /FM/.test(b.f)).map((b) => b.f.replace(/\s*FM/, '')))]; const o = bands.filter((b) => !/FM/.test(b.f)).map((b) => (b.f === 'Web' ? 'Site & appli' : b.f)); return [fm.length ? 'FM ' + fm.join(' · ') : '', ...o].filter(Boolean).join('  ·  '); };
 const bandsLabel = (bands) => bands.map((b) => (b.city ? b.city + ' ' : '') + b.f).join(', ');
 ---
   <section id={id} data-full data-reveal data-snap class="uvs">
@@ -29,6 +31,7 @@ const bandsLabel = (bands) => bands.map((b) => (b.city ? b.city + ' ' : '') + b.
                 ))}
               </span>
             ) : (
+              <span class="uxfs" aria-hidden="true">{resume(r.bands)}</span>
               <span class="uxf" aria-label={'Diffusion : ' + bandsLabel(r.bands)}>{r.bands.map((b) => <span class="bd">{b.city}<b>{b.f}</b></span>)}</span>
             )}
             <span class="uxi"><span><span class="uxn">
@@ -37,7 +40,7 @@ const bandsLabel = (bands) => bands.map((b) => (b.city ? b.city + ' ' : '') + b.
             </span></span></span>
             {r.playlist !== null && (
               <span class="uxq" data-ux-pl={r.playlist} data-mark={asset('rm-mark.png')} hidden>
-                <span class="uxqh">Déjà passés</span>
+                <span class="uxqh">La playlist</span>
                 <span class="uxql" data-ux-pll></span>
                 <a class="uxqa" href={u('/playlist/')}>Toute la playlist<I n="right" s={14} /></a>
               </span>

@@ -679,3 +679,78 @@ body:has(.pl-bg){background:var(--bg)}
   .ou-vl .ou-st:not(.on) .ou-pl{margin-top:0}
   .ou-vl .ou-tx{max-width:46ch}
 }
+
+/* ===== Volets allégés : l'essentiel au repos, le détail au survol ===== */
+.uxfs{display:block;font-size:13px;font-weight:500;letter-spacing:.02em;line-height:1.3;color:rgba(255,255,255,.9);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (min-width:901px){
+  .ux .uxf:not(.uxd){min-height:0;max-height:0;margin-top:-16px;opacity:0}
+  .ux:hover .uxf:not(.uxd){max-height:160px;margin-top:-4px;opacity:1}
+  .ux:hover .uxfs{display:none}
+  /* la playlist : trois pochettes et le lien ; titres et artistes au survol */
+  .uxq{gap:8px;padding-top:14px;min-height:108px;box-sizing:border-box}
+  .uxql{display:flex;gap:8px}
+  .uxqr{flex:0 0 auto;width:46px}
+  .uxqr img{width:46px;height:46px;border-radius:8px}
+  .uxqr b,.uxqr i{display:none}
+  .uxqa{margin-top:2px}
+  .ux:hover .uxql{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+  .ux:hover .uxqr{width:auto}
+  .ux:hover .uxqr img{width:58px;height:58px;border-radius:9px}
+  .ux:hover .uxqr b,.ux:hover .uxqr i{display:block}
+  /* Mix DJ et Night Mood : le titre en cours, à la même place et à la même hauteur */
+  .ux:not(.ux-g) .uxi{grid-template-rows:1fr;opacity:1;transform:none;min-height:108px;box-sizing:border-box;padding-top:14px;border-top:1px solid rgba(255,255,255,.22);align-content:start}
+  .ux:not(.ux-g) .uxc{width:52px;height:52px;border-radius:10px}
+  .ux:not(.ux-g) .uxt1{font-size:16px}
+  .ux:not(.ux-g) .uxt2{font-size:13px}
+  .uvrow:hover .ux:not(.ux-g):not(:hover) .uxi{opacity:.0}
+}
+@media (max-width:900px){
+  .uxfs{order:2;margin-top:12px}
+  .ux .uxf:not(.uxd){display:none!important}
+}
+@media (min-width:901px){
+  .ux-g .uxi{margin-top:-16px;transition:grid-template-rows .9s cubic-bezier(.65,0,.12,1),opacity .45s ease,transform .9s cubic-bezier(.16,.84,.12,1),margin .9s cubic-bezier(.65,0,.12,1)}
+  .ux-g:hover .uxi,.ux-g.on .uxi{margin-top:0}
+  .uvrow:hover .ux-g.on:not(:hover) .uxi{margin-top:-16px}
+}
+
+/* ===== Accueil : émission en cours (carte en deux parties : en ce moment | à suivre) ===== */
+.oa2{margin-top:26px;display:flex;align-items:stretch;width:min(600px,100%);border-radius:22px;background:rgba(18,16,24,.5);backdrop-filter:blur(22px) saturate(1.3);-webkit-backdrop-filter:blur(22px) saturate(1.3);border:1px solid rgba(255,255,255,.16);box-shadow:0 30px 60px -30px rgba(0,0,0,.6);text-align:left;overflow:hidden}
+.oa2-now{flex:1 1 auto;min-width:0;display:flex;align-items:center;gap:16px;padding:12px 20px 12px 12px;border:0;background:none;color:#fff;font:inherit;cursor:pointer;text-align:left;transition:background .3s}
+.oa2-now:hover{background:rgba(255,255,255,.06)}
+.oa2-img{position:relative;flex:none;width:64px;height:64px;border-radius:14px;overflow:hidden;background:#E4032E}
+.oa2-img img{width:100%;height:100%;object-fit:cover;display:block}
+.oa2-pi{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(10,10,16,.45);color:#fff;opacity:0;transition:opacity .3s}
+.oa2-now:hover .oa2-pi,.playing .oa2-pi{opacity:1}
+.oa2-t{min-width:0;flex:1;display:flex;flex-direction:column;gap:5px}
+.oa2-k{display:flex;align-items:center;gap:8px;font-size:10.5px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.8);white-space:nowrap}
+.oa2-h{letter-spacing:.06em;color:rgba(255,255,255,.62);font-weight:500}
+.oa2-h:not(:empty)::before{content:"·";margin:0 8px 0 2px}
+.oa2-n{font-size:19px;font-weight:600;letter-spacing:-.01em;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.oa2-p{display:block;height:3px;border-radius:3px;background:rgba(255,255,255,.2);overflow:hidden;margin-top:4px}
+.oa2-p i{display:block;height:100%;width:0;background:#fff;border-radius:3px;transition:width 1s ease}
+.oa2-next{flex:0 0 36%;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:6px;padding:12px 20px;border-left:1px solid rgba(255,255,255,.14);color:#fff;text-decoration:none;transition:background .3s}
+.oa2-next:hover{background:rgba(255,255,255,.06)}
+.oa2-n2{font-size:15px;font-weight:500;line-height:1.2;color:rgba(255,255,255,.92);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+@media (max-width:640px){
+  .oa2{flex-direction:column;border-radius:20px;width:min(420px,100%)}
+  .oa2-img{width:52px;height:52px;border-radius:12px}
+  .oa2-n{font-size:17px}
+  .oa2-next{flex:none;flex-direction:row;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;border-left:0;border-top:1px solid rgba(255,255,255,.14)}
+  .oa2-n2{font-size:13px;-webkit-line-clamp:1;text-align:right}
+}
+
+/* ===== Lecteur : bulle opaque (façon mini-lecteur Apple) ===== */
+.dock{background:#fff;backdrop-filter:none;-webkit-backdrop-filter:none;border:0;padding:8px 9px 8px 8px;box-shadow:0 1px 0 rgba(255,255,255,.9) inset,0 0 0 1px rgba(20,18,24,.06),0 10px 24px -8px rgba(20,18,24,.22),0 34px 70px -24px rgba(20,18,24,.42)}
+.dock .dcv{width:48px;height:48px;border-radius:14px}
+.dock .dbtn{width:48px;height:48px}
+.dock .dt{font-size:14.5px}
+
+/* ===== DJ sets : jour et heure bien visibles ===== */
+.djb{position:absolute;left:12px;top:12px;z-index:1;display:inline-flex;flex-direction:column;gap:1px;padding:8px 12px 9px;border-radius:14px;background:#fff;color:#141218;font-size:13px;font-weight:500;line-height:1.15;box-shadow:0 10px 24px -12px rgba(0,0,0,.45)}
+.djb b{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#E4032E}
+.person .djb,.person .djb b{font-size:13px;color:#141218}.person .djb b{font-size:11px;color:#E4032E}
+.djday{margin-top:56px}
+.djday:first-of-type{margin-top:8px}
+.djd-h{display:flex;align-items:baseline;gap:14px;margin:0 0 22px;padding-bottom:14px;border-bottom:1px solid rgba(20,18,24,.12);font-size:clamp(26px,3vw,38px);font-weight:300;letter-spacing:-.02em}
+.djd-h span{font-size:13px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}

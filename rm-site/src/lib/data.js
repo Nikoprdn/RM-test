@@ -168,15 +168,30 @@ export const getTeam = async () => {
   });
 };
 
+// ---------- DJ sets : jour et heure de passage ----------
+const JOURS = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'];
+// créneaux que le site WordPress n'indique pas dans le résumé de l'émission (à compléter si besoin)
+const DJ_SLOTS = { 'lafter-chic': 'tous les jeudis à 21h' };
+const hh = (h, m) => +h + 'h' + (m && m !== '00' ? m : '');
+export function djSlot(txt = '') {
+  const t = txt.toLowerCase().replace(/ /g, ' ');
+  const dm = t.match(/(?:tous les|chaque|le)\s+(lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche)s?\b/) || t.match(/\b(lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche)s?\b/);
+  if (!dm) return null;
+  const rest = t.slice(dm.index);
+  const tm = rest.match(/(\d{1,2})\s*(?:h|:)\s*(\d{2})?(?:\s*(?:à|-|–|jusqu['’]à)\s*(\d{1,2})\s*(?:h|:)\s*(\d{2})?)?/);
+  if (!tm) return null;
+  const d = JOURS.indexOf(dm[1]); const start = hh(tm[1], tm[2]); const end = tm[3] ? hh(tm[3], tm[4]) : '';
+  return { d, day: dm[1].charAt(0).toUpperCase() + dm[1].slice(1), time: end ? start + ' – ' + end : start, min: +tm[1] * 60 + (+tm[2] || 0) };
+}
 export const getDJs = async () => {
   const members = (await getMembers()).filter((m) => m.type === 'dj');
   const SPEC = { 'sidekick radio show': 'Jem’S', 'be my guest': 'DJ invité' };
   return (await getShows()).filter((s) => s.dj).map((s) => {
     const ex = s.excerpt.toLowerCase();
     const mem = members.find((m) => { const n = m.name.toLowerCase(); const c = m.bio.toLowerCase().slice(0, 45); return n === s.name.toLowerCase() || ex.includes(n) || (c.length > 20 && ex.includes(c)); });
-    const sch = (s.excerpt.match(/(tous les|chaque)\s+\S+\s+(de\s+|à\s+)?\d{1,2}h(\s*à\s*\d{1,2}h)?/i) || [''])[0];
-    return { name: mem ? mem.name : (SPEC[s.name.toLowerCase()] || s.name), show: s.name, when: sch ? sch.charAt(0).toLowerCase() + sch.slice(1) : '', img: (mem && mem.img) || s.img, path: s.path, member: mem ? mem.path : null };
-  });
+    const slot = djSlot(s.excerpt) || djSlot(text(s.html)) || djSlot(DJ_SLOTS[s.slug]);
+    return { name: mem ? mem.name : (SPEC[s.name.toLowerCase()] || s.name), show: s.name, slot, when: slot ? 'chaque ' + slot.day.toLowerCase() + ' · ' + slot.time : '', img: (mem && mem.img) || s.img, path: s.path, member: mem ? mem.path : null };
+  }).sort((a, b) => (a.slot ? a.slot.d * 1440 + a.slot.min : 1e6) - (b.slot ? b.slot.d * 1440 + b.slot.min : 1e6));
 };
 
 // ---------- grille du jour ----------
