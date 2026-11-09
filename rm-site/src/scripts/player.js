@@ -179,7 +179,7 @@ computeOnAir(); refreshToday(); readMeta();
 setInterval(readMeta, 20000); setInterval(computeOnAir, 30000); setInterval(refreshToday, 30 * 60000);
 // ---------- verre liquide : la goutte « à l'antenne » sort du lecteur sur le premier écran de l'accueil ----------
 // Le corps de verre (goutte + barre + col qui les relie) est dessiné en SVG (métaballe) et sert de masque au flou.
-const LG = { t: 0, to: 0, raf: 0, io: null, hero: false, glass: false };
+const LG = { t: 0, to: 0, raf: 0, hero: false, glass: false };
 const ease = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
 const lerp = (a, b, k) => a + (b - a) * k;
 function metaball(c1, r1, c2, r2, v = 0.5, hs = 2.4) {
@@ -223,13 +223,10 @@ function lgTo(v) {
 function paintOnAir() {
   const dock = $('dock'); if (!dock) return;
   const hero = document.querySelector('[data-hero]'); const glassPage = !!document.querySelector('[data-dock-glass]');
-  if (LG.io) { LG.io.disconnect(); LG.io = null; }
   // le verre reste en place le temps que la goutte rentre dans le lecteur, puis le lecteur redevient blanc
   const apply = () => { LG.glass = LG.hero || glassPage; if (LG.glass) dock.classList.add('glass'); else if (!LG.t) dock.classList.remove('glass'); lgTo(LG.hero && RM.onair && RM.onair.now ? 1 : 0); render(); };
-  if (hero && 'IntersectionObserver' in window) {
-    LG.io = new IntersectionObserver((es) => { const e = es[es.length - 1]; LG.hero = e.isIntersecting && e.intersectionRatio >= 0.45; apply(); }, { threshold: [0, 0.45, 0.6, 1] });
-    LG.io.observe(hero);
-  } else LG.hero = false;
+  // la goutte ne vit que sur le premier écran de l'accueil : elle rentre dès qu'on passe à l'écran suivant
+  LG.hero = !!hero && hero.getBoundingClientRect().bottom > innerHeight * 0.55;
   apply();
   const o = RM.onair || {}; const h = (t) => { const d = new Date(t); return d.getHours() + 'h' + (d.getMinutes() ? String(d.getMinutes()).padStart(2, '0') : ''); };
   if (o.now) {
@@ -249,6 +246,8 @@ RM.dockKind = () => { const o = RM.onair || {}; const s = RM.state; const d = $(
 document.addEventListener('rm:onair', paintOnAir);
 setInterval(() => { paintOnAir(); }, 30000);
 window.addEventListener('resize', lgDraw);
+let lgQ = 0;
+window.addEventListener('scroll', () => { if (lgQ) return; lgQ = requestAnimationFrame(() => { lgQ = 0; const hero = document.querySelector('[data-hero]'); const v = !!hero && hero.getBoundingClientRect().bottom > innerHeight * 0.55; if (v !== LG.hero) paintOnAir(); }); }, { passive: true });
 document.addEventListener('astro:page-load', () => { render(); paintOnAir(); });
 render();
 
