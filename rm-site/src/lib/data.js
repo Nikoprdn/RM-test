@@ -169,29 +169,44 @@ export const getTeam = async () => {
 };
 
 // ---------- DJ sets : jour et heure de passage ----------
+// Source : la grille de la semaine de WordPress (Pro Radio, /proradio/v1/schedule).
+// Si elle ne répond pas, on se rabat sur l'horaire écrit dans le résumé de l'émission.
 const JOURS = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'];
-// créneaux que le site WordPress n'indique pas dans le résumé de l'émission (à compléter si besoin)
-const DJ_SLOTS = { 'lafter-chic': 'tous les jeudis à 21h' };
-const hh = (h, m) => +h + 'h' + (m && m !== '00' ? m : '');
+const cap = (x) => x.charAt(0).toUpperCase() + x.slice(1);
+const hm = (t = '') => { const [h, m] = t.split(':'); if (h === undefined) return ''; if (+h === 0 && (+m || 0) === 0) return 'minuit'; return +h + 'h' + (m && m !== '00' ? m : ''); };
+export const getWeek = () => once('week', async () => {
+  try {
+    const raw = FIX ? fixture('week.json') : (await getJSON(API + '/proradio/v1/schedule')).json;
+    const out = [];
+    (raw.posts || []).forEach((p) => { const d = JOURS.indexOf(String(p.post_title || '').toLowerCase().trim()); if (d < 0) return;
+      (p.shows || []).forEach((x) => (x.show_id || []).forEach((id) => out.push({ id: +id, d, day: cap(JOURS[d]), start: x.show_time, end: x.show_time_end, time: hm(x.show_time) + ' – ' + hm(x.show_time_end), min: (+String(x.show_time).split(':')[0] || 0) * 60 + (+String(x.show_time).split(':')[1] || 0) }))); });
+    return out;
+  } catch (e) { console.warn('[grille] semaine indisponible :', e.message); return []; }
+});
 export function djSlot(txt = '') {
   const t = txt.toLowerCase().replace(/ /g, ' ');
   const dm = t.match(/(?:tous les|chaque|le)\s+(lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche)s?\b/) || t.match(/\b(lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche)s?\b/);
   if (!dm) return null;
-  const rest = t.slice(dm.index);
-  const tm = rest.match(/(\d{1,2})\s*(?:h|:)\s*(\d{2})?(?:\s*(?:à|-|–|jusqu['’]à)\s*(\d{1,2})\s*(?:h|:)\s*(\d{2})?)?/);
+  const tm = t.slice(dm.index).match(/(\d{1,2})\s*(?:h|:)\s*(\d{2})?(?:\s*(?:à|-|–|jusqu['’]à)\s*(\d{1,2})\s*(?:h|:)\s*(\d{2})?)?/);
   if (!tm) return null;
-  const d = JOURS.indexOf(dm[1]); const start = hh(tm[1], tm[2]); const end = tm[3] ? hh(tm[3], tm[4]) : '';
-  return { d, day: dm[1].charAt(0).toUpperCase() + dm[1].slice(1), time: end ? start + ' – ' + end : start, min: +tm[1] * 60 + (+tm[2] || 0) };
+  const st = tm[1] + ':' + (tm[2] || '00'); const en = tm[3] ? tm[3] + ':' + (tm[4] || '00') : '';
+  return { d: JOURS.indexOf(dm[1]), day: cap(dm[1]), time: en ? hm(st) + ' – ' + hm(en) : hm(st), min: +tm[1] * 60 + (+tm[2] || 0) };
 }
 export const getDJs = async () => {
-  const members = (await getMembers()).filter((m) => m.type === 'dj');
+  const [members, week] = await Promise.all([getMembers(), getWeek()]);
+  const djm = members.filter((m) => m.type === 'dj');
   const SPEC = { 'sidekick radio show': 'Jem’S', 'be my guest': 'DJ invité' };
+  const order = (x) => (x ? x.d * 1440 + x.min : 1e6);
   return (await getShows()).filter((s) => s.dj).map((s) => {
     const ex = s.excerpt.toLowerCase();
-    const mem = members.find((m) => { const n = m.name.toLowerCase(); const c = m.bio.toLowerCase().slice(0, 45); return n === s.name.toLowerCase() || ex.includes(n) || (c.length > 20 && ex.includes(c)); });
-    const slot = djSlot(s.excerpt) || djSlot(text(s.html)) || djSlot(DJ_SLOTS[s.slug]);
-    return { name: mem ? mem.name : (SPEC[s.name.toLowerCase()] || s.name), show: s.name, slot, when: slot ? 'chaque ' + slot.day.toLowerCase() + ' · ' + slot.time : '', img: (mem && mem.img) || s.img, path: s.path, member: mem ? mem.path : null };
-  }).sort((a, b) => (a.slot ? a.slot.d * 1440 + a.slot.min : 1e6) - (b.slot ? b.slot.d * 1440 + b.slot.min : 1e6));
+    const mem = djm.find((m) => { const n = m.name.toLowerCase(); const c = m.bio.toLowerCase().slice(0, 45); return n === s.name.toLowerCase() || ex.includes(n) || (c.length > 20 && ex.includes(c)); });
+    let slots = week.filter((w) => w.id === s.id).sort((a, b) => order(a) - order(b));
+    if (!slots.length) { const f = djSlot(s.excerpt) || djSlot(text(s.html)); if (f) slots = [f]; }
+    const slot = slots[0] || null;
+    const sameTime = slots.every((x) => x.time === slots[0].time);
+    const when = !slots.length ? '' : sameTime ? 'chaque ' + slots.map((x) => x.day.toLowerCase()).join(' et ') + ' · ' + slot.time : slots.map((x) => x.day.toLowerCase() + ' ' + x.time).join(', ');
+    return { name: mem ? mem.name : (SPEC[s.name.toLowerCase()] || s.name), show: s.name, slot, slots, when, img: (mem && mem.img) || s.img, path: s.path, member: mem ? mem.path : null };
+  }).sort((a, b) => order(a.slot) - order(b.slot));
 };
 
 // ---------- grille du jour ----------

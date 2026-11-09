@@ -6,7 +6,9 @@ import { getDJs } from '../lib/data.js';
 const djs = await getDJs();
 // la semaine des DJ sets : un bloc par jour, dans l'ordre de la semaine ; les sets sans horaire fixe à la fin
 const groups = [];
-djs.forEach((d) => { const k = d.slot ? d.slot.day : 'Selon les semaines'; let g = groups.find((x) => x.day === k); if (!g) groups.push((g = { day: k, items: [], n: 0 })); g.items.push(d); g.n++; });
+const JO = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+djs.forEach((d) => (d.slots.length ? d.slots : [null]).forEach((sl) => { const k = sl ? sl.day : 'Selon les semaines'; let g = groups.find((x) => x.day === k); if (!g) groups.push((g = { day: k, o: sl ? JO.indexOf(sl.day) * 1440 : 1e6, items: [], n: 0 })); g.items.push({ ...d, slot: sl }); g.n++; }));
+groups.sort((a, b) => a.o - b.o).forEach((g) => g.items.sort((a, b) => (a.slot ? a.slot.min : 0) - (b.slot ? b.slot.min : 0)));
 ---
 <Base title="DJ sets — Radio Monaco" description="Les DJs résidents et invités de Radio Monaco : leurs sets, leurs horaires et 100 % Mix DJ en continu." path="/djs/">
   <div class="wrap">

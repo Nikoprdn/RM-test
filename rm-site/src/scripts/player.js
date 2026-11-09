@@ -177,7 +177,21 @@ const stripHTML = (s) => decodeHTML(s.replace(/<[^>]+>/g, ' ')).replace(/\s+/g, 
 
 computeOnAir(); refreshToday(); readMeta();
 setInterval(readMeta, 20000); setInterval(computeOnAir, 30000); setInterval(refreshToday, 30 * 60000);
-document.addEventListener('astro:page-load', () => render());
+// ---------- émission à l'antenne, rattachée au lecteur (accueil seulement) ----------
+function paintOnAir() {
+  const dock = $('dock'); if (!dock) return;
+  dock.classList.toggle('home', !!document.querySelector('[data-hero]'));
+  const o = RM.onair || {}; const h = (t) => { const d = new Date(t); return d.getHours() + 'h' + (d.getMinutes() ? String(d.getMinutes()).padStart(2, '0') : ''); };
+  if (o.now) {
+    $('doa-now').textContent = o.now.name; const img = $('doa-img'); if (o.now.img && img.getAttribute('src') !== o.now.img) img.src = o.now.img;
+    $('doa-time').textContent = h(o.now.s) + ' – ' + h(o.now.e);
+    $('doa-prog').style.width = Math.max(2, Math.min(100, ((Date.now() - o.now.s) / Math.max(1, o.now.e - o.now.s)) * 100)).toFixed(1) + '%';
+  }
+  if (o.next) { $('doa-next').textContent = o.next.name; $('doa-nt').textContent = h(o.next.s); }
+}
+document.addEventListener('rm:onair', paintOnAir);
+setInterval(paintOnAir, 30000);
+document.addEventListener('astro:page-load', () => { render(); paintOnAir(); });
 render();
 
 // Raccourci de l'app installée (« Écouter le direct ») et liens profonds ?play=1 / ?radio=2
