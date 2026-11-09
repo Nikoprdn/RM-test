@@ -181,6 +181,7 @@ setInterval(readMeta, 20000); setInterval(computeOnAir, 30000); setInterval(refr
 function paintOnAir() {
   const dock = $('dock'); if (!dock) return;
   dock.classList.toggle('home', !!document.querySelector('[data-hero]'));
+  dock.classList.toggle('glass', !!document.querySelector('[data-dock-glass]'));
   const o = RM.onair || {}; const h = (t) => { const d = new Date(t); return d.getHours() + 'h' + (d.getMinutes() ? String(d.getMinutes()).padStart(2, '0') : ''); };
   if (o.now) {
     $('doa-now').textContent = o.now.name; const img = $('doa-img'); if (o.now.img && img.getAttribute('src') !== o.now.img) img.src = o.now.img;
