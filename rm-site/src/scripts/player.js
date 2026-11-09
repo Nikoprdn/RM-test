@@ -179,77 +179,18 @@ const stripHTML = (s) => decodeHTML(s.replace(/<[^>]+>/g, ' ')).replace(/\s+/g, 
 
 computeOnAir(); refreshToday(); readMeta();
 setInterval(readMeta, 20000); setInterval(computeOnAir, 30000); setInterval(refreshToday, 30 * 60000);
-// ---------- verre liquide : la goutte « à l'antenne » sort du lecteur sur le premier écran de l'accueil ----------
-// Le corps de verre (goutte + barre + col qui les relie) est dessiné en SVG (métaballe) et sert de masque au flou.
-const LG = { t: 0, to: 0, raf: 0, hero: false, glass: false };
-const ease = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
-const lerp = (a, b, k) => a + (b - a) * k;
-function metaball(c1, r1, c2, r2, v = 0.5, hs = 2.4) {
-  const d = Math.hypot(c2[0] - c1[0], c2[1] - c1[1]);
-  if (!r1 || !r2 || d > r1 + r2 * 2.5 || d <= Math.abs(r1 - r2)) return '';
-  let u1 = 0, u2 = 0;
-  if (d < r1 + r2) { u1 = Math.acos((r1 * r1 + d * d - r2 * r2) / (2 * r1 * d)); u2 = Math.acos((r2 * r2 + d * d - r1 * r1) / (2 * r2 * d)); }
-  const ab = Math.atan2(c2[1] - c1[1], c2[0] - c1[0]); const ms = Math.acos((r1 - r2) / d);
-  const a1 = ab + u1 + (ms - u1) * v, a2 = ab - u1 - (ms - u1) * v, a3 = ab + Math.PI - u2 - (Math.PI - u2 - ms) * v, a4 = ab - Math.PI + u2 + (Math.PI - u2 - ms) * v;
-  const P = (c, a, r) => [c[0] + r * Math.cos(a), c[1] + r * Math.sin(a)];
-  const p1 = P(c1, a1, r1), p2 = P(c1, a2, r1), p3 = P(c2, a3, r2), p4 = P(c2, a4, r2);
-  const dd = Math.min(v * hs, Math.hypot(p1[0] - p3[0], p1[1] - p3[1]) / (r1 + r2)) * Math.min(1, (d * 2) / (r1 + r2));
-  const h1 = P(p1, a1 - Math.PI / 2, r1 * dd), h2 = P(p2, a2 + Math.PI / 2, r1 * dd), h3 = P(p3, a3 + Math.PI / 2, r2 * dd), h4 = P(p4, a4 - Math.PI / 2, r2 * dd);
-  const f = (p) => p[0].toFixed(2) + ' ' + p[1].toFixed(2);
-  return `M${f(p1)}C${f(h1)} ${f(h3)} ${f(p3)}A${r2} ${r2} 0 0 0 ${f(p4)}C${f(h4)} ${f(h2)} ${f(p2)}Z`;
-}
-function lgDraw() {
-  const dock = $('dock'); if (!dock) return;
-  const H = dock.offsetHeight, W = dock.offsetWidth; if (!H || !W) return;
-  const D = H, g = Math.round(H * 0.24), E = D + g, k = ease(LG.t);
-  dock.style.setProperty('--lgD', D + 'px'); dock.style.setProperty('--lgx', E + 'px'); dock.style.setProperty('--lge', (E * k).toFixed(1) + 'px');
-  const r2 = H / 2, c2 = [E + r2, H / 2];
-  const r1 = lerp(r2 * 0.45, D / 2, k), c1 = [lerp(E + r2, D / 2, k), H / 2];
-  const shapes = `<rect x="${E}" y="0" width="${W}" height="${H}" rx="${r2}"/>` + (LG.t > 0.01 ? `<circle cx="${c1[0].toFixed(2)}" cy="${c1[1]}" r="${r1.toFixed(2)}"/><path d="${metaball(c1, r1, c2, r2)}"/>` : '');
-  const tw = W + E;
-  $('lg-s').setAttribute('viewBox', `0 0 ${tw} ${H}`); $('lg-g').innerHTML = shapes;
-  $('lg-rb').setAttribute('d', `M${(E + W * 0.3).toFixed(1)} ${H - 0.9}L${(E + W * 0.78).toFixed(1)} ${H - 0.9}`);
-  const m = `url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${tw} ${H}" preserveAspectRatio="none" fill="#000">${shapes}</svg>`)}")`;
-  const b = $('lg-b'); b.style.webkitMaskImage = m; b.style.maskImage = m;
-  const lgd = $('lgd'); const o = Math.max(0, Math.min(1, (LG.t - 0.55) / 0.45)); lgd.style.opacity = o; lgd.style.transform = `scale(${(0.6 + 0.4 * o).toFixed(3)})`;
-  dock.classList.toggle('drop', LG.t > 0.9);
-}
-function lgTo(v) {
-  LG.to = v; if (LG.raf) return;
-  let last = performance.now();
-  const step = (now) => { const dt = Math.min(64, now - last); last = now; const sp = dt / (LG.to > LG.t ? 620 : 420);
-    LG.t = LG.to > LG.t ? Math.min(LG.to, LG.t + sp) : Math.max(LG.to, LG.t - sp); lgDraw();
-    LG.raf = LG.t !== LG.to ? requestAnimationFrame(step) : 0; if (!LG.raf) { if (!LG.t && !LG.glass) $('dock').classList.remove('glass'); render(); } };
-  LG.raf = requestAnimationFrame(step);
-}
-function paintOnAir() {
-  const dock = $('dock'); if (!dock) return;
-  const hero = document.querySelector('[data-hero]'); const glassPage = !!document.querySelector('[data-dock-glass]');
-  // le verre reste en place le temps que la goutte rentre dans le lecteur, puis le lecteur redevient blanc
-  const apply = () => { LG.glass = LG.hero || glassPage; if (LG.glass) dock.classList.add('glass'); else if (!LG.t) dock.classList.remove('glass'); lgTo(LG.hero && RM.onair && RM.onair.now ? 1 : 0); render(); };
-  // la goutte ne vit que sur le premier écran de l'accueil : elle rentre dès qu'on passe à l'écran suivant
-  LG.hero = !!hero && hero.getBoundingClientRect().bottom > innerHeight * 0.55;
-  apply();
-  const o = RM.onair || {}; const h = (t) => { const d = new Date(t); return d.getHours() + 'h' + (d.getMinutes() ? String(d.getMinutes()).padStart(2, '0') : ''); };
-  if (o.now) {
-    const img = $('lgd-img'); if (o.now.img && img.getAttribute('src') !== o.now.img) img.src = o.now.img;
-    $('lgd-now').textContent = o.now.name;
-    $('lgd-ring').style.strokeDashoffset = (100 - Math.max(2, Math.min(100, ((Date.now() - o.now.s) / Math.max(1, o.now.e - o.now.s)) * 100))).toFixed(1);
-    $('lgd').setAttribute('aria-label', 'En ce moment : ' + o.now.name + ', ' + h(o.now.s) + ' – ' + h(o.now.e) + '. Voir le programme du jour');
-  }
-  $('lgd-next').textContent = o.next ? 'À suivre à ' + h(o.next.s) + ' · ' + o.next.name : 'Le programme du jour';
-  lgDraw();
-}
-// sur l'accueil, la ligne du haut du lecteur annonce l'émission en cours (Monte-Carlo en direct)
-RM.dockKind = () => { const o = RM.onair || {}; const s = RM.state; const d = $('dock');
-  if (!d || !d.classList.contains('drop') || s.mode !== 'live' || s.station !== 0 || !o.now) return null;
-  const h = (t) => { const x = new Date(t); return x.getHours() + 'h' + (x.getMinutes() ? String(x.getMinutes()).padStart(2, '0') : ''); };
-  return o.now.name + ' · ' + h(o.now.s) + ' – ' + h(o.now.e); };
+// ---------- émission en cours : sur le premier écran de l'accueil, la ligne du haut du lecteur l'annonce ----------
+const OA = { hero: false };
+const hm = (t) => { const x = new Date(t); return x.getHours() + 'h' + (x.getMinutes() ? String(x.getMinutes()).padStart(2, '0') : ''); };
+function heroVisible() { const h = document.querySelector('[data-hero]'); return !!h && h.getBoundingClientRect().bottom > innerHeight * 0.55; }
+function paintOnAir() { OA.hero = heroVisible(); render(); }
+RM.dockKind = () => { const o = RM.onair || {}; const s = RM.state;
+  if (!OA.hero || s.mode !== 'live' || s.station !== 0 || !o.now) return null;
+  return o.now.name + ' · ' + hm(o.now.s) + ' – ' + hm(o.now.e); };
 document.addEventListener('rm:onair', paintOnAir);
-setInterval(() => { paintOnAir(); }, 30000);
-window.addEventListener('resize', lgDraw);
-let lgQ = 0;
-window.addEventListener('scroll', () => { if (lgQ) return; lgQ = requestAnimationFrame(() => { lgQ = 0; const hero = document.querySelector('[data-hero]'); const v = !!hero && hero.getBoundingClientRect().bottom > innerHeight * 0.55; if (v !== LG.hero) paintOnAir(); }); }, { passive: true });
+setInterval(paintOnAir, 30000);
+let oaQ = 0;
+window.addEventListener('scroll', () => { if (oaQ) return; oaQ = requestAnimationFrame(() => { oaQ = 0; if (heroVisible() !== OA.hero) paintOnAir(); }); }, { passive: true });
 document.addEventListener('astro:page-load', () => { render(); paintOnAir(); });
 render();
 

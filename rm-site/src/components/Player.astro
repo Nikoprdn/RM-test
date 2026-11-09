@@ -14,73 +14,23 @@ const cfg = {
 ---
 <div class="dock" id="dock" role="region" aria-label="Lecteur" transition:persist="player" transition:name="player">
   <audio id="rm-audio" preload="none" x-webkit-airplay="allow"></audio>
-  <!-- styles du verre liquide : ils voyagent avec le lecteur (persistant), même si une page en cache a une feuille plus ancienne -->
+  <!-- styles du lecteur (verre calme) : ils voyagent avec le lecteur persistant, même si une page en cache a une feuille plus ancienne -->
   <style is:inline>
-/* le nom de transition n'est posé que pendant les changements de page : sinon Chrome isole le lecteur et le verre ne voit plus la page */
+/* le nom de transition n'est posé que pendant les changements de page : sinon Chrome isole le lecteur et le flou ne voit plus la page */
 #dock{view-transition-name:none}
 html[data-astro-transition] #dock{view-transition-name:player}
-/* ----- verre liquide (façon Apple) : un seul corps de verre pour la goutte « à l'antenne » et la barre du lecteur ----- */
-#dock{--lge:0px;width:min(640px,calc(100% - 24px - var(--lge)));transform:translateX(calc(-50% + var(--lge) / 2));transition:background-color .5s ease,box-shadow .5s ease,color .4s ease}
-#dock.glass{padding:5px 6px 5px 5px}
-#dock.glass .dcv,#dock.glass .dbtn{width:42px;height:42px}
-#dock.glass .dcv{border-radius:12px}
-#dock .lg{position:absolute;top:0;bottom:0;right:0;left:calc(-1 * var(--lgx,0px));z-index:-1;pointer-events:none;opacity:0;transition:opacity .45s ease}
-#dock .lg-b{position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.04) 55%,rgba(255,255,255,.1));-webkit-backdrop-filter:blur(5px) saturate(1.9) brightness(.96) contrast(1.05);backdrop-filter:blur(5px) saturate(1.9) brightness(.96) contrast(1.05);-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
-#dock .lg-s{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
-#dock.glass{background:transparent;box-shadow:none;color:#fff}
-#dock.glass .lg{opacity:1}
-#dock.glass .dk,#dock.glass .dt i{color:rgba(255,255,255,.78)}
-#dock.glass .dt b{color:#fff;text-shadow:0 1px 10px rgba(0,0,0,.25)}
-#dock.glass .dsm{border-color:rgba(255,255,255,.35);color:#fff}
-#dock.glass .eq{color:#fff}
-#dock.glass .dcv{box-shadow:0 6px 16px -8px rgba(0,0,0,.5)}
-/* la goutte : visuel de l'émission en cours, anneau de progression ; « à suivre » au survol */
-#dock .lgd{position:absolute;top:0;left:calc(-1 * var(--lgx,0px));width:var(--lgD,64px);height:var(--lgD,64px);border-radius:50%;opacity:0;transform:scale(.6);transform-origin:right center;pointer-events:none;color:#fff;text-decoration:none;transition:opacity .25s ease,transform .25s ease}
-#dock.drop .lgd{pointer-events:auto}
-#dock .lgd img{position:absolute;inset:5px;width:calc(100% - 10px);height:calc(100% - 10px);border-radius:50%;object-fit:cover;box-shadow:0 4px 14px -6px rgba(0,0,0,.6)}
-#dock .lgd-r{position:absolute;inset:2px;width:calc(100% - 4px);height:calc(100% - 4px);transform:rotate(-90deg)}
-#dock .lgd-r circle{fill:none;stroke-width:2.6;stroke-linecap:round}
-#dock .lgd-r .bg{stroke:rgba(255,255,255,.22)}
-#dock .lgd-r .fg{stroke:#fff;stroke-dasharray:100;stroke-dashoffset:100;transition:stroke-dashoffset 1s ease}
-#dock .lgd-tip{position:absolute;left:0;bottom:calc(100% + 12px);display:flex;flex-direction:column;gap:3px;width:max-content;max-width:300px;padding:12px 16px 13px;border-radius:20px;background:rgba(18,16,24,.5);-webkit-backdrop-filter:blur(24px) saturate(1.6);backdrop-filter:blur(24px) saturate(1.6);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),inset 0 0 0 1px rgba(255,255,255,.12),0 18px 40px -18px rgba(0,0,0,.6);color:#fff;opacity:0;transform:translateY(6px) scale(.97);transform-origin:left bottom;transition:opacity .3s ease,transform .45s cubic-bezier(.16,.84,.12,1);pointer-events:none}
-#dock .lgd-tip i{font-style:normal;font-size:10.5px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.7)}
-#dock .lgd-tip b{font-size:15px;font-weight:600}
-#dock .lgd-tip span{font-size:13px;color:rgba(255,255,255,.82)}
-#dock .lgd:hover .lgd-tip,#dock .lgd:focus-visible .lgd-tip{opacity:1;transform:none}
-@media (hover:none){#dock .lgd-tip{display:none}}
+/* verre calme : capsule en verre dépoli clair, sans reflet ; texte foncé lisible partout ; rouge réservé au point « en direct » */
+#dock{width:min(560px,calc(100% - 24px));height:54px;padding:0 7px;gap:12px;border:0;border-radius:999px;background:rgba(255,255,255,.62);-webkit-backdrop-filter:blur(22px) saturate(1.4);backdrop-filter:blur(22px) saturate(1.4);box-shadow:inset 0 0 0 1px rgba(255,255,255,.45),0 0 0 1px rgba(20,18,24,.05),0 12px 30px -14px rgba(0,0,0,.35)}
+#dock .dcv{width:40px;height:40px;border-radius:50%;background:rgba(20,18,24,.08)}
+#dock .dcv .eq{color:#141218}
+#dock .dbtn,#dock .dbtn.ink{width:40px;height:40px;background:#141218;color:#fff}
+#dock .dk{color:rgba(20,18,24,.55);transition:opacity .3s ease}
+#dock .dk .live-dot{background:#E4032E}
+#dock .dt{font-size:14px;color:#141218}
+#dock .dt i{color:rgba(20,18,24,.6)}
+#dock > .eq{color:rgba(20,18,24,.38)}
+#dock .dsm{border-color:rgba(20,18,24,.14)}
   </style>
-  <div class="lg" aria-hidden="true">
-    <div class="lg-b" id="lg-b"></div>
-    <svg class="lg-s" id="lg-s" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <filter id="lgf" x="-30%" y="-80%" width="160%" height="260%" color-interpolation-filters="sRGB">
-          <feGaussianBlur in="SourceAlpha" stdDeviation="1.1" result="bl" />
-          <feSpecularLighting in="bl" surfaceScale="2.2" specularConstant="1.1" specularExponent="30" lighting-color="#ffffff" result="sp"><feDistantLight azimuth="235" elevation="40" /></feSpecularLighting>
-          <feComposite in="sp" in2="SourceAlpha" operator="in" result="spi" />
-          <feMorphology in="SourceAlpha" operator="erode" radius=".6" result="er" />
-          <feComposite in="SourceAlpha" in2="er" operator="out" result="rim" />
-          <feFlood flood-color="#ffffff" flood-opacity=".35" /><feComposite in2="rim" operator="in" result="rimc" />
-          <feOffset in="SourceAlpha" dy="-5" result="up" /><feGaussianBlur in="up" stdDeviation="5" result="upb" />
-          <feComposite in="SourceAlpha" in2="upb" operator="out" result="low" />
-          <feFlood flood-color="#0a0a14" flood-opacity=".22" /><feComposite in2="low" operator="in" result="lowc" />
-          <feGaussianBlur in="SourceAlpha" stdDeviation="10" result="ds" /><feOffset in="ds" dy="10" result="dso" />
-          <feFlood flood-color="#05050c" flood-opacity=".3" /><feComposite in2="dso" operator="in" result="dsc" />
-          <feComposite in="dsc" in2="SourceAlpha" operator="out" result="dsout" />
-          <feMerge><feMergeNode in="dsout" /><feMergeNode in="spi" /><feMergeNode in="rimc" /></feMerge>
-        </filter>
-        <linearGradient id="lgrb" x1="0" x2="1" y1="0" y2="0">
-          <stop offset="0" stop-color="#fff" stop-opacity="0" /><stop offset=".3" stop-color="#ffd6f0" stop-opacity=".9" /><stop offset=".5" stop-color="#fff6c8" stop-opacity=".9" /><stop offset=".7" stop-color="#bff3ff" stop-opacity=".9" /><stop offset="1" stop-color="#fff" stop-opacity="0" />
-        </linearGradient>
-      </defs>
-      <g id="lg-g" filter="url(#lgf)" fill="#fff"></g>
-      <path id="lg-rb" fill="none" stroke="url(#lgrb)" stroke-width="1.4" stroke-linecap="round" opacity=".75" />
-    </svg>
-  </div>
-  <a class="lgd" id="lgd" href={u('/programmes/')} aria-label="Le programme du jour" tabindex="-1">
-    <svg class="lgd-r" viewBox="0 0 100 100" aria-hidden="true"><circle class="bg" cx="50" cy="50" r="47" /><circle class="fg" id="lgd-ring" cx="50" cy="50" r="47" pathLength="100" /></svg>
-    <img id="lgd-img" src={asset('rm-mark.png')} alt="" width="64" height="64" />
-    <span class="lgd-tip"><i>En ce moment</i><b id="lgd-now">The sound of Monte-Carlo</b><span id="lgd-next">Le programme du jour</span></span>
-  </a>
   <span class="dcv" aria-hidden="true"><img id="dock-cover" alt="" hidden /><span class="eq" style="color:#fff"><i></i><i></i><i></i><i></i></span></span>
   <span class="dtx">
     <span class="dk"><span class="live-dot"></span><span id="dock-kind">Direct · Monte-Carlo</span></span>
