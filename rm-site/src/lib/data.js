@@ -239,7 +239,7 @@ export const PODCAST_SHOWS = [
   ['timeless', 'mixdj', 'Timeless', 'by Adore', /^timeless/i],
   ['weekend', 'mixdj', 'Week-End Change', 'by Pampa', /^week[- ]?end change/i]
 ];
-export const FEED_COLOR = { emissions: '#E4032E', mixdj: '#F59C00', horoscope: '#8A5AA1' };
+export const FEED_COLOR = { emissions: '#E4032E', mixdj: '#F59C00', horoscope: '#2B4C7E' };
 export const FEED_LABEL = { emissions: 'Le Morning & chroniques', mixdj: '100 % Mix DJ', horoscope: 'Horoscope' };
 
 const xtag = (xml, name) => { const m = xml.match(new RegExp('<' + name + '(?:\\s[^>]*)?>([\\s\\S]*?)</' + name + '>')); return m ? decode(m[1].replace(/^<!\[CDATA\[([\s\S]*)\]\]>$/, '$1')).trim() : ''; };

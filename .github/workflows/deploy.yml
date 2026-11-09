@@ -28,6 +28,9 @@ env:
   SITE_URL: https://nikoprdn.github.io
   BASE_PATH: /RM-test
   INDEXABLE: '0'
+  # Instagram : adresse du flux JSON (Behold.so) ou jeton de l'API Instagram, à définir dans Settings → Secrets and variables → Actions
+  IG_FEED_URL: ${{ vars.IG_FEED_URL }}
+  IG_TOKEN: ${{ secrets.IG_TOKEN }}
 
 jobs:
   build:

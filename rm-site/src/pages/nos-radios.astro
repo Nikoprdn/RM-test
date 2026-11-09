@@ -6,8 +6,8 @@ import { u, asset } from '../lib/url.js';
 import { STATIONS, UNIVERS } from '../lib/stations.js';
 // Textes repris de la page « Nos radios » du site actuel
 const TXT = [
-  'Créée en 2007, Radio Monaco est une radio musicale qui diffuse également des news et des émissions thématiques. En FM, les fréquences 95.4, 98.2 et 103.2 couvrent un territoire entre Bordighera et Saint-Tropez. En DAB+, Radio Monaco propose une qualité numérique pour Paris et Nice.',
-  'Les programmes de Radio Monaco et l’actualité francilienne, en DAB+ à Paris et partout sur le site et l’appli.',
+  'Depuis 2007, Radio Monaco fait vibrer la Principauté. The sound of Monte-Carlo : une sélection musicale pointue, l’info de Monaco et de la Riviera, Le Morning « Made in Monte-Carlo » pour bien commencer la journée, et chaque soir les DJ sets de nos résidents. Sur 98.2, 95.4 et 103.2 FM de Bordighera à Saint-Tropez, et en DAB+.',
+  'Retrouvez les programmes Radio Monaco, avec vos informations franciliennes.',
   'Chaque jour, toute la team DJ de Radio Monaco avec des sets nu-disco, house, deep-house, future-soul et electro-pop.',
   'La programmation musicale de nuit, disponible 24 h/24 : house, pop, urban pop et chill-out, une sélection tendance pour plonger dans une expérience nocturne.'
 ];
@@ -22,8 +22,8 @@ const ld = { '@context': 'https://schema.org', '@type': 'ItemList', name: 'Les r
     <div class="wrap">
       <div class="ou-hd">
         <p class="eb">Où nous écouter</p>
-        <h2 class="ou-h"><span class="m"><span>Partout,</span></span> <span class="m"><span style="font-weight:600">tout le temps.</span></span></h2>
-        <p class="ou-lead">En FM de Bordighera à Saint-Tropez, en DAB+ à Monaco, Nice et Paris, et partout dans le monde sur le site et l’appli.</p>
+        <h2 class="ou-h"><span class="m"><span>Depuis Monaco,</span></span> <span class="m"><span style="font-weight:600">pour le monde entier.</span></span></h2>
+        <p class="ou-lead">En FM et DAB+ de Bordighera à Saint-Tropez.<br />En DAB+ à Paris et en Île-de-France.<br />Partout dans le monde sur l’application Radio Monaco.</p>
       </div>
       <div class="ou-grid ou-vl">
         {UNIVERS.map((s, g) => (

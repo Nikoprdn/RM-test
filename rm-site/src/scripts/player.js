@@ -1,6 +1,10 @@
 // Lecteur Radio Monaco — un seul élément audio pour tout le site.
 // API : window.RM.playLive(i) · RM.playEpisode(ep) · RM.toggle() · RM.state · RM.meta · RM.onair
 // Événements sur document : 'rm:state', 'rm:meta', 'rm:onair'.
+// Une seule instance du lecteur par onglet : après une mise en ligne, une page plus récente peut charger
+// une autre version de ce script ; sans ce garde-fou, chaque version réagissait au clic (l'une lançait, l'autre coupait).
+if (!window.__rmPlayer) {
+window.__rmPlayer = 1;
 
 const $ = (id) => document.getElementById(id);
 const cfg = JSON.parse(($('rm-config') || {}).textContent || '{}');
@@ -233,3 +237,4 @@ render();
   q.delete('play'); q.delete('radio'); q.delete('source');
   history.replaceState(history.state, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash);
 })();
+}

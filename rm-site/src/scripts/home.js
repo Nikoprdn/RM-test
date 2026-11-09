@@ -1,9 +1,11 @@
 // Interactivité des rubriques de l'accueil, aussi utilisées par les pages Nos radios et Podcasts.
 let stop = null;
+const ME = {}; window.__rmHome = ME; // seule la version la plus récente de ce script agit
 
 function init() {
   if (stop) stop();
-  if (!document.querySelector('[data-hero], [data-ux], #pz-data')) { stop = null; return; }
+  if (window.__rmHome !== ME) { stop = null; return; }
+  if (!document.querySelector('[data-hero], [data-ux], #pz-data, [data-scroller]')) { stop = null; return; }
   const ac = new AbortController(); const sig = { signal: ac.signal }; const timers = [];
   stop = () => { ac.abort(); timers.forEach(clearInterval); };
   const every = (ms, fn) => timers.push(setInterval(fn, ms));

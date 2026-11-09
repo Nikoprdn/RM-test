@@ -732,3 +732,23 @@ body:has(.pl-bg){background:var(--bg)}
 /* volets : le vu-mètre reste visible sur la pochette, légèrement voilée */
 .uxc .eq{position:relative;z-index:1;color:#fff}
 .uxc:has(img:not([hidden]))::after{content:"";position:absolute;inset:0;background:rgba(10,10,16,.34);border-radius:inherit}
+
+/* ===== L'équipe : carrousels qui défilent (une ligne par personne, sans retour à la ligne) ===== */
+.tq{margin-top:56px}
+.tq+.tq{margin-top:88px}
+.tq-hd{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:28px}
+.tq-h{margin:0;font-size:clamp(30px,3.4vw,48px);font-weight:300;letter-spacing:-.03em;line-height:1}
+.tq-h b{font-weight:600}
+.tq-nav{display:flex;gap:10px}
+.tq-b{width:48px;height:48px;border-radius:50%;border:1px solid rgba(20,18,24,.2);background:transparent;color:#141218;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:background .3s,color .3s}
+.tq-b:hover{background:#141218;color:#fff}
+.tq-row{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px max(clamp(24px,4vw,56px),calc((100% - 1400px) / 2 + 56px)) 14px;scroll-padding-left:max(clamp(24px,4vw,56px),calc((100% - 1400px) / 2 + 56px))}
+.tq-c{flex:0 0 260px;scroll-snap-align:start;min-width:0}
+.tq-c b,.tq-c>span:last-child{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:640px){.tq-c{flex-basis:68vw}.tq-nav{display:none}}
+
+/* réseaux : nombre d'abonnés */
+.soc-n{display:flex;flex-wrap:wrap;gap:10px 34px;margin-top:26px}
+.soc-n a{display:flex;align-items:baseline;gap:9px;color:inherit;text-decoration:none}
+.soc-n b{font-size:clamp(26px,2.4vw,34px);font-weight:600;letter-spacing:-.02em;line-height:1}
+.soc-n span{font-size:13px;color:var(--muted);letter-spacing:.02em}

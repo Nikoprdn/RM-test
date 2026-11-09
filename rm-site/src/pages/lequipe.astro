@@ -1,14 +1,37 @@
 ---
 import Base from '../layouts/Base.astro';
+import I from '../components/Icons.astro';
 import { u } from '../lib/url.js';
 import { getTeam, getDJs } from '../lib/data.js';
 const [team, djs] = await Promise.all([getTeam(), getDJs()]);
+// deux carrousels qui défilent : l'équipe, puis les DJs (une carte par set, jour et heure sur la photo)
+const rows = [
+  { key: 'team', title: ['L’équipe', 'de l’antenne.'], items: team.map((m) => ({ href: m.path, img: m.img, name: m.name, sub: m.role })) },
+  { key: 'djs', title: ['Nos', 'DJs.'], items: djs.map((d) => ({ href: d.path, img: d.img, name: d.name, sub: d.show, slot: d.slot, days: d.slots.map((x) => x.day).join(' & ') })) }
+];
 ---
 <Base title="L’équipe — Radio Monaco" description="Les voix de Radio Monaco : l’équipe du Morning, la rédaction et les DJs." path="/lequipe/">
   <div class="wrap">
     <header class="page-hd"><nav class="crumbs"><a href={u('/')}>Accueil</a><span class="sep">/</span><span>L’équipe</span></nav><h1 class="h1">Les voix de <b>Radio Monaco.</b></h1></header>
-    <div class="people">{team.map((m) => <a class="person" href={u(m.path)}><span class="ph">{m.img && <img src={m.img.card} alt={m.name} loading="lazy" />}</span><b>{m.name}</b><span>{m.role}</span></a>)}</div>
-    <div class="sec-t" style="margin-top:96px"><h2>Nos <b>DJs.</b></h2></div>
-    <div class="people">{djs.map((d) => <a class="person" href={u(d.path)}><span class="ph">{d.img && <img src={d.img.card} alt={d.name} loading="lazy" />}</span><b>{d.name}</b><span>{d.show}{d.when ? ' · ' + d.when : ''}</span></a>)}</div>
   </div>
+  {rows.map((r, k) => (
+    <section class="tq" data-reveal>
+      <div class="wrap tq-hd">
+        <h2 class="tq-h">{r.title[0]} <b>{r.title[1]}</b></h2>
+        <div class="tq-nav">
+          <button class="tq-b" type="button" data-scroll={r.key} data-dir="-1" aria-label="Précédent"><I n="left" s={18} /></button>
+          <button class="tq-b" type="button" data-scroll={r.key} data-dir="1" aria-label="Suivant"><I n="right" s={18} /></button>
+        </div>
+      </div>
+      <div class="scroller tq-row" data-scroller={r.key}>
+        {r.items.map((m) => (
+          <a class="person tq-c" data-card href={u(m.href)}>
+            <span class="ph">{m.img && <img src={m.img.card} alt={m.name} loading="lazy" />}{m.slot && <span class="djb"><b>{m.days}</b>{m.slot.time}</span>}</span>
+            <b>{m.name}</b><span>{m.sub}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  ))}
+  <script src="../scripts/home.js"></script>
 </Base>

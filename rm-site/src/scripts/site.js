@@ -3,8 +3,10 @@
 // défilement amorti, apparition des rubriques, transitions.
 
 let ctrl = null;
+const ME = {}; window.__rmSite = ME; // seule la version la plus récente de ce script agit
 
 function init() {
+  if (window.__rmSite !== ME) { if (ctrl) ctrl.abort(); ctrl = null; return; }
   if (ctrl) ctrl.abort();
   ctrl = new AbortController();
   const sig = { signal: ctrl.signal };

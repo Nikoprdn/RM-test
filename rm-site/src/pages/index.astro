@@ -5,10 +5,12 @@ import Univers from '../components/Univers.astro';
 import Podcasts from '../components/Podcasts.astro';
 import { u, asset } from '../lib/url.js';
 import { STATIONS } from '../lib/stations.js';
-import { REELS } from '../lib/reels.js';
+import { getInstagram, getSocial, fmtFollowers } from '../lib/social.js';
 import { getPosts, getTeam, getDJs, getPodcasts, ausImg, ausAudio, dur, dateShort, FEED_LABEL } from '../lib/data.js';
 
-const [posts, team, djs, pods] = await Promise.all([getPosts(), getTeam(), getDJs(), getPodcasts()]);
+const [posts, team, djs, pods, ig, social] = await Promise.all([getPosts(), getTeam(), getDJs(), getPodcasts(), getInstagram(), getSocial()]);
+const REELS = ig.reels;
+const FOLLOW = social.filter((x) => x.followers);
 const une = posts.filter((p) => p.une && p.img).slice(0, 3);
 const heads = posts.filter((p) => !une.includes(p)).slice(0, 3);
 const TEAM = team.slice(0, 3);
@@ -116,6 +118,7 @@ const jsonld = [{
         <div>
           <p class="eb" style="margin:0 0 18px;font-size:12px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:#6A6570">Sur nos réseaux</p>
           <h2 style="margin:0;font-size:clamp(40px,4.8vw,68px);line-height:1;letter-spacing:-0.03em;font-weight:300"><span class="m"><span>Sur nos</span></span> <span class="m"><span style="font-weight:600">réseaux.</span></span></h2>
+          {FOLLOW.length > 0 && <div class="soc-n rise" style="--d:.3s">{FOLLOW.map((x) => <a href={x.url || undefined} rel="noopener"><b>{fmtFollowers(x.followers)}</b><span>abonnés {x.name}</span></a>)}</div>}
         </div>
         <div class="rise" style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;--d:.35s">
           <a href="https://www.instagram.com/radiomonaco_officiel/" rel="noopener" class="btn" style="display:inline-flex;align-items:center;gap:10px;height:50px;padding:0 22px;border-radius:999px;background:#141218;color:#fff;font-size:14px;font-weight:500"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.3" cy="6.7" r=".6"></circle></svg>@radiomonaco_officiel</a>
@@ -127,7 +130,7 @@ const jsonld = [{
     <div class="scroller" data-scroller="reels" style="display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px max(clamp(24px,4vw,56px),calc((100% - 1400px) / 2 + 56px)) 12px;scroll-padding-left:max(clamp(24px,4vw,56px),calc((100% - 1400px) / 2 + 56px))">
       {REELS.map((v, i) => (
         <a href={v.href} rel="noopener" data-card class="reel tile rise" style={`--d:${(0.2 + Math.min(i, 5) * 0.08).toFixed(2)}s;position:relative;flex:0 0 260px;aspect-ratio:9/16;scroll-snap-align:start;border-radius:20px;overflow:hidden;background:#141218;color:#fff`}>
-          <img class="ph zm" src={asset(v.img)} alt={v.alt} loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
+          <img class="ph zm" src={/^https?:/.test(v.img) ? v.img : asset(v.img)} alt={v.alt} loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
           <span class="ov" aria-hidden="true" style="position:absolute;inset:0;background:rgba(20,18,24,.25);opacity:0;display:flex;align-items:center;justify-content:center"><span style="width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.92);color:#141218;display:inline-flex;align-items:center;justify-content:center"><I n="play" s={18} /></span></span>
         </a>
       ))}
