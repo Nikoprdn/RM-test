@@ -752,3 +752,28 @@ body:has(.pl-bg){background:var(--bg)}
 .soc-n a{display:flex;align-items:baseline;gap:9px;color:inherit;text-decoration:none}
 .soc-n b{font-size:clamp(26px,2.4vw,34px);font-weight:600;letter-spacing:-.02em;line-height:1}
 .soc-n span{font-size:13px;color:var(--muted);letter-spacing:.02em}
+
+/* ===== Accueil : notifications « rendez-vous du jour » (horoscope, dernier podcast), même verre que le lecteur ===== */
+.ntf{position:absolute;z-index:5;left:clamp(16px,2.2vw,32px);top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;width:min(330px,calc(100% - 32px));pointer-events:none}
+.ntf-i{position:relative;pointer-events:auto;opacity:0;transform:translateX(-24px) scale(.96);transition:opacity .5s ease,transform .7s cubic-bezier(.2,1.25,.35,1)}
+.ntf-i.in{opacity:1;transform:none}
+.ntf-i.out{opacity:0;transform:translateX(-24px) scale(.96);transition-duration:.35s}
+.ntf-i[hidden]{display:none}
+.ntf-b{display:flex;align-items:center;gap:12px;width:100%;margin:0;padding:10px 34px 10px 10px;border:0;border-radius:22px;text-align:left;font:inherit;color:#141218;cursor:pointer;background:rgba(255,255,255,.66);-webkit-backdrop-filter:blur(22px) saturate(1.4);backdrop-filter:blur(22px) saturate(1.4);box-shadow:inset 0 0 0 1px rgba(255,255,255,.5),0 0 0 1px rgba(20,18,24,.05),0 14px 34px -16px rgba(0,0,0,.45);transition:transform .35s cubic-bezier(.16,.84,.12,1),background .3s}
+.ntf-b:hover{transform:translateX(3px);background:rgba(255,255,255,.78)}
+.ntf-ic{flex:none;width:42px;height:42px;border-radius:12px;overflow:hidden;display:grid;place-items:center;background:var(--c);color:#fff}
+.ntf-ic img{width:100%;height:100%;object-fit:cover;display:block}
+.ntf-t{min-width:0;flex:1;display:flex;flex-direction:column;gap:2px;line-height:1.25}
+.ntf-k{display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-size:10.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--c)}
+.ntf-w{font-weight:500;letter-spacing:.02em;text-transform:none;color:rgba(20,18,24,.5);white-space:nowrap}
+.ntf-t b{font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ntf-s{font-size:12.5px;color:rgba(20,18,24,.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ntf-dot{position:absolute;right:14px;top:50%;width:8px;height:8px;margin-top:-4px;border-radius:50%;background:#E4032E;box-shadow:0 0 0 3px rgba(228,3,46,.18)}
+.ntf-i.lu .ntf-dot{opacity:0}
+.ntf-x{position:absolute;right:-8px;top:-8px;width:24px;height:24px;border-radius:50%;border:0;padding:0;background:rgba(255,255,255,.9);color:#141218;font-size:15px;line-height:24px;cursor:pointer;box-shadow:0 4px 12px -4px rgba(0,0,0,.35);opacity:0;transform:scale(.8);transition:opacity .2s,transform .2s}
+.ntf-i:hover .ntf-x,.ntf-x:focus-visible{opacity:1;transform:none}
+@media (hover:none){.ntf-x{opacity:1;transform:none}}
+@media (max-width:640px){
+  .ntf{top:96px;transform:none;left:16px;right:16px;width:auto}
+  .ntf-i:not(:first-child){display:none}
+}

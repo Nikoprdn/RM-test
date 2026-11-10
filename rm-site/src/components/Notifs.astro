@@ -1,0 +1,54 @@
+---
+// Accueil : deux « notifications » à gauche du premier écran — l'horoscope du jour et le dernier podcast.
+// Elles arrivent l'une après l'autre ; un clic lance l'épisode dans le lecteur ; la croix les range pour la journée.
+import { getPodcasts, ausImg, ausAudio, dur } from '../lib/data.js';
+import { asset } from '../lib/url.js';
+const pods = await getPodcasts().catch(() => []);
+const horo = pods.find((s) => s.feed === 'horoscope');
+const latest = pods.filter((s) => s.feed === 'emissions').map((s) => ({ s, e: s.eps[0] })).filter((x) => x.e).sort((a, b) => (a.e.d < b.e.d ? 1 : -1))[0];
+const ep = (s, e) => JSON.stringify({ id: s.k + ':0', url: ausAudio(e.au), title: e.title, show: s.name, color: s.color, ink: '#FFFFFF', img: ausImg(e.img), s: e.s });
+const items = [];
+if (horo && horo.eps[0]) items.push({ id: 'h:' + horo.eps[0].au, kind: 'Horoscope du jour', title: 'L’horoscope du jour', sub: horo.name + ' · ' + dur(horo.eps[0].s), d: horo.eps[0].d, rm: ep(horo, horo.eps[0]), star: true, c: horo.color });
+if (latest) items.push({ id: 'p:' + latest.e.au, kind: 'Nouveau podcast', title: latest.e.title, sub: latest.s.name + ' · ' + dur(latest.e.s), d: latest.e.d, rm: ep(latest.s, latest.e), img: ausImg(latest.e.img), c: latest.s.color });
+---
+{items.length > 0 && (
+  <div class="ntf" aria-label="Les rendez-vous du jour">
+    {items.map((n, i) => (
+      <div class="ntf-i" data-ntf={n.id} style={`--c:${n.c};--i:${i}`} hidden>
+        <button class="ntf-b" type="button" data-rm-ep={n.rm} aria-label={`Écouter : ${n.title}`}>
+          <span class="ntf-ic">{n.star ? <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M12 2.5l1.9 6.1 6.1 1.9-6.1 1.9L12 18.5l-1.9-6.1-6.1-1.9 6.1-1.9z" fill="currentColor" /></svg> : <img src={n.img} alt="" loading="lazy" />}</span>
+          <span class="ntf-t">
+            <span class="ntf-k"><span class="ntf-app">{n.kind}</span><span class="ntf-w" data-ntf-d={n.d}></span></span>
+            <b>{n.title}</b>
+            <span class="ntf-s">{n.sub}</span>
+          </span>
+          <span class="ntf-dot" aria-hidden="true"></span>
+        </button>
+        <button class="ntf-x" type="button" aria-label="Masquer">×</button>
+      </div>
+    ))}
+  </div>
+)}
+<script>
+  // apparition « notification », lu / masqué mémorisé dans ce navigateur (jamais bloquant si le stockage est indisponible)
+  const KEY = 'rm-ntf';
+  const read = () => { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { return {}; } };
+  const write = (o) => { try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {} };
+  const ago = (iso) => { const d = new Date(iso + 'Z'), n = new Date(); const day = (x) => new Date(x.getFullYear(), x.getMonth(), x.getDate()); const k = Math.round((day(n) - day(d)) / 864e5);
+    const h = d.getHours() + 'h' + (d.getMinutes() ? String(d.getMinutes()).padStart(2, '0') : '');
+    return k <= 0 ? 'Aujourd’hui · ' + h : k === 1 ? 'Hier · ' + h : 'Il y a ' + k + ' jours'; };
+  function initNtf() {
+    const box = document.querySelector('.ntf'); if (!box || box.dataset.ok) return; box.dataset.ok = '1';
+    const st = read(); let shown = 0;
+    box.querySelectorAll('[data-ntf]').forEach((el) => {
+      const id = el.dataset.ntf; if (st[id] === 'x') return;
+      const w = el.querySelector('[data-ntf-d]'); w.textContent = ago(w.dataset.ntfD);
+      if (st[id] === 'lu') el.classList.add('lu');
+      el.hidden = false; const k = shown++;
+      setTimeout(() => el.classList.add('in'), 1400 + k * 650);
+      el.querySelector('.ntf-b').addEventListener('click', () => { el.classList.add('lu'); const s = read(); s[id] = 'lu'; write(s); });
+      el.querySelector('.ntf-x').addEventListener('click', () => { el.classList.add('out'); const s = read(); s[id] = 'x'; write(s); setTimeout(() => (el.hidden = true), 450); });
+    });
+  }
+  document.addEventListener('astro:page-load', initNtf); initNtf();
+</script>

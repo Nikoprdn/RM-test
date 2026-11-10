@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import I from '../components/Icons.astro';
 import Univers from '../components/Univers.astro';
 import Podcasts from '../components/Podcasts.astro';
+import Notifs from '../components/Notifs.astro';
 import { u, asset } from '../lib/url.js';
 import { STATIONS } from '../lib/stations.js';
 import { getInstagram, getSocial, fmtFollowers } from '../lib/social.js';
@@ -47,6 +48,7 @@ const jsonld = [{
         <span data-rm-label data-rm-idle="Écouter le direct" data-rm-playing="Pause">Écouter le direct</span>
       </button>
     </div>
+    <Notifs />
     <div class="fade f3" style="position:absolute;left:0;right:0;bottom:36px">
       <div class="wrap" style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:20px 40px">
         <div style="position:relative;height:44px;min-width:220px;flex:1 1 220px">
