@@ -1,0 +1,69 @@
+# Publication de secours quand WordPress ne répond pas : on reprend le site actuellement en ligne
+# (dernière construction réussie) et on y ajoute les nouveautés de structure (notifications de l'accueil,
+# scripts et styles), construites avec des contenus de démonstration. Les contenus en ligne ne changent pas.
+name: Mise en ligne sans WordPress
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: "Numéro de la dernière construction réussie (dont on reprend le site en ligne)"
+        required: true
+
+permissions:
+  contents: read
+  actions: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+env:
+  SITE_URL: https://nikoprdn.github.io
+  BASE_PATH: /RM-test
+  INDEXABLE: '0'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: rm-site
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: rm-site/package-lock.json
+      - uses: actions/download-artifact@v4
+        with:
+          name: github-pages
+          run-id: ${{ inputs.run_id }}
+          github-token: ${{ github.token }}
+          path: live-artifact
+      - name: Site en ligne actuel
+        run: mkdir -p live && tar -xf ../live-artifact/artifact.tar -C live && ls live | head
+      - run: npm ci
+      - name: Construction de la structure (contenus de démonstration, podcasts réels)
+        run: |
+          mkdir -p public/assets && cp ../assets/* public/assets/
+          node -e "const j=require('../podcasts.json');require('fs').writeFileSync('fixtures/podcasts.txt',j.lines.join('\n'))"
+          RM_FIXTURES=1 npm run build
+      - name: Greffe sur le site en ligne
+        run: node scripts/patch-live.mjs dist live
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: rm-site/live
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
