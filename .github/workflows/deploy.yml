@@ -50,6 +50,12 @@ jobs:
       # les images sont dans le dossier assets/ à la racine du dépôt
       - name: Images
         run: mkdir -p public/assets && cp ../assets/* public/assets/
+      # dernier contenu WordPress connu, réutilisé si le site WordPress ne répond pas pendant la construction
+      - uses: actions/cache@v4
+        with:
+          path: rm-site/.wp-cache
+          key: wp-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: wp-
       - run: npm run build
       - uses: actions/upload-pages-artifact@v3
         with:

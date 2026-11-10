@@ -13,16 +13,29 @@ const memo = new Map();
 const once = (key, fn) => { if (!memo.has(key)) memo.set(key, fn()); return memo.get(key); };
 const fixture = (name) => JSON.parse(readFileSync(new URL('../../fixtures/' + name, import.meta.url), 'utf8'));
 
+// Dernière réponse connue de WordPress, gardée entre deux constructions (cache GitHub Actions, dossier .wp-cache) :
+// si WordPress ne répond pas (panne, protection anti-robots), le site est quand même reconstruit avec le dernier contenu connu.
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+const CACHE = new URL('../../.wp-cache/', import.meta.url);
+const cacheFile = (url) => new URL(createHash('sha1').update(url).digest('hex') + '.json', CACHE);
+function remember(url, json, headers) { try { mkdirSync(CACHE, { recursive: true }); writeFileSync(cacheFile(url), JSON.stringify({ json, pages: headers.get('x-wp-totalpages') })); } catch (e) {} }
+function recall(url) { try { const f = cacheFile(url); if (!existsSync(f)) return null; const c = JSON.parse(readFileSync(f, 'utf8')); return { json: c.json, headers: new Headers(c.pages ? { 'x-wp-totalpages': c.pages } : {}) }; } catch (e) { return null; } }
+
 async function getJSON(url, tries = 3) {
+  let last = '';
   for (let i = 0; i < tries; i++) {
     try {
       const r = await fetch(url, { headers: { 'user-agent': 'RadioMonaco-site/1.0' } });
-      if (r.ok) return { json: await r.json(), headers: r.headers };
+      if (r.ok) { const json = await r.json(); remember(url, json, r.headers); return { json, headers: r.headers }; }
       if (r.status === 400 || r.status === 404) return { json: [], headers: r.headers };
-    } catch (e) { if (i === tries - 1) throw e; }
+      last = 'HTTP ' + r.status;
+    } catch (e) { last = e.message; }
     await new Promise((res) => setTimeout(res, 800 * (i + 1)));
   }
-  throw new Error('WordPress injoignable : ' + url);
+  const c = recall(url);
+  if (c) { console.warn('[wordpress] injoignable (' + last + '), dernier contenu connu utilisé : ' + url); return c; }
+  throw new Error('WordPress injoignable (' + last + ') : ' + url);
 }
 
 async function paged(path, perPage = 100, max = Infinity) {
