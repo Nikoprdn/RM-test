@@ -847,7 +847,7 @@ html.pl-night .ftr{--ink:#fff;--muted:rgba(255,255,255,.6);--line:rgba(255,255,2
 .actu .chip:hover,.actu .chip.on{background:#E4032E;color:#fff}
 .card .tag{display:none}
 
-.feat{position:relative;display:block;margin:0 0 56px;border-radius:28px;overflow:hidden;background:#141218;color:#fff;min-height:min(600px,62vh);isolation:isolate}
+.feat{position:relative;display:block;margin:0 0 56px;border-radius:28px;overflow:hidden;background-color:#141218;background-size:cover;background-position:50% 45%;color:#fff;min-height:min(600px,62vh);isolation:isolate}
 .feat-im{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-1;transition:transform 1.6s cubic-bezier(.16,.84,.12,1)}
 .feat:hover .feat-im{transform:scale(1.04)}
 .feat::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(190deg,rgba(14,12,18,.08) 28%,rgba(14,12,18,.62) 66%,rgba(14,12,18,.92) 100%)}
