@@ -8,7 +8,7 @@ import { STATIONS } from '../lib/stations.js';
 import { getPlaylist, metaId } from '../lib/data.js';
 const mc = STATIONS[0], nm = STATIONS[3];
 const snap = await getPlaylist([mc, nm]);
-const dep = (i) => ({ i, name: STATIONS[i].name, logo: asset(STATIONS[i].logo) });
+const dep = (i) => ({ i, name: STATIONS[i].name, logo: asset(STATIONS[i].logoInk), logoW: asset(STATIONS[i].logo) });
 const radios = [
   { key: mc.key, sw: 'Monte-Carlo & Paris', name: 'The Sound of Monte-Carlo', h: ['The Sound of', 'Monte-Carlo.'], lead: 'La playlist Radio Monaco à découvrir sans modération.', color: mc.color, id: metaId(mc.stream), departs: [dep(0), dep(1)], mark: asset(mc.cover), logo: asset(mc.logoInk), note: 'Même playlist à Monte-Carlo et à Paris. Paris ajoute l’info de Paris et d’Île-de-France.' },
   { key: nm.key, sw: 'Night Mood', name: 'Night Mood', h: ['La playlist', 'Night Mood.'], lead: 'House, pop et chill-out : la sélection de nuit de Radio Monaco, 24 h/24.', color: nm.color, id: metaId(nm.stream), departs: [dep(3)], mark: asset(nm.cover), logo: asset(nm.logoInk), note: '' }
@@ -131,7 +131,7 @@ const nice = (x) => { const k = (x || '').indexOf(' ('); return k > 0 ? nice1(x.
       const q = document.getElementById('pl-q');
       const row = (t, day) => `<li class="pl-r"><time class="pl-t" datetime="${new Date(t.date * 1000).toISOString()}">${hhmm(t.date)}</time>${img(t, 'pl-c')}<span class="pl-x"><span class="pl-tt">${esc(t.title)}</span><span class="pl-a">${esc(t.artist)}${day && dayLabel(t.date) ? ' · ' + esc(dayLabel(t.date)) : ''}</span></span></li>`;
       // un bouton d'écoute par départ, avec son logo
-      const listen = (r) => r.departs.map((d) => `<button class="pl-dep" type="button" data-rm-live="${d.i}" style="--c:${r.color}" aria-label="Écouter ${esc(d.name)}"><img src="${esc(d.logo)}" alt="" /><span class="pi"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span></button>`).join('') + (r.note ? `<p class="pl-dn">${esc(r.note)}</p>` : '');
+      const listen = (r) => r.departs.map((d) => `<button class="pl-dep" type="button" data-rm-live="${d.i}" style="--c:${r.color}" aria-label="Écouter ${esc(d.name)}"><img class="k" src="${esc(d.logo)}" alt="" /><img class="w" src="${esc(d.logoW)}" alt="" /><span class="pi"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span></button>`).join('') + (r.note ? `<p class="pl-dn">${esc(r.note)}</p>` : '');
       const draw = () => {
         const r = radio(); if (!r) return;
         const all = (cache[cur] || []).map(parse).filter((t) => !junk(t)).sort((a, b) => b.date - a.date);

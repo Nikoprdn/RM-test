@@ -1,0 +1,16 @@
+---
+// Article à la une : photo pleine largeur, titre posé sur l'image. Ouvre les pages Actualités et catégories.
+import I from './Icons.astro';
+import { u } from '../lib/url.js';
+import { dateLong } from '../lib/data.js';
+const { p } = Astro.props;
+---
+<a href={u(p.path)} class="feat">
+  {p.img && <img class="feat-im" src={p.img.large} srcset={p.img.srcset || undefined} sizes="(max-width: 1100px) 100vw, 1400px" alt={p.img.alt || ''} loading="eager" fetchpriority="high" />}
+  <span class="feat-tx">
+    <span class="feat-k"><b>À la une</b>{p.cat && <span>{p.cat}</span>}<i>{dateLong(p.date)}</i></span>
+    <span class="feat-t">{p.title}</span>
+    {p.excerpt && <span class="feat-e">{p.excerpt}</span>}
+  </span>
+  <span class="feat-go" aria-hidden="true"><I n="right" s={20} /></span>
+</a>
