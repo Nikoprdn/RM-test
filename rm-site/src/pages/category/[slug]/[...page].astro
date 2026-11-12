@@ -20,7 +20,7 @@ const path = '/category/' + cat.slug + '/' + (page.currentPage > 1 ? page.curren
 const pages = Array.from({ length: page.lastPage }, (_, i) => i + 1).filter((n) => n === 1 || n === page.lastPage || Math.abs(n - page.currentPage) <= 2);
 ---
 <Base title={`${name}${page.currentPage > 1 ? ' — page ' + page.currentPage : ''} — Radio Monaco`} description={`Toute l’actualité ${name} par la rédaction de Radio Monaco.`} path={path}>
-  <div class="wrap">
+  <div class="wrap actu">
     <header class="page-hd">
       <nav class="crumbs" aria-label="Fil d’Ariane"><a href={u('/')}>Accueil</a><span class="sep">/</span><span>Actualités</span></nav>
       <h1 class="h1"><b>{name}</b>{page.currentPage > 1 && <span style="font-weight:300"> · page {page.currentPage}</span>}</h1>

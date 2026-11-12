@@ -8,10 +8,10 @@ import { STATIONS } from '../lib/stations.js';
 import { getPlaylist, metaId } from '../lib/data.js';
 const mc = STATIONS[0], nm = STATIONS[3];
 const snap = await getPlaylist([mc, nm]);
-const dep = (i) => ({ i, name: STATIONS[i].name, logo: asset(STATIONS[i].logoInk) });
+const dep = (i) => ({ i, name: STATIONS[i].name, logo: asset(STATIONS[i].logo) });
 const radios = [
-  { key: mc.key, name: 'The Sound of Monte-Carlo', h: ['The Sound of', 'Monte-Carlo.'], lead: 'La playlist Radio Monaco à découvrir sans modération.', color: mc.color, id: metaId(mc.stream), departs: [dep(0), dep(1)], mark: asset(mc.cover), logo: asset(mc.logoInk), note: 'Même playlist à Monte-Carlo et à Paris. Paris ajoute l’info de Paris et d’Île-de-France.' },
-  { key: nm.key, name: 'Night Mood', h: ['La playlist', 'Night Mood.'], lead: 'House, pop et chill-out : la sélection de nuit de Radio Monaco, 24 h/24.', color: nm.color, id: metaId(nm.stream), departs: [dep(3)], mark: asset(nm.cover), logo: asset(nm.logoInk), note: '' }
+  { key: mc.key, sw: 'Monte-Carlo & Paris', name: 'The Sound of Monte-Carlo', h: ['The Sound of', 'Monte-Carlo.'], lead: 'La playlist Radio Monaco à découvrir sans modération.', color: mc.color, id: metaId(mc.stream), departs: [dep(0), dep(1)], mark: asset(mc.cover), logo: asset(mc.logoInk), note: 'Même playlist à Monte-Carlo et à Paris. Paris ajoute l’info de Paris et d’Île-de-France.' },
+  { key: nm.key, sw: 'Night Mood', name: 'Night Mood', h: ['La playlist', 'Night Mood.'], lead: 'House, pop et chill-out : la sélection de nuit de Radio Monaco, 24 h/24.', color: nm.color, id: metaId(nm.stream), departs: [dep(3)], mark: asset(nm.cover), logo: asset(nm.logoInk), note: '' }
 ];
 ---
 <Base title="The Sound of Monte-Carlo : la playlist — Radio Monaco" description="Les titres passés sur The Sound of Monte-Carlo, à Monte-Carlo et à Paris : heure de passage, artiste et pochette, mis à jour en direct." path="/playlist/">
@@ -22,7 +22,7 @@ const radios = [
       <h1 class="h1" id="pl-h1">The Sound of <b>Monte-Carlo.</b></h1>
       <p class="lead" id="pl-lead">La playlist Radio Monaco à découvrir sans modération.</p>
       <div class="pl-sw" role="tablist" aria-label="Choisir la playlist">
-        {radios.map((r, i) => <button class:list={['pl-swb', { on: i === 0 }]} type="button" role="tab" aria-selected={i === 0 ? 'true' : 'false'} data-pl-sw={r.key} style={`--c:${r.color}`}><img src={r.logo} alt={r.name} /></button>)}
+        {radios.map((r, i) => <button class:list={['pl-swb', { on: i === 0 }]} type="button" role="tab" aria-selected={i === 0 ? 'true' : 'false'} data-pl-sw={r.key} style={`--c:${r.color}`}><i></i><span>{r.sw}</span></button>)}
       </div>
     </header>
 
@@ -43,7 +43,7 @@ const radios = [
       if (stopPl) stopPl();
       const el = document.getElementById('pl-data'); if (!el) { stopPl = null; return; }
       const D = JSON.parse(el.textContent); const ac = new AbortController(); const sig = { signal: ac.signal }; let timer = 0;
-      stopPl = () => { ac.abort(); clearInterval(timer); };
+      stopPl = () => { ac.abort(); clearInterval(timer); document.documentElement.classList.remove('pl-night'); };
       const cache = D.snap; const radio = () => D.radios.find((r) => r.key === cur) || D.radios[0];
       let cur = (D.radios.find((r) => '#' + r.key === location.hash) || D.radios[0]).key;
       const open = new Set(); // heures dépliées, conservées entre deux mises à jour
@@ -169,7 +169,7 @@ const nice = (x) => { const k = (x || '').indexOf(' ('); return k > 0 ? nice1(x.
       };
       // bascule d'univers : The Sound of Monte-Carlo ↔ Night Mood
       const skin = () => { const r = radio(); const nmode = r.key === 'nightmood';
-        document.querySelector('.pl-wrap').classList.toggle('nm', nmode); if (B) B.classList.toggle('nm', nmode);
+        document.querySelector('.pl-wrap').classList.toggle('nm', nmode); if (B) B.classList.toggle('nm', nmode); document.documentElement.classList.toggle('pl-night', nmode);
         document.querySelector('.pl-wrap').style.setProperty('--c', r.color);
         document.getElementById('pl-h1').innerHTML = esc(r.h[0]) + ' <b>' + esc(r.h[1]) + '</b>'; document.getElementById('pl-lead').textContent = r.lead;
         document.querySelectorAll('[data-pl-sw]').forEach((b) => { const on = b.dataset.plSw === r.key; b.classList.toggle('on', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); }); };

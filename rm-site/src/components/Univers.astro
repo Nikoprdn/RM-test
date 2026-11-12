@@ -22,7 +22,7 @@ const bandsLabel = (bands) => bands.map((b) => (b.city ? b.city + ' ' : '') + b.
             <span class="uxh"><img class="uxl" src={asset(r.logo)} alt={r.departs ? r.name : `Radio Monaco ${r.name}`} width="128" height="46" /><span class="uxpl" aria-hidden="true"><I n="pp" /></span></span>
             <span class="uxr" aria-hidden="true"></span>
             <span class="uxlv"><span class="live-dot"></span><span data-ux-status>En direct</span></span>
-              {r.local && <span class="uxlo">{r.same ? 'Le même programme, avec ' : 'Avec '}<b>{r.local}</b></span>}
+              <span class="uxlo">{r.local || ''}</span>
             {r.departs ? (
               <span class="uxf uxd" aria-label="Deux départs">
                 {r.departs.map((d) => (
@@ -51,7 +51,7 @@ const bandsLabel = (bands) => bands.map((b) => (b.city ? b.city + ' ' : '') + b.
         </article>
       ))}
     </div>
-    <span class="uxsm" aria-hidden="true"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" /></svg>Même programme</span>
+    <span class="uxbr" aria-hidden="true"><i>Un programme · deux départs</i></span>
     <div class="uvtop" aria-hidden="true"></div>
     <div class="uvtitle">
       <p class="eb uveb" style="margin:0 0 18px;font-size:12px;font-weight:500;letter-spacing:.24em;text-transform:uppercase">{eyebrow}</p>
