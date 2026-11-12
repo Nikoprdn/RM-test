@@ -12,7 +12,7 @@ body{background:var(--bg);color:var(--ink)}
 .hdr{position:sticky;top:0;z-index:60;height:84px;color:var(--ink);background:rgba(246,243,238,.88);border-bottom:1px solid rgba(20,18,24,.08);backdrop-filter:blur(20px) saturate(1.4);-webkit-backdrop-filter:blur(20px) saturate(1.4)}
 .hdr-in{max-width:1400px;height:100%;margin:0 auto;padding:0 var(--pad);display:flex;align-items:center;justify-content:space-between;gap:32px}
 .hdr .lg{display:flex;align-items:center;flex-shrink:0}
-.hdr .lg img{height:36px;width:auto;display:block}
+.hdr .lg img{height:54px;width:auto;display:block}
 .hdr .lg .w{display:none;filter:drop-shadow(0 2px 14px rgba(0,0,0,.45))}
 .hdr .nav{display:flex;align-items:center;gap:30px;font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase}
 .hdr .hbtn{display:inline-flex;align-items:center;gap:11px;height:44px;padding:0 20px 0 17px;border:0;border-radius:999px;background:var(--ink);color:#fff;font:inherit;font-size:14px;font-weight:500;cursor:pointer}
@@ -777,3 +777,40 @@ body:has(.pl-bg){background:var(--bg)}
   .ntf{top:96px;transform:none;left:16px;right:16px;width:auto}
   .ntf-i:not(:first-child){display:none}
 }
+
+/* ===== Monte-Carlo et Paris : la même radio, avec l'info locale de chaque départ ===== */
+.uxsm{position:absolute;z-index:4;left:25%;bottom:calc(104px + 346px);transform:translate(-50%,50%);display:inline-flex;align-items:center;gap:7px;height:30px;padding:0 13px 0 11px;border-radius:99px;background:#fff;color:#141218;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;box-shadow:0 10px 24px -10px rgba(0,0,0,.6);pointer-events:none;transition:opacity .3s ease}
+.uxsm svg{color:#E4032E}
+.uvrow:hover ~ .uxsm{opacity:0}
+.uxlo{display:block;min-height:2.7em;font-size:13px;line-height:1.35;color:rgba(255,255,255,.82)}
+.uxlo b{font-weight:600;color:#fff}
+@media (max-width:900px){
+  .uxsm{display:none}
+  .uxlo{order:2;margin-top:10px;min-height:0}
+}
+/* Night Mood : pochettes sous un voile violet */
+.ux[data-ux="3"] .uxqr img{filter:grayscale(.35) sepia(.6) hue-rotate(250deg) saturate(1.5)}
+
+/* ===== Page Playlist : bascule d'univers et boutons d'écoute au logo de chaque départ ===== */
+.pl-sw{display:inline-flex;gap:6px;margin-top:28px;padding:6px;border-radius:20px;background:rgba(20,18,24,.06)}
+.pl-swb{display:flex;align-items:center;height:58px;padding:0 20px;border:0;border-radius:15px;background:transparent;cursor:pointer;opacity:.5;filter:grayscale(1);transition:opacity .3s,filter .3s,background .3s,box-shadow .3s}
+.pl-swb img{height:34px;width:auto;display:block}
+.pl-swb:hover{opacity:.8}
+.pl-swb.on{opacity:1;filter:none;background:#fff;box-shadow:0 6px 18px -10px rgba(20,18,24,.4),inset 0 -3px 0 var(--c)}
+.pl-dep{display:inline-flex;align-items:center;gap:14px;height:56px;padding:0 8px 0 16px;border:0;border-radius:99px;background:#fff;cursor:pointer;box-shadow:0 0 0 1px rgba(20,18,24,.08),0 10px 24px -14px rgba(20,18,24,.4);transition:transform .35s cubic-bezier(.16,.84,.12,1)}
+.pl-dep:hover{transform:translateY(-2px)}
+.pl-dep img{height:30px;width:auto;display:block}
+.pl-dep .pi{width:40px;height:40px;border-radius:50%;background:var(--c);color:#fff;display:inline-flex;align-items:center;justify-content:center}
+.pl-dn{flex-basis:100%;margin:2px 0 0;font-size:13px;color:var(--muted)}
+.pl-wrap.nm .pl-c,.pl-wrap.nm .pl-nc{filter:grayscale(.35) sepia(.6) hue-rotate(250deg) saturate(1.5)}
+.pl-wrap.nm .pl-nk .live-dot{background:#8A5AA1}
+.pl-bg.nm::before{content:"";position:absolute;inset:0;z-index:1;background:#8A5AA1;mix-blend-mode:color;opacity:.8}
+@media (max-width:640px){
+  .pl-sw{display:flex;margin-top:22px}
+  .pl-swb{flex:1;justify-content:center;height:52px;padding:0 10px}.pl-swb img{height:28px}
+  .pl-dep{flex:1 1 0;justify-content:space-between;height:52px;padding:0 6px 0 14px}.pl-dep img{height:25px}.pl-dep .pi{width:38px;height:38px}
+}
+
+/* logo d'en-tête agrandi : on resserre le menu sur les écrans moyens pour que tout tienne */
+@media (max-width:1280px) and (min-width:1001px){.hdr .lg img{height:46px}.hdr .nav{gap:20px;letter-spacing:.13em}.hdr-in{gap:18px}}
+@media (max-width:1040px) and (min-width:1001px){.hdr .lg img{height:42px}.hdr .nav{gap:15px;font-size:12px}}

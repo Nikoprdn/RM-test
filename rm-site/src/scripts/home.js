@@ -47,9 +47,10 @@ function init() {
   ['rm:state', 'rm:meta', 'rm:onair'].forEach((e) => document.addEventListener(e, univers, sig)); univers();
 
   // ---------- playlist dans le volet The Sound of Monte-Carlo (historique Infomaniak) ----------
-  const plBoxes = $$('[data-ux-pl]'); const plBox = plBoxes[0];
-  if (plBox) {
-    const st = window.RM ? window.RM.stations[+plBox.dataset.uxPl] : null;
+  const plAll = $$('[data-ux-pl]');
+  [...new Set(plAll.map((b) => b.dataset.uxPl))].forEach((plId) => {
+    const plBoxes = plAll.filter((b) => b.dataset.uxPl === plId); const plBox = plBoxes[0];
+    const st = window.RM ? window.RM.stations[+plId] : null;
     const id = st ? new URL(st.stream).hostname.split('.')[0] : 'radiomonaco';
     const esc = (x) => String(x || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     const nice1 = (x) => { x = (x || '').replace(/\s+/g, ' ').trim(); const l = x.replace(/[^A-Za-zÀ-ÿ]/g, ''); const up = l.replace(/[^A-ZÀ-Þ]/g, '').length; if (l.length && up / l.length > 0.6) x = x.toLowerCase().replace(/(^|[\s(\-&/"«])([a-zà-ÿ])/g, (m, a, b) => a + b.toUpperCase()); return x.replace(/ (Feat|Ft)\.? /gi, ' feat. ').replace(/ X /g, ' x '); };
@@ -80,7 +81,7 @@ const nice = (x) => { const k = (x || '').indexOf(' ('); return k > 0 ? nice1(x.
       } catch (e) {}
     };
     loadPl(); every(30000, () => { if (!document.hidden) loadPl(); });
-  }
+  });
 
   // ---------- podcasts ----------
   const dataEl = document.getElementById('pz-data');

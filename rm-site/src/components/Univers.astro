@@ -8,6 +8,7 @@ const { eyebrow = 'Nos radios', h1 = false, id = 'radios' } = Astro.props;
 const H = h1 ? 'h1' : 'h2';
 // résumé des fréquences sur une ligne (le détail par ville apparaît au survol)
 const resume = (bands) => { const fm = [...new Set(bands.filter((b) => /FM/.test(b.f)).map((b) => b.f.replace(/\s*FM/, '')))]; const o = bands.filter((b) => !/FM/.test(b.f)).map((b) => (b.f === 'Web' ? 'Site & appli' : b.f)); return [fm.length ? 'FM ' + fm.join(' · ') : '', ...o].filter(Boolean).join('  ·  '); };
+const plHref = (r) => u('/playlist/') + (r.key === 'nightmood' ? '#nightmood' : '');
 const bandsLabel = (bands) => bands.map((b) => (b.city ? b.city + ' ' : '') + b.f).join(', ');
 ---
   <section id={id} data-full data-reveal data-snap class="uvs">
@@ -21,6 +22,7 @@ const bandsLabel = (bands) => bands.map((b) => (b.city ? b.city + ' ' : '') + b.
             <span class="uxh"><img class="uxl" src={asset(r.logo)} alt={r.departs ? r.name : `Radio Monaco ${r.name}`} width="128" height="46" /><span class="uxpl" aria-hidden="true"><I n="pp" /></span></span>
             <span class="uxr" aria-hidden="true"></span>
             <span class="uxlv"><span class="live-dot"></span><span data-ux-status>En direct</span></span>
+              {r.local && <span class="uxlo">{r.same ? 'Le même programme, avec ' : 'Avec '}<b>{r.local}</b></span>}
             {r.departs ? (
               <span class="uxf uxd" aria-label="Deux départs">
                 {r.departs.map((d) => (
@@ -39,16 +41,17 @@ const bandsLabel = (bands) => bands.map((b) => (b.city ? b.city + ' ' : '') + b.
               <span class="uxt"><span class="uxt1" data-ux-t1>{r.line}</span><span class="uxt2" data-ux-t2>En direct</span></span>
             </span></span></span>
             {r.playlist !== null && (
-              <span class="uxq" data-ux-pl={r.playlist} data-mark={asset('rm-cover-mc.png')} hidden>
+              <span class="uxq" data-ux-pl={r.playlist} data-mark={asset(r.cover)} hidden>
                 <span class="uxqh">La playlist</span>
                 <span class="uxql" data-ux-pll></span>
-                <a class="uxqa" href={u('/playlist/')}>Toute la playlist<I n="right" s={14} /></a>
+                <a class="uxqa" href={plHref(r)}>Toute la playlist<I n="right" s={14} /></a>
               </span>
             )}
           </span>
         </article>
       ))}
     </div>
+    <span class="uxsm" aria-hidden="true"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" /></svg>Même programme</span>
     <div class="uvtop" aria-hidden="true"></div>
     <div class="uvtitle">
       <p class="eb uveb" style="margin:0 0 18px;font-size:12px;font-weight:500;letter-spacing:.24em;text-transform:uppercase">{eyebrow}</p>

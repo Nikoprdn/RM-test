@@ -1,21 +1,29 @@
 ---
-// Playlist de The Sound of Monte-Carlo (départs Monte-Carlo et Paris, même programme) :
-// historique Infomaniak du flux Monte-Carlo, heure de passage, titre, artiste, pochette.
+// Playlists : deux univers entre lesquels on bascule.
+//  - The Sound of Monte-Carlo (départs Monte-Carlo et Paris, même programme) : historique Infomaniak du flux Monte-Carlo ;
+//  - Night Mood : historique Infomaniak du flux Night Mood, pochettes sous un voile violet.
 import Base from '../layouts/Base.astro';
 import { u, asset } from '../lib/url.js';
 import { STATIONS } from '../lib/stations.js';
 import { getPlaylist, metaId } from '../lib/data.js';
-const src = STATIONS[0];
-const snap = await getPlaylist([src]);
-const radio = { key: src.key, name: 'The Sound of Monte-Carlo', color: src.color, id: metaId(src.stream), departs: [0, 1].map((i) => ({ i, name: STATIONS[i].name })) };
+const mc = STATIONS[0], nm = STATIONS[3];
+const snap = await getPlaylist([mc, nm]);
+const dep = (i) => ({ i, name: STATIONS[i].name, logo: asset(STATIONS[i].logoInk) });
+const radios = [
+  { key: mc.key, name: 'The Sound of Monte-Carlo', h: ['The Sound of', 'Monte-Carlo.'], lead: 'La playlist Radio Monaco à découvrir sans modération.', color: mc.color, id: metaId(mc.stream), departs: [dep(0), dep(1)], mark: asset(mc.cover), logo: asset(mc.logoInk), note: 'Même playlist à Monte-Carlo et à Paris. Paris ajoute l’info de Paris et d’Île-de-France.' },
+  { key: nm.key, name: 'Night Mood', h: ['La playlist', 'Night Mood.'], lead: 'House, pop et chill-out : la sélection de nuit de Radio Monaco, 24 h/24.', color: nm.color, id: metaId(nm.stream), departs: [dep(3)], mark: asset(nm.cover), logo: asset(nm.logoInk), note: '' }
+];
 ---
 <Base title="The Sound of Monte-Carlo : la playlist — Radio Monaco" description="Les titres passés sur The Sound of Monte-Carlo, à Monte-Carlo et à Paris : heure de passage, artiste et pochette, mis à jour en direct." path="/playlist/">
   <div class="pl-bg" id="pl-bg" aria-hidden="true"></div>
   <div class="wrap pl-wrap">
     <header class="page-hd">
       <nav class="crumbs"><a href={u('/')}>Accueil</a><span class="sep">/</span><span>Playlist</span></nav>
-      <h1 class="h1">The Sound of <b>Monte-Carlo.</b></h1>
-      <p class="lead">La playlist Radio Monaco à découvrir sans modération.</p>
+      <h1 class="h1" id="pl-h1">The Sound of <b>Monte-Carlo.</b></h1>
+      <p class="lead" id="pl-lead">La playlist Radio Monaco à découvrir sans modération.</p>
+      <div class="pl-sw" role="tablist" aria-label="Choisir la playlist">
+        {radios.map((r, i) => <button class:list={['pl-swb', { on: i === 0 }]} type="button" role="tab" aria-selected={i === 0 ? 'true' : 'false'} data-pl-sw={r.key} style={`--c:${r.color}`}><img src={r.logo} alt={r.name} /></button>)}
+      </div>
     </header>
 
     <div class="pl-bar">
@@ -27,7 +35,7 @@ const radio = { key: src.key, name: 'The Sound of Monte-Carlo', color: src.color
     <p class="pl-note">Les 100 derniers titres diffusés. L’heure est celle de Monaco.</p>
   </div>
 
-  <script type="application/json" id="pl-data" set:html={JSON.stringify({ radio, snap, mark: asset('rm-cover-mc.png') }).replace(/</g, '\\u003c')}></script>
+  <script type="application/json" id="pl-data" set:html={JSON.stringify({ radios, snap }).replace(/</g, '\\u003c')}></script>
   <script>
     // ---------- playlist en direct ----------
     let stopPl = null;
@@ -36,7 +44,8 @@ const radio = { key: src.key, name: 'The Sound of Monte-Carlo', color: src.color
       const el = document.getElementById('pl-data'); if (!el) { stopPl = null; return; }
       const D = JSON.parse(el.textContent); const ac = new AbortController(); const sig = { signal: ac.signal }; let timer = 0;
       stopPl = () => { ac.abort(); clearInterval(timer); };
-      const cache = D.snap; const cur = D.radio.key; const radio = () => D.radio;
+      const cache = D.snap; const radio = () => D.radios.find((r) => r.key === cur) || D.radios[0];
+      let cur = (D.radios.find((r) => '#' + r.key === location.hash) || D.radios[0]).key;
       const open = new Set(); // heures dépliées, conservées entre deux mises à jour
 
       // mise en forme : « DUA LIPA x X - TITRE » → artiste / titre, sans tout en capitales
@@ -72,7 +81,7 @@ const nice = (x) => { const k = (x || '').indexOf(' ('); return k > 0 ? nice1(x.
         lookup(t).then(set);
       }), { rootMargin: '300px 0px' }) : null;
       const coverOf = (t) => t.cover || store[t.raw] || '';
-      const img = (t, cls) => { const src = coverOf(t); return `<img class="${cls}" src="${esc(src || D.mark)}" alt="" loading="lazy" ${src ? '' : `data-need data-raw="${esc(t.raw)}" data-a="${esc(t.artist)}" data-t="${esc(t.title)}"`} />`; };
+      const img = (t, cls) => { const src = coverOf(t); return `<img class="${cls}" src="${esc(src || radio().mark)}" alt="" loading="lazy" ${src ? '' : `data-need data-raw="${esc(t.raw)}" data-a="${esc(t.artist)}" data-t="${esc(t.title)}"`} />`; };
 
       // ---------- fond : mosaïque des pochettes passées à l'antenne ----------
       const B = document.getElementById('pl-bg'); let bgCols = '', shown = new Set(), bgT = 0;
@@ -121,7 +130,8 @@ const nice = (x) => { const k = (x || '').indexOf(' ('); return k > 0 ? nice1(x.
 
       const q = document.getElementById('pl-q');
       const row = (t, day) => `<li class="pl-r"><time class="pl-t" datetime="${new Date(t.date * 1000).toISOString()}">${hhmm(t.date)}</time>${img(t, 'pl-c')}<span class="pl-x"><span class="pl-tt">${esc(t.title)}</span><span class="pl-a">${esc(t.artist)}${day && dayLabel(t.date) ? ' · ' + esc(dayLabel(t.date)) : ''}</span></span></li>`;
-      const listen = (r) => r.departs.map((d) => `<button class="btn-play" type="button" data-rm-live="${d.i}" style="--c:${r.color}"><span class="pi"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span><span class="pl-lv">Écouter </span>${esc(d.name)}</span></button>`).join('');
+      // un bouton d'écoute par départ, avec son logo
+      const listen = (r) => r.departs.map((d) => `<button class="pl-dep" type="button" data-rm-live="${d.i}" style="--c:${r.color}" aria-label="Écouter ${esc(d.name)}"><img src="${esc(d.logo)}" alt="" /><span class="pi"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span></button>`).join('') + (r.note ? `<p class="pl-dn">${esc(r.note)}</p>` : '');
       const draw = () => {
         const r = radio(); if (!r) return;
         const all = (cache[cur] || []).map(parse).filter((t) => !junk(t)).sort((a, b) => b.date - a.date);
@@ -152,9 +162,23 @@ const nice = (x) => { const k = (x || '').indexOf(' ('); return k > 0 ? nice1(x.
 
       const load = async () => {
         const r = radio(); if (!r) return;
-        try { const res = await fetch(`https://metadata.infomaniak.com/api/radio/${r.id}/metadata-all-cover`, { cache: 'no-store', ...sig }); const j = await res.json(); if (Array.isArray(j.data)) cache[cur] = j.data.map((x) => [x.date, x.duration || 0, x.title || '', x.cover || '']); } catch (e) {}
+        const k = cur;
+        try { const res = await fetch(`https://metadata.infomaniak.com/api/radio/${r.id}/metadata-all-cover`, { cache: 'no-store', ...sig }); const j = await res.json(); if (Array.isArray(j.data)) cache[k] = j.data.map((x) => [x.date, x.duration || 0, x.title || '', x.cover || '']); } catch (e) {}
+        if (k !== cur) return;
         draw(); setTimeout(warm, 2500);
       };
+      // bascule d'univers : The Sound of Monte-Carlo ↔ Night Mood
+      const skin = () => { const r = radio(); const nmode = r.key === 'nightmood';
+        document.querySelector('.pl-wrap').classList.toggle('nm', nmode); if (B) B.classList.toggle('nm', nmode);
+        document.querySelector('.pl-wrap').style.setProperty('--c', r.color);
+        document.getElementById('pl-h1').innerHTML = esc(r.h[0]) + ' <b>' + esc(r.h[1]) + '</b>'; document.getElementById('pl-lead').textContent = r.lead;
+        document.querySelectorAll('[data-pl-sw]').forEach((b) => { const on = b.dataset.plSw === r.key; b.classList.toggle('on', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); }); };
+      document.querySelectorAll('[data-pl-sw]').forEach((b) => b.addEventListener('click', () => {
+        if (b.dataset.plSw === cur) return; cur = b.dataset.plSw; open.clear(); warmed = false; bgCols = ''; q.value = '';
+        history.replaceState(history.state, '', cur === D.radios[0].key ? location.pathname : '#' + cur);
+        skin(); draw(); load();
+      }, sig));
+      skin();
       q.addEventListener('input', draw, sig);
       document.addEventListener('visibilitychange', () => { if (!document.hidden) load(); }, sig);
       timer = setInterval(() => { if (!document.hidden) load(); }, 30000);
