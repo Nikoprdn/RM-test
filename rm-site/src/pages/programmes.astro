@@ -1,34 +1,113 @@
 ---
+// Programme du jour en diapositives : une émission à la fois, une frise des heures pour naviguer.
 import Base from '../layouts/Base.astro';
+import I from '../components/Icons.astro';
 import { u } from '../lib/url.js';
 import { getToday } from '../lib/data.js';
 const today = await getToday();
-const hm = (iso) => { const d = new Date(iso); return String(d.getHours()).padStart(2, '0') + 'h' + String(d.getMinutes()).padStart(2, '0'); };
+const hm = (iso) => { const d = new Date(iso); const m = d.getMinutes(); return d.getHours() + 'h' + (m ? String(m).padStart(2, '0') : ''); };
 ---
 <Base title="Programme du jour — Radio Monaco" description="Qui est à l’antenne aujourd’hui sur Radio Monaco : le programme heure par heure." path="/programmes/">
-  <div class="wrap" style="max-width:980px">
-    <header class="page-hd"><nav class="crumbs"><a href={u('/')}>Accueil</a><span class="sep">/</span><span>Programme</span></nav><h1 class="h1">Aujourd’hui sur <b>Radio Monaco.</b></h1><p class="lead" id="pg-date">Le programme heure par heure, mis à jour en direct.</p></header>
-    <div class="sched" id="sched">
-      {today.map((x) => (
-        <div class="slot" data-start={x.start} data-end={x.end}>
-          <span class="h">{hm(x.start)}<i>→ {hm(x.end)}</i></span>
-          {x.img ? <img src={x.img} alt="" loading="lazy" /> : <span></span>}
-          <span><b>{x.name}</b><span class="live" hidden><span class="live-dot"></span>En ce moment</span>{x.desc && <p>{x.desc}</p>}</span>
-        </div>
+  <div class="wrap pg">
+    <header class="page-hd pg-hd">
+      <div>
+        <nav class="crumbs" aria-label="Fil d’Ariane"><a href={u('/')}>Accueil</a><span class="sep">/</span><span>Programme</span></nav>
+        <h1 class="h1">Aujourd’hui sur <b>Radio Monaco.</b></h1>
+        <p class="lead" id="pg-date">Le programme heure par heure, mis à jour en direct.</p>
+      </div>
+      <button class="btn-play pg-play" type="button" data-rm-live="0"><span class="pi"><I n="play" /></span>Écouter le direct</button>
+    </header>
+
+    <div class="pg-rail" id="pg-rail">
+      {today.map((x, i) => (
+        <button class="pg-chip" type="button" data-pg-go={i}><b>{hm(x.start)}</b><span>{x.name}</span></button>
       ))}
     </div>
-    <button class="btn-play" type="button" data-rm-live="0"><span class="pi"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span>Écouter le direct</button>
+
+    <div class="pg-stage">
+      <button class="pg-nav" type="button" id="pg-prev" aria-label="Émission précédente"><I n="left" s={20} /></button>
+      <div class="pg-slides" id="pg-slides">
+        {today.map((x, i) => (
+          <article class="pg-s" data-pg-s={i}>
+            <span class="pg-im">{x.img && <img src={x.img} alt="" loading={i < 2 ? 'eager' : 'lazy'} />}</span>
+            <div class="pg-tx">
+              <span class="pg-k" data-pg-k>{hm(x.start)} → {hm(x.end)}</span>
+              <h2 class="pg-n">{x.name}</h2>
+              {x.desc && <p class="pg-d">{x.desc}</p>}
+              <span class="pg-p" data-pg-p hidden><i></i></span>
+            </div>
+          </article>
+        ))}
+      </div>
+      <button class="pg-nav" type="button" id="pg-next" aria-label="Émission suivante"><I n="right" s={20} /></button>
+    </div>
   </div>
+
   <script>
-    // la grille est relue en direct (mêmes données que le lecteur) et l'émission en cours est mise en avant
-    const esc = (s) => String(s || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-    const hm = (iso) => { const d = new Date(iso); return String(d.getHours()).padStart(2, '0') + 'h' + String(d.getMinutes()).padStart(2, '0'); };
-    function draw() {
-      const box = document.getElementById('sched'); const o = window.RM && window.RM.onair; if (!box || !o || !o.list || !o.list.length) return;
-      const now = Date.now();
-      box.innerHTML = o.list.map((x) => { const on = x.s <= now && now < x.e; const past = x.e <= now; return `<div class="slot${on ? ' now' : ''}${past ? ' past' : ''}"><span class="h">${hm(x.start)}<i>→ ${hm(x.end)}</i></span>${x.img ? `<img src="${esc(x.img)}" alt="" loading="lazy">` : '<span></span>'}<span><b>${esc(x.name)}</b>${on ? '<span class="live"><span class="live-dot"></span>En ce moment</span>' : ''}${x.desc ? `<p>${esc(x.desc)}</p>` : ''}</span></div>`; }).join('');
-      const d = new Date(); document.getElementById('pg-date').textContent = d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }).replace(/^./, (c) => c.toUpperCase()) + ' · mis à jour en direct.';
+    // Une diapositive par émission. La grille est relue en direct (mêmes données que le lecteur) :
+    // l'émission en cours est mise en avant et le défilement se place dessus à l'ouverture.
+    let stopPg = null;
+    function initProg() {
+      if (stopPg) stopPg();
+      const slides = document.getElementById('pg-slides'); if (!slides) { stopPg = null; return; }
+      const rail = document.getElementById('pg-rail'); const ac = new AbortController(); const sig = { signal: ac.signal };
+      let timer = 0; stopPg = () => { ac.abort(); clearInterval(timer); };
+      const esc = (s) => String(s || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+      const hm = (t) => { const d = new Date(t); const m = d.getMinutes(); return d.getHours() + 'h' + (m ? String(m).padStart(2, '0') : ''); };
+      let placed = false;
+
+      const go = (i, smooth = true) => {
+        const el = slides.children[i]; if (!el) return;
+        slides.scrollTo({ left: el.offsetLeft - slides.offsetLeft, behavior: smooth ? 'smooth' : 'auto' });
+      };
+      const current = () => {
+        const x = slides.getBoundingClientRect().left + slides.clientWidth / 2;
+        let best = 0, d = Infinity;
+        [...slides.children].forEach((el, i) => { const r = el.getBoundingClientRect(); const c = Math.abs(r.left + r.width / 2 - x); if (c < d) { d = c; best = i; } });
+        return best;
+      };
+      const mark = () => {
+        const i = current();
+        [...rail.children].forEach((c, k) => c.classList.toggle('on', k === i));
+        const c = rail.children[i]; if (c) c.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+        document.getElementById('pg-prev').disabled = i === 0;
+        document.getElementById('pg-next').disabled = i === slides.children.length - 1;
+      };
+
+      // état de chaque diapositive : passée, en cours (avec la progression), à venir
+      const paint = () => {
+        const o = window.RM && window.RM.onair; const now = Date.now();
+        const list = o && o.list && o.list.length ? o.list : null;
+        [...slides.children].forEach((el, i) => {
+          const x = list ? list[i] : null; if (!x) return;
+          const on = x.s <= now && now < x.e, past = x.e <= now;
+          el.classList.toggle('now', on); el.classList.toggle('past', past);
+          const k = el.querySelector('[data-pg-k]'); const p = el.querySelector('[data-pg-p]');
+          if (on) {
+            const left = Math.max(1, Math.round((x.e - now) / 60000));
+            k.innerHTML = `<span class="live-dot"></span>En ce moment · encore ${left} min`;
+            p.hidden = false; p.firstElementChild.style.width = Math.min(100, ((now - x.s) / (x.e - x.s)) * 100).toFixed(1) + '%';
+          } else {
+            k.textContent = hm(x.s) + ' → ' + hm(x.e) + (past ? ' · terminé' : '');
+            p.hidden = true;
+          }
+          rail.children[i] && rail.children[i].classList.toggle('done', past);
+        });
+        const d = new Date();
+        document.getElementById('pg-date').textContent = d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }).replace(/^./, (c) => c.toUpperCase()) + ' · mis à jour en direct.';
+        if (!placed && list) { const i = list.findIndex((x) => x.s <= now && now < x.e); if (i >= 0) { placed = true; go(i, false); } }
+        mark();
+      };
+
+      document.getElementById('pg-prev').addEventListener('click', () => go(current() - 1), sig);
+      document.getElementById('pg-next').addEventListener('click', () => go(current() + 1), sig);
+      [...rail.children].forEach((c, i) => c.addEventListener('click', () => go(i), sig));
+      slides.addEventListener('scroll', () => { clearTimeout(slides._t); slides._t = setTimeout(mark, 120); }, { passive: true, ...sig });
+      document.addEventListener('rm:onair', paint, sig);
+      timer = setInterval(paint, 30000);
+      paint();
     }
-    document.addEventListener('rm:onair', draw); document.addEventListener('astro:page-load', draw);
+    document.addEventListener('astro:page-load', initProg);
+    document.addEventListener('astro:before-swap', () => { if (stopPg) { stopPg(); stopPg = null; } });
   </script>
 </Base>

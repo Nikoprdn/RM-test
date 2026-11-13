@@ -130,8 +130,6 @@ const nice = (x) => { const k = (x || '').indexOf(' ('); return k > 0 ? nice1(x.
 
       const q = document.getElementById('pl-q');
       const row = (t, day) => `<li class="pl-r"><time class="pl-t" datetime="${new Date(t.date * 1000).toISOString()}">${hhmm(t.date)}</time>${img(t, 'pl-c')}<span class="pl-x"><span class="pl-tt">${esc(t.title)}</span><span class="pl-a">${esc(t.artist)}${day && dayLabel(t.date) ? ' · ' + esc(dayLabel(t.date)) : ''}</span></span></li>`;
-      // un bouton d'écoute par départ, avec son logo
-      const listen = (r) => r.departs.map((d) => `<button class="pl-dep" type="button" data-rm-live="${d.i}" style="--c:${r.color}" aria-label="Écouter ${esc(d.name)}"><span class="pi"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><img class="k" src="${esc(d.logo)}" alt="" /><img class="w" src="${esc(d.logoW)}" alt="" /></button>`).join('') + (r.note ? `<p class="pl-dn">${esc(r.note)}</p>` : '');
       const draw = () => {
         const r = radio(); if (!r) return;
         const all = (cache[cur] || []).map(parse).filter((t) => !junk(t)).sort((a, b) => b.date - a.date);
@@ -140,7 +138,7 @@ const nice = (x) => { const k = (x || '').indexOf(' ('); return k > 0 ? nice1(x.
         const past = all.filter((t) => t !== now);
         const N = document.getElementById('pl-now'), L = document.getElementById('pl-list');
         N.style.setProperty('--c', r.color);
-        N.innerHTML = now && !term ? `${img(now, 'pl-nc')}<div class="pl-nx"><span class="pl-nk"><span class="live-dot"></span><span>En ce moment</span><i>depuis ${hhmm(now.date)}</i></span><span class="pl-nt">${esc(now.title)}</span><span class="pl-na">${esc(now.artist)}</span></div><div class="pl-nb">${listen(r)}</div>` : '';
+        N.innerHTML = now && !term ? `${img(now, 'pl-nc')}<div class="pl-nx"><span class="pl-nk"><span class="live-dot"></span><span>En ce moment</span><i>depuis ${hhmm(now.date)}</i></span><span class="pl-nt">${esc(now.title)}</span><span class="pl-na">${esc(now.artist)}</span></div>` : '';
         N.hidden = !(now && !term);
         if (!all.length) { L.innerHTML = `<p class="pl-empty">La playlist n’est pas disponible pour le moment.</p>`; return; }
         if (term) {
@@ -173,19 +171,10 @@ const nice = (x) => { const k = (x || '').indexOf(' ('); return k > 0 ? nice1(x.
         document.querySelector('.pl-wrap').style.setProperty('--c', r.color);
         document.getElementById('pl-h1').innerHTML = esc(r.h[0]) + ' <b>' + esc(r.h[1]) + '</b>'; document.getElementById('pl-lead').textContent = r.lead;
         document.querySelectorAll('[data-pl-sw]').forEach((b) => { const on = b.dataset.plSw === r.key; b.classList.toggle('on', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); }); };
-      // le passage d'un univers à l'autre se fait en fondu : pochettes, titre et liste s'effacent,
-      // la page bascule de couleur, puis tout revient avec la mosaïque de l'autre radio
-      const W = document.querySelector('.pl-wrap'); let swapping = false;
       document.querySelectorAll('[data-pl-sw]').forEach((b) => b.addEventListener('click', () => {
-        if (b.dataset.plSw === cur || swapping) return;
-        swapping = true; W.classList.add('sw'); if (B) B.classList.add('sw');
-        document.querySelectorAll('[data-pl-sw]').forEach((x) => { const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-selected', on ? 'true' : 'false'); });
-        setTimeout(() => {
-          cur = b.dataset.plSw; open.clear(); warmed = false; bgCols = ''; q.value = '';
-          history.replaceState(history.state, '', cur === D.radios[0].key ? location.pathname : '#' + cur);
-          skin(); draw(); load();
-          requestAnimationFrame(() => { W.classList.remove('sw'); if (B) B.classList.remove('sw'); swapping = false; });
-        }, 420);
+        if (b.dataset.plSw === cur) return; cur = b.dataset.plSw; open.clear(); warmed = false; bgCols = ''; q.value = '';
+        history.replaceState(history.state, '', cur === D.radios[0].key ? location.pathname : '#' + cur);
+        skin(); draw(); load();
       }, sig));
       skin();
       q.addEventListener('input', draw, sig);

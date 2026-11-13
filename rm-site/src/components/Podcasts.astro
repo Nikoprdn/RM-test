@@ -17,7 +17,8 @@ const when = (iso) => { const d = new Date(iso + 'Z'), t = new Date(); const dif
     <div class="pzw">
       <div class="pzleft">
         <p class="eb" style="margin:0 0 18px;font-size:12px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:#6A6570">{eyebrow}</p>
-        <H class="pzh">{h1 ? <><span class="m"><span>Plus de 20 rendez-vous,</span></span> <span class="m"><span style="font-weight:600">à réécouter.</span></span></> : <><span class="m"><span>Vos rendez-vous préférés,</span></span> <span class="m"><span style="font-weight:600">à la demande.</span></span></>}</H>
+        <H class="pzh">{h1 ? <><span class="m"><span>Nos</span></span> <span class="m"><span style="font-weight:600">podcasts.</span></span></> : <><span class="m"><span>Vos rendez-vous préférés,</span></span> <span class="m"><span style="font-weight:600">à la demande.</span></span></>}</H>
+        {h1 && <p class="pzlead">Plus de 20 rendez-vous, à réécouter.</p>}
         {feat && (
           <div class="pzfc rise" id="pz-feat" style={`--c:${feat.s.color};--d:.2s`}>
             <button class="pzfcv" type="button" data-rm-ep={epJSON(feat)} aria-label={`Écouter : ${feat.s.name}`}><img src={ausImg(feat.e.img, true)} alt="" loading="lazy" /><span class="pzfcp"><I n="play" s={22} /></span></button>
