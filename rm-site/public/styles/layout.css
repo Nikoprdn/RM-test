@@ -807,6 +807,14 @@ body:has(.pl-bg){background:var(--bg)}
 .pl-dep img{height:24px;width:auto;display:block}
 .pl-dep .k{display:none}
 .pl-dn{flex-basis:100%;margin:6px 0 0;font-size:13px;color:var(--muted)}
+/* bascule d'un univers à l'autre : fondu du titre, de la carte, de la liste et de la mosaïque */
+#pl-h1,#pl-lead,.pl-now,#pl-list{transition:opacity .4s ease,transform .5s cubic-bezier(.16,.84,.12,1)}
+.pl-wrap.sw #pl-h1,.pl-wrap.sw #pl-lead{opacity:0}
+.pl-wrap.sw .pl-now,.pl-wrap.sw #pl-list{opacity:0;transform:translateY(10px)}
+.pl-bg{transition:opacity .45s ease}
+.pl-bg.sw{opacity:0}
+@media (prefers-reduced-motion:reduce){#pl-h1,#pl-lead,.pl-now,#pl-list,.pl-bg{transition:none}}
+
 /* Night Mood : la page passe en nuit */
 html{transition:background-color .6s ease}
 html.pl-night body{background:#0f0b15;transition:background-color .6s ease}
@@ -814,14 +822,14 @@ html.pl-night .rm:has(.pl-bg) .ftr{background:#0f0b15}
 html.pl-night .ftr{--ink:#fff;--muted:rgba(255,255,255,.6);--line:rgba(255,255,255,.14);color:#fff}
 /* l'en-tête suit la nuit : verre violet sombre, logo blanc */
 html.pl-night .hdr{color:#fff;background:rgba(30,19,44,.72);border-bottom-color:rgba(255,255,255,.1)}
-html.pl-night .hdr .lg .w{display:block}
+html.pl-night .hdr .lg .w{display:block;filter:brightness(0) invert(1) drop-shadow(0 2px 14px rgba(0,0,0,.45))}
 html.pl-night .hdr .lg .k{display:none}
 html.pl-night .hdr .hbtn{background:#fff;color:#141218}
 html.pl-night .nav .ind{background:#b88ad0}
 html.pl-night .prog{background:#b88ad0}
 @media (max-width:1000px){
   html.pl-night .hdr.open{background:#0f0b15;color:#fff;border-bottom-color:rgba(255,255,255,.12)}
-  html.pl-night .hdr.open .lg .w{display:block}
+  html.pl-night .hdr.open .lg .w{display:block;filter:brightness(0) invert(1)}
   html.pl-night .hdr.open .lg .k{display:none}
   html.pl-night .hdr.open .hbtn{background:#fff;color:#141218}
   html.pl-night .hdr.open .nav{background:#0f0b15;color:#fff}

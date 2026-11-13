@@ -173,10 +173,19 @@ const nice = (x) => { const k = (x || '').indexOf(' ('); return k > 0 ? nice1(x.
         document.querySelector('.pl-wrap').style.setProperty('--c', r.color);
         document.getElementById('pl-h1').innerHTML = esc(r.h[0]) + ' <b>' + esc(r.h[1]) + '</b>'; document.getElementById('pl-lead').textContent = r.lead;
         document.querySelectorAll('[data-pl-sw]').forEach((b) => { const on = b.dataset.plSw === r.key; b.classList.toggle('on', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); }); };
+      // le passage d'un univers à l'autre se fait en fondu : pochettes, titre et liste s'effacent,
+      // la page bascule de couleur, puis tout revient avec la mosaïque de l'autre radio
+      const W = document.querySelector('.pl-wrap'); let swapping = false;
       document.querySelectorAll('[data-pl-sw]').forEach((b) => b.addEventListener('click', () => {
-        if (b.dataset.plSw === cur) return; cur = b.dataset.plSw; open.clear(); warmed = false; bgCols = ''; q.value = '';
-        history.replaceState(history.state, '', cur === D.radios[0].key ? location.pathname : '#' + cur);
-        skin(); draw(); load();
+        if (b.dataset.plSw === cur || swapping) return;
+        swapping = true; W.classList.add('sw'); if (B) B.classList.add('sw');
+        document.querySelectorAll('[data-pl-sw]').forEach((x) => { const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-selected', on ? 'true' : 'false'); });
+        setTimeout(() => {
+          cur = b.dataset.plSw; open.clear(); warmed = false; bgCols = ''; q.value = '';
+          history.replaceState(history.state, '', cur === D.radios[0].key ? location.pathname : '#' + cur);
+          skin(); draw(); load();
+          requestAnimationFrame(() => { W.classList.remove('sw'); if (B) B.classList.remove('sw'); swapping = false; });
+        }, 420);
       }, sig));
       skin();
       q.addEventListener('input', draw, sig);
