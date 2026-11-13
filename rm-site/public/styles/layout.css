@@ -526,20 +526,27 @@ html.menu-open{overflow:hidden} /* sur html seulement : sur body, l’en-tête c
 .uxq{display:flex;flex-direction:column;gap:11px;max-height:260px;overflow:hidden;padding-top:14px;border-top:1px solid rgba(255,255,255,.22);transition:opacity .45s ease,max-height .9s cubic-bezier(.65,0,.12,1),padding .9s cubic-bezier(.65,0,.12,1)}
 .uxqw{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:start}
 .uxql{display:contents}
-.uxqr{min-width:0;display:flex;flex-direction:column;gap:7px;font-size:12.5px;line-height:1.25}
-.uxqr>img,.uxqr>.uxc{width:100%!important;height:auto!important;aspect-ratio:1;object-fit:cover;border-radius:10px;background:rgba(255,255,255,.12);box-shadow:0 12px 26px -16px rgba(0,0,0,.75)}
-.uxqr>b,.uxqr>i{display:block;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.uxql .uxqr{transition:opacity .45s ease}
+.uxqr{min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:7px;font-size:12.5px;line-height:1.25}
+.uxqr>img,.uxqr>.uxc{width:100%!important;max-width:118px;height:auto!important;aspect-ratio:1;object-fit:cover;border-radius:10px;background:rgba(255,255,255,.12);box-shadow:0 12px 26px -16px rgba(0,0,0,.75)}
+.uxqr>b,.uxqr>i{display:block;width:100%;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .uxqr>b{font-weight:600;color:#fff}
 .uxqr>i{font-style:normal;color:rgba(255,255,255,.66)}
 .uxqr:not(.uxnow){opacity:.72}
+.uxnl{display:flex;flex-direction:column;gap:2px;min-width:0;font-size:13.5px;line-height:1.25}
+.uxnl>b,.uxnl>i{display:block;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.uxnl>b{font-weight:600;color:#fff}
+.uxnl>i{font-style:normal;font-size:12.5px;color:rgba(255,255,255,.66)}
 .uxqa{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#fff;text-decoration:underline;text-underline-offset:3px}
-.uvrow:hover .ux:not(:hover) .uxq{opacity:0;max-height:0;padding-top:0;border-top-color:transparent}
+.uvrow:hover .ux:not(:hover) .uxql .uxqr{opacity:0}
 @media (max-width:900px){
   /* la carte grandit avec son contenu (photo en fond), toutes les cartes à la même hauteur */
   .ux{aspect-ratio:auto;height:auto;min-height:min(76vh,540px);max-height:none;display:flex;flex-direction:column}
   .uxb{position:relative;inset:auto;flex:1 1 auto;display:flex;flex-direction:column;padding:20px 20px 24px}
   .uxq{order:3;margin-top:14px;padding-top:13px;gap:10px}
   .uxqw{gap:10px}
+  /* sur mobile, seul le titre en cours est écrit, sous la file */
+  .uxqr>b,.uxqr>i{display:none}
 }
 
 /* fiche The Sound of Monte-Carlo : deux départs */
@@ -651,8 +658,10 @@ body:has(.pl-bg){background:var(--bg)}
 @media (min-width:901px){
   .uxqw{gap:10px}
   .uxqr{gap:0}
-  .uxqr>b,.uxqr>i{max-height:0;opacity:0;transition:max-height .6s cubic-bezier(.65,0,.12,1),opacity .3s ease,margin .6s cubic-bezier(.65,0,.12,1)}
-  .uxqr>b{margin-top:0}
+  .uxqr>b,.uxqr>i{transition:max-height .6s cubic-bezier(.65,0,.12,1),opacity .3s ease,margin .6s cubic-bezier(.65,0,.12,1)}
+  .uxqr>b,.uxqr>i{max-height:0;opacity:0}
+  .uxnl{max-height:40px;opacity:1;overflow:hidden;transition:max-height .6s cubic-bezier(.65,0,.12,1),opacity .3s ease,margin .6s cubic-bezier(.65,0,.12,1)}
+  .ux:hover .uxnl{max-height:0;opacity:0;margin-top:-11px}
   .ux:hover .uxqr>b,.ux:hover .uxqr>i{max-height:20px;opacity:1}
   .ux:hover .uxqr>b{margin-top:8px}
 }

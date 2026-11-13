@@ -43,8 +43,9 @@ function init() {
       let m = RM.meta[i];
       if ((!m || !m.title) && pl !== null && pl !== i && RM.meta[pl] && RM.meta[pl].title) m = RM.meta[pl];
       const t1 = m && m.title ? m.title : (ids.includes(0) && RM.onair.now ? RM.onair.now.name : st.line);
-      el.querySelector('[data-ux-t1]').textContent = t1;
-      el.querySelector('[data-ux-t2]').textContent = m && m.title ? (m.artist || st.name) : 'En direct';
+      const t2 = m && m.title ? (m.artist || st.name) : 'En direct';
+      el.querySelectorAll('[data-ux-t1]').forEach((n) => (n.textContent = t1));
+      el.querySelectorAll('[data-ux-t2]').forEach((n) => (n.textContent = t2));
       // pochette du titre en cours ; à défaut, le visuel de la radio
       const c = el.querySelector('[data-ux-cover]');
       const src = (m && m.cover) || (q ? q.dataset.mark : '');
