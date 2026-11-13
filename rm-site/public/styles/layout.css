@@ -936,7 +936,7 @@ html.pl-night .prog{background:#b88ad0}
 .pzhero{position:relative;height:min(78vh,700px);min-height:520px;overflow:hidden;background:#141218;isolation:isolate}
 .pzh-im{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%;opacity:0}
 .pzh-im.on{opacity:1}
-.pzh-sc{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(10,10,16,.62) 0,rgba(10,10,16,.12) 34%,rgba(10,10,16,.5) 62%,rgba(10,10,16,.92) 100%)}
+.pzh-sc{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(10,10,16,.8) 0,rgba(10,10,16,.52) 20%,rgba(10,10,16,.14) 40%,rgba(10,10,16,.5) 64%,rgba(10,10,16,.93) 100%)}
 .pzh-top{position:absolute;z-index:2;left:clamp(24px,4vw,56px);right:clamp(24px,4vw,56px);top:clamp(104px,13vh,132px);color:#fff}
 .pzh-eb{margin:0 0 14px;font-size:12px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.78)}
 .pzh-h1{margin:0;font-size:clamp(38px,4.4vw,62px);font-weight:300;letter-spacing:-.035em;line-height:.98;color:#fff}
