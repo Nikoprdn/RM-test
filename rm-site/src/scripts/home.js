@@ -36,12 +36,17 @@ function init() {
       el.classList.toggle('on', on); el.classList.toggle('playing', on);
       el.querySelector('[data-ux-status]').textContent = on ? (ids.length > 1 ? 'En écoute · ' + RM.stations[i].name : 'En écoute') : 'En direct';
       el.querySelectorAll('[data-ux-dep]').forEach((b) => b.classList.toggle('on', on && +b.dataset.uxDep === s.station));
-      const m = RM.meta[i]; const st = RM.stations[i];
+      const st = RM.stations[i]; const q = el.querySelector('[data-mark]');
+      // Paris diffuse le programme de Monte-Carlo : si son flux ne publie pas de titre,
+      // on reprend celui de la radio dont le volet affiche la playlist.
+      const pl = q && q.dataset.uxPl !== undefined ? +q.dataset.uxPl : null;
+      let m = RM.meta[i];
+      if ((!m || !m.title) && pl !== null && pl !== i && RM.meta[pl] && RM.meta[pl].title) m = RM.meta[pl];
       const t1 = m && m.title ? m.title : (ids.includes(0) && RM.onair.now ? RM.onair.now.name : st.line);
       el.querySelector('[data-ux-t1]').textContent = t1;
       el.querySelector('[data-ux-t2]').textContent = m && m.title ? (m.artist || st.name) : 'En direct';
       // pochette du titre en cours ; à défaut, le visuel de la radio
-      const c = el.querySelector('[data-ux-cover]'); const q = el.querySelector('[data-mark]');
+      const c = el.querySelector('[data-ux-cover]');
       const src = (m && m.cover) || (q ? q.dataset.mark : '');
       if (c && src && c.getAttribute('src') !== src) c.src = src;
     });
