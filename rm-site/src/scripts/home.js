@@ -40,8 +40,10 @@ function init() {
       const t1 = m && m.title ? m.title : (ids.includes(0) && RM.onair.now ? RM.onair.now.name : st.line);
       el.querySelector('[data-ux-t1]').textContent = t1;
       el.querySelector('[data-ux-t2]').textContent = m && m.title ? (m.artist || st.name) : 'En direct';
-      const c = el.querySelector('[data-ux-cover]');
-      if (m && m.cover) { if (c.getAttribute('src') !== m.cover) c.src = m.cover; c.hidden = false; } else c.hidden = true;
+      // pochette du titre en cours ; à défaut, le visuel de la radio
+      const c = el.querySelector('[data-ux-cover]'); const q = el.querySelector('[data-mark]');
+      const src = (m && m.cover) || (q ? q.dataset.mark : '');
+      if (c && src && c.getAttribute('src') !== src) c.src = src;
     });
   };
   ['rm:state', 'rm:meta', 'rm:onair'].forEach((e) => document.addEventListener(e, univers, sig)); univers();
@@ -74,10 +76,11 @@ const nice = (x) => { const k = (x || '').indexOf(' ('); return k > 0 ? nice1(x.
         const j = await (await fetch(`https://metadata.infomaniak.com/api/radio/${id}/metadata-all-cover`, { cache: 'no-store', ...sig })).json();
         const list = (j.data || []).map((x) => { const raw = x.title || ''; const k = raw.indexOf(' - '); return { raw, date: x.date, dur: x.duration || 0, cover: x.cover || '', artist: nice(k > 0 ? raw.slice(0, k) : ''), title: nice(k > 0 ? raw.slice(k + 3) : raw) }; })
           .filter((t) => t.title && !/^radio monaco$/i.test(t.title) && !/^radio monaco$/i.test(t.artist)).sort((a, b) => b.date - a.date);
-        const past = (list[0] && !list[0].dur ? list.slice(1) : list).slice(0, 3);
+        // la première pochette du volet est le titre en cours (lecteur) : ici, les deux précédents
+        const past = (list[0] && !list[0].dur ? list.slice(1) : list).slice(0, 2);
         await Promise.all(past.map(async (t) => { if (!t.cover) t.cover = await find(t); }));
         const html = past.map((t) => `<span class="uxqr"><img src="${esc(t.cover || mark)}" alt="" loading="lazy" /><b>${esc(t.title)}</b><i>${esc(t.artist)}</i></span>`).join('');
-        plBoxes.forEach((bx) => { bx.querySelector('[data-ux-pll]').innerHTML = html; bx.hidden = !past.length; });
+        plBoxes.forEach((bx) => { bx.querySelector('[data-ux-pll]').innerHTML = html; });
       } catch (e) {}
     };
     loadPl(); every(30000, () => { if (!document.hidden) loadPl(); });
