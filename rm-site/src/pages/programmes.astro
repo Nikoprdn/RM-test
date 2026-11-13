@@ -29,13 +29,14 @@ const hm = (iso) => { const d = new Date(iso); const m = d.getMinutes(); return 
       <div class="pg-slides" id="pg-slides">
         {today.map((x, i) => (
           <article class="pg-s" data-pg-s={i}>
-            <span class="pg-im">{x.img && <img src={x.img} alt="" loading={i < 2 ? 'eager' : 'lazy'} />}</span>
+            {x.img && <img class="pg-im" src={x.img} alt="" loading={i < 2 ? 'eager' : 'lazy'} />}
+            <span class="pg-sc" aria-hidden="true"></span>
             <div class="pg-tx">
               <span class="pg-k" data-pg-k>{hm(x.start)} → {hm(x.end)}</span>
               <h2 class="pg-n">{x.name}</h2>
               {x.desc && <p class="pg-d">{x.desc}</p>}
-              <span class="pg-p" data-pg-p hidden><i></i></span>
             </div>
+            <span class="pg-p" data-pg-p hidden><i></i></span>
           </article>
         ))}
       </div>
