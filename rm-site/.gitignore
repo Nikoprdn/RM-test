@@ -1,2 +1,7 @@
-
+# Fichiers produits par la construction locale : jamais versionnés.
+node_modules/
+dist/
+.astro/
 .wp-cache/
+# les images sont dans assets/ à la racine, copiées ici à la construction
+public/assets/
