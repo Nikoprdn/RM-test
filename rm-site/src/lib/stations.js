@@ -3,7 +3,7 @@ export const STATIONS = [
   {
     key: 'montecarlo', logoRgb: 'wr-montecarlo-rgb.png', cover: 'rm-cover-mc.png', name: 'Monte-Carlo', color: '#E4032E', ink: '#FFFFFF', wash: 'rgba(228,3,46,.55)',
     stream: 'https://radiomonaco.ice.infomaniak.ch/radiomonaco-128.mp3',
-    logo: 'wr-montecarlo-allwhite.png', logoInk: 'wr-montecarlo-ink.png', photo: 'rm-monaco-port.jpg', pos: '52% 42%',
+    logo: 'wr-montecarlo-allwhite.png', logoInk: 'wr-montecarlo-ink.png', photo: 'rm-yacht.jpg', pos: '54% 34%',
     line: 'The sound of Monte-Carlo', local: 'Info Monaco & Riviera',
     bands: [{ city: 'Monaco', f: '98,2 FM' }, { city: 'Nice', f: '95,4 FM' }, { city: 'Cannes & Grasse', f: '103,2 FM' }, { city: 'Saint-Tropez', f: '95,4 FM' }, { city: '', f: 'DAB+' }]
   },
