@@ -516,7 +516,7 @@ html.menu-open{overflow:hidden} /* sur html seulement : sur body, l’en-tête c
   .pl-a{font-size:13.5px}
 }
 
-/* ---- volets : The Sound of Monte-Carlo (deux départs + playlist) ---- */
+/* ---- volets des webradios ---- */
 .ux{display:block}
 .ux-hit{position:absolute;inset:0;z-index:1;width:100%;height:100%;margin:0;padding:0;border:0;background:transparent;cursor:pointer}
 .ux-hit:focus-visible{outline:2px solid #fff;outline-offset:-6px}
@@ -732,13 +732,6 @@ body:has(.pl-bg){background:var(--bg)}
   .ntf-i:not(:first-child){display:none}
 }
 
-/* ===== Monte-Carlo et Paris : la même radio, avec l'info locale de chaque départ ===== */
-.uxbr{position:absolute;z-index:4;left:clamp(20px,2.2vw,32px);width:calc(50% - 2 * clamp(20px,2.2vw,32px));bottom:calc(104px + 292px);height:9px;border:1px solid rgba(255,255,255,.5);border-bottom:0;border-radius:3px 3px 0 0;pointer-events:none;transition:opacity .3s ease}
-.uxbr i{position:absolute;left:50%;bottom:100%;transform:translate(-50%,-9px);font-style:normal;font-size:11px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;white-space:nowrap;color:#fff}
-.uvrow:hover ~ .uxbr{opacity:0}
-@media (max-width:900px){
-  .uxbr{display:none}
-}
 /* Night Mood : pochettes sous un voile violet */
 .ux[data-ux="3"] .uxqr img{filter:grayscale(.35) sepia(.6) hue-rotate(250deg) saturate(1.5)}
 

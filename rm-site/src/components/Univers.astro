@@ -1,6 +1,6 @@
 ---
 // Les univers (volets photo plein cadre) — accueil et page « Nos radios ».
-// The Sound of Monte-Carlo réunit les départs Monte-Carlo et Paris, avec sa playlist.
+// Monte-Carlo et Paris diffusent le même programme et partagent donc la même playlist.
 import I from './Icons.astro';
 import { u, asset } from '../lib/url.js';
 import { UNIVERS } from '../lib/stations.js';
@@ -16,9 +16,9 @@ const qLink = (r) => (r.playlist !== null ? { href: plHref(r), label: 'Toute la 
         <article class:list={['ux', { dk: r.ink === '#141218', 'ux-g': r.playlist !== null }]} data-ux={r.ids[0]} data-ux-st={r.ids.join(',')} style={`--c:${r.color};--w:${r.wash};--d:${(g * 0.09 + 0.12).toFixed(2)}s`}>
           <img class="uxp" src={asset(r.photo)} alt="" loading="lazy" style={`object-position:${r.pos}`} />
           <span class="uxt0" aria-hidden="true"></span><span class="uxs" aria-hidden="true"></span><span class="uxw" aria-hidden="true"></span><span class="uxbar" aria-hidden="true"></span>
-          <button class="ux-hit" type="button" data-rm-live={r.ids[0]} aria-label={`Écouter ${r.departs ? r.name + ', départ Monte-Carlo' : 'Radio Monaco ' + r.name}`}></button>
+          <button class="ux-hit" type="button" data-rm-live={r.ids[0]} aria-label={`Écouter Radio Monaco ${r.name}`}></button>
           <span class="uxb rise">
-            <span class="uxh"><img class="uxl" src={asset(r.logoRgb)} alt={r.departs ? r.name : `Radio Monaco ${r.name}`} width="1175" height="423" /><span class="uxpl" aria-hidden="true"><I n="pp" /></span></span>
+            <span class="uxh"><img class="uxl" src={asset(r.logoRgb)} alt={`Radio Monaco ${r.name}`} width="1175" height="423" /><span class="uxpl" aria-hidden="true"><I n="pp" /></span></span>
             <span class="uxr" aria-hidden="true"></span>
             <span class="uxlv"><span class="live-dot"></span><span data-ux-status>En direct</span>{r.local && <i>{r.local}</i>}</span>
             <span class="uxq" data-ux-pl={r.playlist === null ? undefined : r.playlist} data-mark={asset(r.cover)}>
@@ -36,7 +36,6 @@ const qLink = (r) => (r.playlist !== null ? { href: plHref(r), label: 'Toute la 
         </article>
       ))}
     </div>
-    <span class="uxbr" aria-hidden="true"><i>Un programme · deux départs</i></span>
     <div class="uvtop" aria-hidden="true"></div>
     <div class="uvtitle">
       <p class="eb uveb" style="margin:0 0 18px;font-size:12px;font-weight:500;letter-spacing:.24em;text-transform:uppercase">{eyebrow}</p>
