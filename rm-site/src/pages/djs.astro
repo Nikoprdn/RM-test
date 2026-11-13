@@ -29,6 +29,7 @@ const sets = djs.map((d) => ({
           <span class="djv-sc" aria-hidden="true"></span>
           <span class="djv-bar" aria-hidden="true"></span>
           <a class="djv-hit" href={u(d.path)} aria-label={`${d.show}, ${d.name}`}></a>
+          <span class="djv-t"><b>{d.days}</b>{d.time && <i>{d.time}</i>}</span>
           <span class="djv-v" aria-hidden="true">{d.show}</span>
           <span class="djv-b">
             <span class="djv-k">{d.days}{d.time && <i>{d.time}</i>}</span>
