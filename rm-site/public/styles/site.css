@@ -248,9 +248,6 @@ html{scroll-behavior:auto}
 @media (max-width: 1000px){.pzs{min-height:0;padding:100px 0 40px}.pzw{grid-template-columns:1fr}.pzfc{grid-template-columns:150px minmax(0,1fr)}}
 
 /* fréquences / modes de diffusion */
-.uxf{display:flex;flex-wrap:wrap;align-content:flex-start;gap:6px;margin-top:-4px;min-height:90px;max-height:160px;overflow:hidden;transition:opacity .45s ease,min-height .9s cubic-bezier(.65,0,.12,1),max-height .9s cubic-bezier(.65,0,.12,1),margin .9s cubic-bezier(.65,0,.12,1)}
-.bd{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:400;letter-spacing:.02em;white-space:nowrap;color:rgba(255,255,255,.86);background:rgba(20,18,24,.32);border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
-.bd b{font-weight:600;color:#fff}
 /* liseré de la couleur de l'univers en pied de bannière */
 .uxbar{position:absolute;left:0;right:0;bottom:0;height:6px;background:var(--c);z-index:2;transition:height .9s cubic-bezier(.65,0,.12,1)}
 .ux.on .uxbar{height:10px}
@@ -287,7 +284,6 @@ html{scroll-behavior:auto}
 .ux:hover .uxp{filter:none}
 .ux:hover .uxt0{opacity:.08}
 .ux:hover .uxbar{height:10px}
-.uvrow:hover .ux:not(:hover) .uxf{opacity:0;min-height:0;max-height:0;margin-top:-16px}
 .uvrow:hover .ux.on:not(:hover) .uxbar{height:6px}
 .ux:hover .uxw{opacity:.55}
 .ux:hover .uxpl{transform:scale(1.12);background:#fff;color:#141218}

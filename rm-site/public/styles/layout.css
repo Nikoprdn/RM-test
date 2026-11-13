@@ -465,13 +465,10 @@ html.menu-open{overflow:hidden} /* sur html seulement : sur body, l’en-tête c
   .uxt{gap:3px}
   .uxt1{font-size:17px!important;line-height:1.2}
   .uxt2{font-size:13.5px}
-  .uxf{order:3;margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.18);min-height:0;max-height:none;display:grid;grid-template-columns:repeat(2,minmax(0,max-content));justify-content:start;gap:5px 22px}
-  .bd{height:auto;padding:0;gap:6px;border:0;border-radius:0;background:none;backdrop-filter:none;-webkit-backdrop-filter:none;font-size:12.5px;line-height:1.35;letter-spacing:0;color:rgba(255,255,255,.72)}
 }
 @media (max-width:380px){
   .uxb{top:16px;left:16px;right:16px;bottom:18px}
   .uxl{width:104px}
-  .bd{font-size:12px}.uxf{column-gap:16px}
 }
 
 /* ---- playlist (titres diffusés) ---- */
@@ -530,16 +527,6 @@ html.menu-open{overflow:hidden} /* sur html seulement : sur body, l’en-tête c
 .ux-hit:focus-visible{outline:2px solid #fff;outline-offset:-6px}
 .uxb{z-index:2;pointer-events:none}
 .uxb a,.uxb button{pointer-events:auto}
-.uxf.uxd{display:flex;flex-direction:column;gap:8px;min-height:0;max-height:240px}
-.uxdp{display:flex;flex-direction:column;align-items:flex-start;gap:7px;width:100%;padding:10px 12px;border:1px solid rgba(255,255,255,.2);border-radius:14px;background:rgba(20,18,24,.34);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:#fff;font:inherit;text-align:left;cursor:pointer;transition:background .3s,border-color .3s}
-.uxdp:hover{background:rgba(20,18,24,.55);border-color:rgba(255,255,255,.45)}
-.uxdp.on{border-color:#fff;background:rgba(228,3,46,.35)}
-.uxdn{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;letter-spacing:.01em}
-.uxdi{flex:0 0 auto;width:24px;height:24px;border-radius:50%;background:#fff;color:#141218;display:inline-flex;align-items:center;justify-content:center}
-.uxdi svg{width:11px;height:11px}
-.uxdb{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px}
-.uxdb .bd{height:auto;padding:0;border:0;border-radius:0;background:none;backdrop-filter:none;-webkit-backdrop-filter:none;font-size:12.5px}
-.uxdnote{font-size:12.5px;color:rgba(255,255,255,.8)}
 .uxq{display:flex;flex-direction:column;gap:6px;max-height:220px;overflow:hidden;padding-top:12px;border-top:1px solid rgba(255,255,255,.22);transition:opacity .45s ease,max-height .9s cubic-bezier(.65,0,.12,1),padding .9s cubic-bezier(.65,0,.12,1)}
 .uxq[hidden]{display:none}
 .uxqh{font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.75)}
@@ -550,11 +537,6 @@ html.menu-open{overflow:hidden} /* sur html seulement : sur body, l’en-tête c
   .ux{aspect-ratio:auto;height:auto;min-height:min(76vh,540px);max-height:none;display:flex;flex-direction:column}
   .uxb{position:relative;inset:auto;flex:1 1 auto;display:flex;flex-direction:column;padding:20px 20px 24px}
   .uxq{order:3;margin-top:14px;padding-top:12px}
-  .uxf.uxd{order:4;margin-top:14px;padding-top:0;border-top:0;display:flex;gap:6px;max-height:none}
-  .uxdp{padding:8px 10px;gap:5px;border-radius:12px}
-  .uxdn{font-size:13.5px}
-  .uxdb .bd{font-size:12px}
-  .uxdnote{font-size:12px}
 }
 
 /* fiche The Sound of Monte-Carlo : deux départs */
@@ -677,11 +659,7 @@ body:has(.pl-bg){background:var(--bg)}
 }
 
 /* ===== Volets allégés : l'essentiel au repos, le détail au survol ===== */
-.uxfs{display:block;font-size:13px;font-weight:500;letter-spacing:.02em;line-height:1.3;color:rgba(255,255,255,.9);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 @media (min-width:901px){
-  .ux .uxf:not(.uxd){min-height:0;max-height:0;margin-top:-16px;opacity:0}
-  .ux:hover .uxf:not(.uxd){max-height:160px;margin-top:-4px;opacity:1}
-  .ux:hover .uxfs{display:none}
   /* la playlist : trois pochettes et le lien ; titres et artistes au survol */
   .uxq{gap:8px;padding-top:14px;min-height:108px;box-sizing:border-box}
   .uxql{display:flex;gap:8px}
@@ -701,8 +679,6 @@ body:has(.pl-bg){background:var(--bg)}
   .uvrow:hover .ux:not(.ux-g):not(:hover) .uxi{opacity:.0}
 }
 @media (max-width:900px){
-  .uxfs{order:2;margin-top:12px}
-  .ux .uxf:not(.uxd){display:none!important}
 }
 @media (min-width:901px){
   .ux-g .uxi{margin-top:-16px;transition:grid-template-rows .9s cubic-bezier(.65,0,.12,1),opacity .45s ease,transform .9s cubic-bezier(.16,.84,.12,1),margin .9s cubic-bezier(.65,0,.12,1)}
@@ -778,10 +754,8 @@ body:has(.pl-bg){background:var(--bg)}
 .uxbr{position:absolute;z-index:4;left:clamp(20px,2.2vw,32px);width:calc(50% - 2 * clamp(20px,2.2vw,32px));bottom:calc(104px + 338px);height:9px;border:1px solid rgba(255,255,255,.5);border-bottom:0;border-radius:3px 3px 0 0;pointer-events:none;transition:opacity .3s ease}
 .uxbr i{position:absolute;left:50%;bottom:100%;transform:translate(-50%,-9px);font-style:normal;font-size:11px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;white-space:nowrap;color:#fff}
 .uvrow:hover ~ .uxbr{opacity:0}
-.uxlo{display:block;min-height:1.35em;font-size:13px;font-weight:600;line-height:1.35;color:#fff}
 @media (max-width:900px){
   .uxbr{display:none}
-  .uxlo{order:2;margin-top:10px;min-height:0}.uxlo:empty{display:none}
 }
 /* Night Mood : pochettes sous un voile violet */
 .ux[data-ux="3"] .uxqr img{filter:grayscale(.35) sepia(.6) hue-rotate(250deg) saturate(1.5)}
@@ -970,3 +944,17 @@ html.pl-night .prog{background:#b88ad0}
 
 /* Podcasts : phrase sous le titre de la page */
 .pzlead{margin:18px 0 0;max-width:46ch;font-size:16.5px;line-height:1.5;color:var(--muted)}
+
+/* volets : statut et information locale sur une seule ligne, blocs plus aérés */
+.uxlv{flex-wrap:wrap;gap:8px 10px;row-gap:4px}
+.uxlv i{font-style:normal;font-size:13px;font-weight:500;letter-spacing:.01em;text-transform:none;color:rgba(255,255,255,.82)}
+.uxlv i::before{content:"\00b7";margin-right:9px;color:rgba(255,255,255,.45)}
+@media (min-width:901px){
+  .uxb{gap:20px}
+  .uxq{padding-top:18px;min-height:112px}
+  .ux:not(.ux-g) .uxi{padding-top:18px;min-height:112px}
+}
+@media (max-width:900px){
+  .uxlv i{display:block;width:100%;font-size:12.5px}
+  .uxlv i::before{content:none}
+}

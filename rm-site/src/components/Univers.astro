@@ -6,10 +6,7 @@ import { u, asset } from '../lib/url.js';
 import { UNIVERS } from '../lib/stations.js';
 const { eyebrow = 'Nos radios', h1 = false, id = 'radios' } = Astro.props;
 const H = h1 ? 'h1' : 'h2';
-// résumé des fréquences sur une ligne (le détail par ville apparaît au survol)
-const resume = (bands) => { const fm = [...new Set(bands.filter((b) => /FM/.test(b.f)).map((b) => b.f.replace(/\s*FM/, '')))]; const o = bands.filter((b) => !/FM/.test(b.f)).map((b) => (b.f === 'Web' ? 'Site & appli' : b.f)); return [fm.length ? 'FM ' + fm.join(' · ') : '', ...o].filter(Boolean).join('  ·  '); };
 const plHref = (r) => u('/playlist/') + (r.key === 'nightmood' ? '#nightmood' : '');
-const bandsLabel = (bands) => bands.map((b) => (b.city ? b.city + ' ' : '') + b.f).join(', ');
 ---
   <section id={id} data-full data-reveal data-snap class="uvs">
     <div class="uvrow">
@@ -19,23 +16,9 @@ const bandsLabel = (bands) => bands.map((b) => (b.city ? b.city + ' ' : '') + b.
           <span class="uxt0" aria-hidden="true"></span><span class="uxs" aria-hidden="true"></span><span class="uxw" aria-hidden="true"></span><span class="uxbar" aria-hidden="true"></span>
           <button class="ux-hit" type="button" data-rm-live={r.ids[0]} aria-label={`Écouter ${r.departs ? r.name + ', départ Monte-Carlo' : 'Radio Monaco ' + r.name}`}></button>
           <span class="uxb rise">
-            <span class="uxh"><img class="uxl" src={asset(r.logo)} alt={r.departs ? r.name : `Radio Monaco ${r.name}`} width="128" height="46" /><span class="uxpl" aria-hidden="true"><I n="pp" /></span></span>
+            <span class="uxh"><img class="uxl" src={asset(r.logoRgb)} alt={r.departs ? r.name : `Radio Monaco ${r.name}`} width="128" height="46" /><span class="uxpl" aria-hidden="true"><I n="pp" /></span></span>
             <span class="uxr" aria-hidden="true"></span>
-            <span class="uxlv"><span class="live-dot"></span><span data-ux-status>En direct</span></span>
-              <span class="uxlo">{r.local || ''}</span>
-            {r.departs ? (
-              <span class="uxf uxd" aria-label="Deux départs">
-                {r.departs.map((d) => (
-                  <button class="uxdp" type="button" data-rm-live={d.i} data-ux-dep={d.i} aria-label={`Écouter ${r.name}, départ ${d.name}`}>
-                    <span class="uxdn"><span class="uxdi"><I n="pp" /></span>{d.name}</span>
-                    <span class="uxdb">{d.bands.map((b) => <span class="bd">{b.city}<b>{b.f}</b></span>)}{d.note && <span class="uxdnote">{d.note}</span>}</span>
-                  </button>
-                ))}
-              </span>
-            ) : (
-              <span class="uxfs" aria-hidden="true">{resume(r.bands)}</span>
-              <span class="uxf" aria-label={'Diffusion : ' + bandsLabel(r.bands)}>{r.bands.map((b) => <span class="bd">{b.city}<b>{b.f}</b></span>)}</span>
-            )}
+            <span class="uxlv"><span class="live-dot"></span><span data-ux-status>En direct</span>{r.local && <i>{r.local}</i>}</span>
             <span class="uxi"><span><span class="uxn">
               <span class="uxc"><img data-ux-cover alt="Pochette du titre en cours" hidden /><I n="eq" /></span>
               <span class="uxt"><span class="uxt1" data-ux-t1>{r.line}</span><span class="uxt2" data-ux-t2>En direct</span></span>
