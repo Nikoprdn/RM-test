@@ -217,15 +217,20 @@ html{scroll-behavior:auto}
 .pzfcm{font-size:14px;color:#6A6570}
 .pzfcb{margin-top:8px;display:inline-flex;align-items:center;gap:12px;height:50px;padding:0 22px 0 5px;border:0;border-radius:999px;background:#141218;color:#fff;font:inherit;font-size:15px;font-weight:600;cursor:pointer;transition:transform .45s cubic-bezier(.2,.8,.1,1),box-shadow .45s}
 .pzfcb:hover{transform:translateY(-2px);box-shadow:0 16px 30px -14px rgba(20,18,24,.5)}
-.pzchw{margin-top:clamp(20px,3vh,30px);display:flex;align-items:center;gap:8px}
-.pzchn{flex:0 0 auto;width:42px;height:42px;border-radius:50%;border:1px solid rgba(20,18,24,.18);background:transparent;color:#141218;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:background .3s,color .3s}
-.pzchn:hover{background:#141218;color:#fff}
-.pzchips{flex:1 1 auto;min-width:0;scroll-behavior:smooth;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:4px 2px 8px;-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}
-.pzchips::-webkit-scrollbar{display:none}
-.pzchip2{flex:0 0 auto;display:inline-flex;align-items:center;gap:9px;height:42px;padding:0 15px 0 5px;border:0;border-radius:999px;background:#fff;color:#141218;font:inherit;font-size:13.5px;font-weight:500;white-space:nowrap;cursor:pointer;box-shadow:0 6px 18px -12px rgba(20,18,24,.45);transition:box-shadow .4s,transform .4s cubic-bezier(.16,.84,.12,1)}
-.pzchip2:hover{transform:translateY(-2px)}
-.pzchip2 img{width:32px;height:32px;border-radius:50%;object-fit:cover}
-.pzchip2.on{box-shadow:0 0 0 2px var(--c),0 10px 22px -14px var(--c)}
+/* Les vingt rendez-vous : le mur des visages. Au repos en noir et blanc ;
+   la vignette survolée reprend ses couleurs et donne son nom sur la ligne du dessus. */
+.pzchw{margin-top:clamp(20px,3vh,30px)}
+.pzchh{margin:0 0 12px;height:16px;font-size:11.5px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#6A6570;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .3s}
+.pzchh.named{color:#141218;letter-spacing:.06em;text-transform:none;font-size:13.5px;font-weight:500}
+.pzchips{display:flex;flex-wrap:wrap;gap:8px}
+.pzchip2{flex:0 0 auto;width:calc((100% - 9 * 8px) / 10);aspect-ratio:1;padding:0;border:0;border-radius:12px;overflow:hidden;background:#fff;cursor:pointer;position:relative;
+  box-shadow:0 8px 20px -14px rgba(20,18,24,.6);transition:transform .5s cubic-bezier(.16,.84,.12,1),box-shadow .4s,filter .5s ease}
+.pzchip2 img{display:block;width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(.94) brightness(1.06);transition:filter .5s ease,transform .7s cubic-bezier(.16,.84,.12,1)}
+.pzchip2:hover{transform:translateY(-4px);box-shadow:0 16px 30px -16px rgba(20,18,24,.55)}
+.pzchip2:hover img,.pzchip2.on img{filter:none}
+.pzchip2:focus-visible{outline:2px solid #141218;outline-offset:3px}
+.pzchip2.on{box-shadow:0 0 0 2px var(--c),0 12px 26px -16px var(--c)}
+.pzchips:hover .pzchip2:not(:hover):not(.on) img{opacity:.62}
 .pzright{min-width:0;display:flex;flex-direction:column}
 .pzrh{display:flex;flex-direction:column;align-items:flex-start;gap:14px;margin-bottom:6px}
 .pzrh .pzls{font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#6A6570}

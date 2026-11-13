@@ -393,9 +393,9 @@ html.menu-open{overflow:hidden} /* sur html seulement : sur body, l’en-tête c
   .pzfcm{grid-column:2;font-size:13px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .pzfcb{grid-column:1 / -1;width:100%;justify-content:center;margin-top:14px;height:52px}
   .pzw{padding:0 var(--pad)}
-  .pzchw{margin:20px calc(-1 * var(--pad)) 0}
-  .pzchn{display:none}
-  .pzchips{padding:4px var(--pad) 8px;scroll-padding-left:var(--pad);-webkit-mask-image:none;mask-image:none}
+  .pzchw{margin:22px 0 0}
+  .pzchips{gap:7px}
+  .pzchip2{width:calc((100% - 4 * 7px) / 5)}
   .pzright{margin-top:8px}
   .pzrh{gap:16px}
   .pzt{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;max-width:100%;border-radius:999px}

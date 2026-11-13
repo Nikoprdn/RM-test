@@ -31,11 +31,10 @@ const when = (iso) => { const d = new Date(iso + 'Z'), t = new Date(); const dif
           </div>
         )}
         <div class="pzchw rise" style="--d:.35s">
+          <p class="pzchh" data-chn data-default={`Nos ${pods.length} rendez-vous`}>Nos {pods.length} rendez-vous</p>
           <div class="pzchips" id="pz-chips" aria-label="Nos émissions">
-            {pods.map((s) => <button class="pzchip2" type="button" data-show={s.k} aria-pressed="false" style={`--c:${s.color}`}><img src={ausImg(s.eps[0].img)} alt="" loading="lazy" />{s.name}</button>)}
+            {pods.map((s) => <button class="pzchip2" type="button" data-show={s.k} aria-pressed="false" title={s.name} style={`--c:${s.color}`}><img src={ausImg(s.eps[0].img)} alt={s.name} loading="lazy" /></button>)}
           </div>
-          <button class="pzchn" type="button" data-chips="-1" aria-label="Émissions précédentes"><I n="left" s={16} /></button>
-          <button class="pzchn" type="button" data-chips="1" aria-label="Émissions suivantes"><I n="right" s={16} /></button>
         </div>
       </div>
       <div class="pzright rise" style="--d:.25s">

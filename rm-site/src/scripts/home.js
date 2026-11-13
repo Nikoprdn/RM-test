@@ -96,6 +96,7 @@ const nice = (x) => { const k = (x || '').indexOf(' ('); return k > 0 ? nice1(x.
   const dataEl = document.getElementById('pz-data');
   if (dataEl) {
     const D = JSON.parse(dataEl.textContent); const SH = D.shows; let filt = 'all', sel = '';
+    let chnShow = null;
     const MOIS = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
     const t0 = new Date(); t0.setHours(0, 0, 0, 0);
     const when = (iso) => { const d = new Date(iso + 'Z'); const dd = new Date(d); dd.setHours(0, 0, 0, 0); const n = Math.round((t0 - dd) / 864e5); return n <= 0 ? 'Aujourd’hui' : n === 1 ? 'Hier' : n < 7 ? `Il y a ${n} jours` : d.getDate() + ' ' + MOIS[d.getMonth()]; };
@@ -125,6 +126,7 @@ const nice = (x) => { const k = (x || '').indexOf(' ('); return k > 0 ? nice1(x.
       }
       $$('.pzchip2').forEach((c) => { const on = c.dataset.show === sel; c.classList.toggle('on', on); c.setAttribute('aria-pressed', on ? 'true' : 'false'); c.hidden = !(filt === 'all' || SH.find((s) => s.k === c.dataset.show).f === filt); });
       $$('[data-filter]').forEach((t) => { const on = t.dataset.filter === filt; t.classList.toggle('on', on); t.setAttribute('aria-selected', on ? 'true' : 'false'); });
+      if (chnShow) chnShow(sel);
       mark();
     };
     const mark = () => {
@@ -136,7 +138,19 @@ const nice = (x) => { const k = (x || '').indexOf(' ('); return k > 0 ? nice1(x.
     const prog = (e) => { const s = window.RM.state; if (s.mode !== 'pod' || !s.ep) return; const r = document.querySelector(`#pz-list [data-epid="${s.ep.id}"] .pzrbar i`); if (r && e.detail.d) r.style.width = ((100 * e.detail.t) / e.detail.d).toFixed(1) + '%'; };
     $$('[data-filter]').forEach((t) => t.addEventListener('click', () => { filt = t.dataset.filter; sel = ''; draw(); }, sig));
     $$('.pzchip2').forEach((c) => c.addEventListener('click', () => { sel = sel === c.dataset.show ? '' : c.dataset.show; draw(); }, sig));
-    $$('[data-chips]').forEach((b) => b.addEventListener('click', () => document.getElementById('pz-chips').scrollBy({ left: +b.dataset.chips * 300, behavior: 'smooth' }), sig));
+    // la ligne au-dessus du mur nomme l'émission survolée, sinon celle qui est choisie
+    const chn = document.querySelector('[data-chn]');
+    if (chn) {
+      const name = (k) => { const s = SH.find((x) => x.k === k); return s ? s.n + (s.sub ? ' · ' + s.sub : '') : ''; };
+      const show = (k) => { const t = k ? name(k) : ''; chn.textContent = t || chn.dataset.default; chn.classList.toggle('named', !!t); };
+      chnShow = show;
+      $$('.pzchip2').forEach((c) => {
+        c.addEventListener('mouseenter', () => show(c.dataset.show), sig);
+        c.addEventListener('focus', () => show(c.dataset.show), sig);
+        c.addEventListener('mouseleave', () => show(sel), sig);
+        c.addEventListener('blur', () => show(sel), sig);
+      });
+    }
     document.addEventListener('rm:state', mark, sig); document.addEventListener('rm:time', prog, sig);
     mark();
   }
