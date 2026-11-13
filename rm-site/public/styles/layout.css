@@ -800,21 +800,35 @@ body:has(.pl-bg){background:var(--bg)}
 .pl-swb.on{color:var(--ink);font-weight:600}
 .pl-swb.on i{opacity:1;box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 20%,transparent)}
 .pl-swb.on::after{transform:scaleX(1)}
-/* écoute : un filet fin, le logo de la radio, un disque de lecture */
-.pl-dep{display:inline-flex;align-items:center;gap:16px;height:54px;padding:0 7px 0 20px;border:0;border-radius:99px;cursor:pointer;color:var(--ink);background:transparent;box-shadow:inset 0 0 0 1px var(--line);transition:box-shadow .4s,background .4s}
-.pl-dep:hover{background:color-mix(in srgb,var(--c) 7%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 45%,transparent)}
-.pl-dep img{height:26px;width:auto;display:block}
-.pl-dep .w{display:none}
-.pl-dep .pi{width:40px;height:40px;border-radius:50%;background:var(--c);color:#fff;display:inline-flex;align-items:center;justify-content:center;transition:transform .4s cubic-bezier(.16,.84,.12,1)}
-.pl-dep:hover .pi{transform:scale(1.07)}
+/* écoute : même bouton que partout ailleurs sur le site, avec le logo du départ */
+.pl-dep{display:inline-flex;align-items:center;gap:14px;height:52px;padding:0 22px 0 6px;border:0;border-radius:999px;background:var(--ink);cursor:pointer;transition:transform .4s cubic-bezier(.2,.8,.1,1)}
+.pl-dep:hover{transform:translateY(-2px)}
+.pl-dep .pi{flex:none;width:40px;height:40px;border-radius:50%;background:var(--c);color:#fff;display:inline-flex;align-items:center;justify-content:center}
+.pl-dep img{height:24px;width:auto;display:block}
+.pl-dep .k{display:none}
 .pl-dn{flex-basis:100%;margin:6px 0 0;font-size:13px;color:var(--muted)}
 /* Night Mood : la page passe en nuit */
 html{transition:background-color .6s ease}
 html.pl-night body{background:#0f0b15;transition:background-color .6s ease}
 html.pl-night .rm:has(.pl-bg) .ftr{background:#0f0b15}
 html.pl-night .ftr{--ink:#fff;--muted:rgba(255,255,255,.6);--line:rgba(255,255,255,.14);color:#fff}
+/* l'en-tête suit la nuit : verre violet sombre, logo blanc */
+html.pl-night .hdr{color:#fff;background:rgba(30,19,44,.72);border-bottom-color:rgba(255,255,255,.1)}
+html.pl-night .hdr .lg .w{display:block}
+html.pl-night .hdr .lg .k{display:none}
+html.pl-night .hdr .hbtn{background:#fff;color:#141218}
+html.pl-night .nav .ind{background:#b88ad0}
+html.pl-night .prog{background:#b88ad0}
+@media (max-width:1000px){
+  html.pl-night .hdr.open{background:#0f0b15;color:#fff;border-bottom-color:rgba(255,255,255,.12)}
+  html.pl-night .hdr.open .lg .w{display:block}
+  html.pl-night .hdr.open .lg .k{display:none}
+  html.pl-night .hdr.open .hbtn{background:#fff;color:#141218}
+  html.pl-night .hdr.open .nav{background:#0f0b15;color:#fff}
+  html.pl-night .hdr.open .nav a{border-bottom-color:rgba(255,255,255,.14)}
+}
 .pl-wrap.nm{--ink:#fff;--muted:rgba(255,255,255,.6);--line:rgba(255,255,255,.16);color:#fff}
-.pl-wrap.nm .h1 b{background:linear-gradient(100deg,#e4cdf0,#a473bd);-webkit-background-clip:text;background-clip:text;color:transparent}
+.pl-wrap.nm .h1 b{color:#fff}
 .pl-wrap.nm .pl-q{background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);color:rgba(255,255,255,.6)}
 .pl-wrap.nm .pl-q:focus-within{box-shadow:inset 0 0 0 1px rgba(255,255,255,.12),0 0 0 2px #b88ad0}
 .pl-wrap.nm .pl-q input::placeholder{color:rgba(255,255,255,.5)}
@@ -824,10 +838,9 @@ html.pl-night .ftr{--ink:#fff;--muted:rgba(255,255,255,.6);--line:rgba(255,255,2
 .pl-wrap.nm .pl-nk .live-dot{background:#b88ad0}
 .pl-wrap.nm .pl-h{border-bottom-color:rgba(255,255,255,.3)}
 .pl-wrap.nm .pl-c,.pl-wrap.nm .pl-nc{background:rgba(255,255,255,.08)}
-.pl-wrap.nm .pl-dep{color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.22)}
-.pl-wrap.nm .pl-dep:hover{background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.4)}
-.pl-wrap.nm .pl-dep .pi{background:#fff;color:#6b3f86}
-.pl-wrap.nm .pl-dep .k{display:none}.pl-wrap.nm .pl-dep .w{display:block}
+.pl-wrap.nm .pl-dep{background:#fff}
+.pl-wrap.nm .pl-dep .pi{background:#8A5AA1;color:#fff}
+.pl-wrap.nm .pl-dep .k{display:block}.pl-wrap.nm .pl-dep .w{display:none}
 .pl-bg.nm::before{content:"";position:absolute;inset:0;z-index:1;background:#8A5AA1;mix-blend-mode:color;opacity:.85}
 .pl-bg.nm::after{background:linear-gradient(90deg,rgba(15,11,21,.5) 0,rgba(15,11,21,.5) calc(50% - var(--cw) / 2 - 180px),rgba(15,11,21,.93) calc(50% - var(--cw) / 2),rgba(15,11,21,.93) calc(50% + var(--cw) / 2),rgba(15,11,21,.5) calc(50% + var(--cw) / 2 + 180px),rgba(15,11,21,.5) 100%)}
 @media (max-width:640px){
