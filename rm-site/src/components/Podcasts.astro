@@ -21,33 +21,23 @@ const univers = [
 ---
 <section id="podcasts" data-full data-reveal data-snap class:list={['pzs', { 'pod-s-h': h1 }]}>
 
-  {h1 && (
-    <div class="pod-b">
+  <div class="pod-b">
       <img class="pod-b-im" src={asset('rm-studio.jpg')} alt="Le studio de Radio Monaco" fetchpriority="high" />
       <span class="pod-b-sc" aria-hidden="true"></span>
       <div class="pod-b-in">
         <p class="eb pod-b-eb">{eyebrow}</p>
-        <h1 class="pod-b-h"><span class="m"><span>Écoutez vos</span></span>{' '}<span class="m"><span style="font-weight:600">podcasts préférés.</span></span></h1>
+        <H class="pod-b-h"><span class="m"><span>Écoutez vos</span></span>{' '}<span class="m"><span style="font-weight:600">podcasts préférés.</span></span></H>
         <form class="pod-q" role="search" onsubmit="return false">
           <label class="vh" for="pz-q">Rechercher une émission ou un épisode</label>
           <input id="pz-q" type="search" autocomplete="off" placeholder="Rechercher une émission, un épisode…" />
           <span class="pod-q-b" aria-hidden="true"><I n="search" s={18} /></span>
         </form>
         <p class="pod-q-r" data-pz-count hidden></p>
+        {!h1 && more && <a class="pod-b-all" href={u('/podcasts/')}>Tous les podcasts<I n="right" s={18} /></a>}
       </div>
     </div>
-  )}
 
   <div class="pod-w">
-    {!h1 && (
-      <div class="pod-hd">
-        <div>
-          <p class="eb pod-eb">{eyebrow}</p>
-          <H class="pzh"><span class="m"><span>Vos rendez-vous préférés,</span></span>{' '}<span class="m"><span style="font-weight:600">à la demande.</span></span></H>
-        </div>
-        {more && <a class="pod-more" href={u('/podcasts/')}>Tous les podcasts<I n="right" s={18} /></a>}
-      </div>
-    )}
 
     <div class="pod-r" data-pz-sec>
       <div class="pod-r-h"><h3>Podcasts à la une</h3><i aria-hidden="true">›</i></div>
