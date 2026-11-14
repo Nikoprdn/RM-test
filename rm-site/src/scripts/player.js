@@ -45,10 +45,22 @@ RM.toggle = () => {
   else RM.playLive(RM.state.station, true);
 };
 RM.seek = (sec) => { if (RM.state.mode === 'pod' && isFinite(audio.duration)) audio.currentTime = Math.max(0, Math.min(audio.duration - 1, sec)); };
+// ---------- la file : derniers publiés et lecture aléatoire ----------
+RM.pods = cfg.pods || [];
+RM.shuffle = false;
+RM.playRandom = () => { if (!RM.pods.length) return; const i = Math.floor(Math.random() * RM.pods.length); RM.playEpisode(RM.pods[i]); };
+RM.playNext = () => {
+  if (!RM.pods.length) return;
+  if (RM.shuffle) return RM.playRandom();
+  const cur = RM.state.ep && RM.state.ep.id;
+  const i = RM.pods.findIndex((x) => x.id === cur);
+  RM.playEpisode(RM.pods[(i + 1 + RM.pods.length) % RM.pods.length]);
+};
+RM.setShuffle = (on) => { RM.shuffle = !!on; emit('rm:state', RM.state); };
 
 audio.addEventListener('playing', () => { RM.state.playing = true; RM.state.loading = false; render(); });
 audio.addEventListener('pause', () => { RM.state.playing = false; render(); });
-audio.addEventListener('ended', () => { RM.state.playing = false; render(); });
+audio.addEventListener('ended', () => { RM.state.playing = false; render(); if (RM.state.mode === 'pod') RM.playNext(); });
 audio.addEventListener('error', () => { RM.state.playing = false; RM.state.loading = false; render(); });
 let lastT = 0;
 audio.addEventListener('timeupdate', () => {
@@ -237,4 +249,86 @@ render();
   q.delete('play'); q.delete('radio'); q.delete('source');
   history.replaceState(history.state, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash);
 })();
+
+// ---------- le studio : le lecteur en grand ----------
+(function studio() {
+  const box = $('stu'); if (!box) return;
+  const list = $('stu-list'); const bar = $('stu-bar');
+  let tab = 'pods';
+  const esc = (x) => String(x == null ? '' : x).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const mins = (v) => { const m = Math.round((v || 0) / 60); return m < 60 ? m + ' min' : Math.floor(m / 60) + ' h' + (m % 60 ? ' ' + String(m % 60).padStart(2, '0') : ''); };
+  const jour = (d) => { const x = new Date(d + 'Z'), t = new Date(); const n = Math.round((new Date(t.getFullYear(), t.getMonth(), t.getDate()) - new Date(x.getFullYear(), x.getMonth(), x.getDate())) / 864e5); return n <= 0 ? 'Aujourd’hui' : n === 1 ? 'Hier' : n < 7 ? 'Il y a ' + n + ' jours' : x.getDate() + '/' + String(x.getMonth() + 1).padStart(2, '0'); };
+
+  const draw = () => {
+    const s = RM.state;
+    if (tab === 'live') {
+      list.innerHTML = ST.map((st, i) => `<button class="stu-i${s.mode === 'live' && s.station === i ? ' on' : ''}" type="button" data-stu-live="${i}" style="--c:${st.color}"><img src="${esc(st.fb)}" alt=""><span><b>${esc('Radio Monaco ' + st.name)}</b><i>${esc(st.line)}</i></span><em>En direct</em></button>`).join('');
+    } else if (!RM.pods.length) {
+      list.innerHTML = '<p style="margin:18px 0;font-size:15px;color:rgba(255,255,255,.6)">Les podcasts arrivent.</p>';
+    } else {
+      list.innerHTML = RM.pods.map((e) => `<button class="stu-i${s.mode === 'pod' && s.ep && s.ep.id === e.id ? ' on' : ''}" type="button" data-stu-ep="${esc(e.id)}" style="--c:${e.color}"><img src="${esc(e.img)}" alt="" loading="lazy"><span><b>${esc(e.title)}</b><i>${esc(e.show)} · ${jour(e.d)}</i></span><em>${mins(e.s)}</em></button>`).join('');
+    }
+  };
+
+  const paint = () => {
+    const s = RM.state; const c = current();
+    box.style.setProperty('--c', c.color);
+    box.classList.toggle('playing', !!s.playing);
+    box.classList.toggle('live', s.mode !== 'pod');
+    $('stu-kind').textContent = c.kind;
+    $('stu-title').textContent = c.t1;
+    $('stu-sub').textContent = s.mode === 'pod' ? s.ep.show : c.t2;
+    const img = $('stu-cover');
+    const src = c.cover || (s.mode === 'live' && ST[s.station] ? ST[s.station].fb : '') || c.art;
+    if (src) { if (img.getAttribute('src') !== src) img.src = src; img.hidden = false; } else img.hidden = true;
+    $('stu-shuffle').setAttribute('aria-pressed', RM.shuffle ? 'true' : 'false');
+    tick();
+    draw();
+  };
+  const tick = () => {
+    const s = RM.state;
+    const d = audio.duration || (s.ep && s.ep.s) || 0;
+    const pct = s.mode === 'pod' && d ? (100 * audio.currentTime) / d : 0;
+    bar.firstElementChild.style.width = pct.toFixed(2) + '%';
+    bar.lastElementChild.style.left = pct.toFixed(2) + '%';
+    $('stu-t0').textContent = s.mode === 'pod' ? fmt(audio.currentTime) : 'En direct';
+    $('stu-t1').textContent = s.mode === 'pod' ? '-' + fmt(Math.max(0, d - audio.currentTime)) : (ST[s.station] || {}).name || '';
+  };
+
+  let open = false;
+  const show = (on) => {
+    open = on;
+    $('dock-open').setAttribute('aria-expanded', on ? 'true' : 'false');
+    document.documentElement.style.overflow = on ? 'hidden' : '';
+    if (on) { box.hidden = false; paint(); requestAnimationFrame(() => box.classList.add('on')); $('stu-close').focus(); }
+    else { box.classList.remove('on'); setTimeout(() => { if (!open) box.hidden = true; }, 400); }
+  };
+  $('dock-open').addEventListener('click', () => show(true));
+  $('stu-close').addEventListener('click', () => show(false));
+  addEventListener('keydown', (e) => { if (e.key === 'Escape' && open) show(false); });
+
+  $('stu-play').addEventListener('click', () => RM.toggle());
+  $('stu-back').addEventListener('click', () => RM.seek(audio.currentTime - 15));
+  $('stu-fwd').addEventListener('click', () => RM.seek(audio.currentTime + 30));
+  $('stu-shuffle').addEventListener('click', () => {
+    RM.setShuffle(!RM.shuffle);
+    if (RM.shuffle && RM.state.mode !== 'pod') RM.playRandom();
+    paint();
+  });
+  bar.addEventListener('click', (e) => { const r = bar.getBoundingClientRect(); const d = audio.duration; if (d) RM.seek(((e.clientX - r.left) / r.width) * d); });
+  box.querySelectorAll('[data-stu-tab]').forEach((b) => b.addEventListener('click', () => {
+    tab = b.dataset.stuTab;
+    box.querySelectorAll('[data-stu-tab]').forEach((x) => { const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-selected', on ? 'true' : 'false'); });
+    draw();
+  }));
+  list.addEventListener('click', (e) => {
+    const t = e.target.closest('[data-stu-ep],[data-stu-live]'); if (!t) return;
+    if (t.hasAttribute('data-stu-live')) RM.playLive(+t.dataset.stuLive, true);
+    else { const ep = RM.pods.find((x) => x.id === t.dataset.stuEp); if (ep) RM.playEpisode(ep); }
+  });
+  document.addEventListener('rm:state', () => { if (open) paint(); });
+  document.addEventListener('rm:meta', () => { if (open) paint(); });
+  document.addEventListener('rm:time', () => { if (open) tick(); });
+})();
+
 }
