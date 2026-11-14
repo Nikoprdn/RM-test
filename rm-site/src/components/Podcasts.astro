@@ -1,17 +1,27 @@
 ---
-// Rubrique podcasts (épisode à la une, émissions, filtres, liste) — accueil et page « Podcasts »
+// Rubrique podcasts : entête des dernières publications, l'émission du jour ouverte
+// séquence par séquence, puis l'arborescence des rendez-vous.
 import I from './Icons.astro';
 import { u } from '../lib/url.js';
-import { getPodcasts, ausImg, ausAudio, dur, dateShort, FEED_LABEL } from '../lib/data.js';
+import { getPodcasts, ausImg, ausAudio, dur, dateShort, BRANCHES } from '../lib/data.js';
 const { eyebrow = 'Podcasts', h1 = false, more = true } = Astro.props;
 const H = h1 ? 'h1' : 'h2';
 const pods = await getPodcasts();
-const podData = pods.map((s) => ({ k: s.k, f: s.feed, n: s.name, sub: s.sub, c: s.color, e: s.eps.slice(0, 7).map((e) => [e.d, e.s, e.img, e.au, e.title]) }));
+const byKey = Object.fromEntries(pods.map((s) => [s.k, s]));
 const all = pods.flatMap((s) => s.eps.slice(0, 7).map((e, i) => ({ s, e, i }))).sort((a, b) => (a.e.d < b.e.d ? 1 : -1));
 const feat = all.find((x) => x.s.k === 'morning') || all[0];
-const list = feat ? [feat, ...all.filter((x) => x !== feat)].slice(0, 7) : [];
 const epJSON = (x) => JSON.stringify({ id: x.s.k + ':' + x.i, url: ausAudio(x.e.au), title: x.e.title, show: x.s.name, color: x.s.color, ink: x.s.feed === 'mixdj' ? '#141218' : '#FFFFFF', img: ausImg(x.e.img), s: x.e.s });
 const when = (iso) => { const d = new Date(iso + 'Z'), t = new Date(); const diff = Math.round((new Date(t.getFullYear(), t.getMonth(), t.getDate()) - new Date(d.getFullYear(), d.getMonth(), d.getDate())) / 864e5); return diff <= 0 ? 'Aujourd’hui' : diff === 1 ? 'Hier' : diff < 7 ? `Il y a ${diff} jours` : dateShort(iso); };
+const jour = (iso) => new Date(iso + 'Z').toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+// Les dernières publications, toutes émissions confondues.
+const recents = all.slice(0, 6);
+// Le fil de la matinale : les chroniques diffusées le même jour que le replay, dans l'ordre.
+const jourFeat = feat ? feat.e.d.slice(0, 10) : '';
+const fil = pods
+  .filter((s) => s.feed === 'emissions' && s.k !== 'morning')
+  .map((s) => { const i = s.eps.findIndex((e) => e.d.slice(0, 10) === jourFeat); return i < 0 ? null : { s, e: s.eps[i], i }; })
+  .filter(Boolean)
+  .sort((a, b) => (a.e.d < b.e.d ? -1 : 1));
 // Une du magazine : les cinq derniers replays tournent en photo pleine page.
 const une = h1 ? all.slice(0, 5) : [];
 ---
@@ -41,50 +51,70 @@ const une = h1 ? all.slice(0, 5) : [];
     </div>
   </section>
 )}
-  <section id="podcasts" data-full data-reveal data-snap class:list={['pzs', { 'pzs-sub': h1 }]}>
-    <div class="pzw">
-      <div class="pzleft">
-        {!h1 && <p class="eb" style="margin:0 0 18px;font-size:12px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:#6A6570">{eyebrow}</p>}
-        {!h1 && <H class="pzh"><span class="m"><span>Vos rendez-vous préférés,</span></span> <span class="m"><span style="font-weight:600">à la demande.</span></span></H>}
-        {h1 && <p class="pzsub">À l’écoute</p>}
-        {feat && (
-          <div class="pzfc rise" id="pz-feat" style={`--c:${feat.s.color};--d:.2s`}>
-            <button class="pzfcv" type="button" data-rm-ep={epJSON(feat)} aria-label={`Écouter : ${feat.s.name}`}><img src={ausImg(feat.e.img, true)} alt="" loading="lazy" /><span class="pzfcp"><I n="play" s={22} /></span></button>
-            <div class="pzfct">
-              <span class="pzfck"><span class="live-dot" style={`background:${feat.s.color}`}></span><span data-f="badge">{when(feat.e.d) === 'Aujourd’hui' ? 'Nouveau · aujourd’hui' : 'À la une'} · {feat.s.name}</span></span>
-              <span class="pzfctt" data-f="title">{feat.e.title}</span>
-              <span class="pzfcm" data-f="meta">{when(feat.e.d)} · {dur(feat.e.s)} · {feat.s.sub}</span>
-              <button class="pzfcb" type="button" data-rm-ep={epJSON(feat)}><span class="pzfpi"><I n="play" /></span><span data-f="cta">Écouter l’épisode</span></button>
-            </div>
-          </div>
-        )}
-        {h1 && <a class="pzall rise" href="#toutes" style="--d:.3s">Toutes nos émissions<I n="right" s={18} /></a>}
-        <div class="pzchw rise" hidden={h1} style="--d:.35s">
-          <p class="pzchh" data-chn data-default={`Nos ${pods.length} rendez-vous`}>Nos {pods.length} rendez-vous</p>
-          <div class="pzchips" id="pz-chips" aria-label="Nos émissions">
-            {pods.map((s) => <button class="pzchip2" type="button" data-show={s.k} aria-pressed="false" title={s.name} style={`--c:${s.color}`}><img src={ausImg(s.eps[0].img)} alt={s.name} loading="lazy" /></button>)}
+  <section id="podcasts" data-reveal class:list={['pzs', { 'pzs-sub': h1 }]}>
+    <div class="pzw2">
+
+      <header class="pz-hd">
+        {!h1 && <div class="pz-ti"><p class="eb">{eyebrow}</p><H class="pzh"><span class="m"><span>Entrez</span></span>{' '}<span class="m"><span style="font-weight:600">où vous voulez.</span></span></H></div>}
+        <div class="pz-new">
+          <p class="pz-newh">Dernières publications</p>
+          <div class="pz-newr">
+            {recents.map((x) => (
+              <button class="pz-newc" type="button" data-rm-ep={epJSON(x)} data-epid={x.s.k + ':' + x.i}>
+                <img src={ausImg(x.e.img)} alt="" loading="lazy" />
+                <span class="pz-newx"><b>{x.e.title}</b><i>{x.s.name} · {when(x.e.d)}</i></span>
+                <span class="pz-newp" aria-hidden="true"><I n="play" s={11} /></span>
+              </button>
+            ))}
           </div>
         </div>
-      </div>
-      <div class="pzright rise" style="--d:.25s">
-        <div class="pzrh">
-          <div class="pzt" role="tablist" aria-label="Filtrer les podcasts">
-            {[['all', 'Tout'], ...Object.entries(FEED_LABEL)].map(([v, l]) => <button role="tab" type="button" class:list={['pztb', { on: v === 'all' }]} aria-selected={v === 'all' ? 'true' : 'false'} data-filter={v}>{l}</button>)}
-          </div>
-          <span class="pzls" id="pz-title">Derniers épisodes</span>
-        </div>
-        <div class="pzlist" id="pz-list">
-          {list.map((x) => (
-            <button class="pzr2" type="button" data-rm-ep={epJSON(x)} data-epid={x.s.k + ':' + x.i} style={`--c:${x.s.color}`}>
-              <span class="pzr2c"><img src={ausImg(x.e.img)} alt="" loading="lazy" /></span>
-              <span class="pzr2x"><span class="pzrs">{x.s.name}</span><span class="pzr2t">{x.e.title}</span><span class="pzrm">{when(x.e.d)} · {dur(x.e.s)}</span></span>
-              <span class="pzr2p"><I n="play" s={13} /></span>
-              <span class="pzrbar" aria-hidden="true"><i style="width:0%"></i></span>
+      </header>
+
+      {feat && (
+        <div class="pz-ch">
+          <div class="pz-chl">
+            <button class="pz-chv" type="button" data-rm-ep={epJSON(feat)} aria-label={`Écouter : ${feat.e.title}`}>
+              <img src={ausImg(feat.e.img, true)} alt="" loading="lazy" />
+              <span class="pz-chp"><I n="play" s={24} /></span>
             </button>
-          ))}
+            <p class="pz-chk"><span class="live-dot"></span>{feat.s.name} · {when(feat.e.d)}</p>
+            <p class="pz-cht">{feat.e.title}</p>
+            <p class="pz-chm">{feat.s.sub} · {dur(feat.e.s)}{fil.length > 0 && ` · ${fil.length} séquences`}</p>
+            <button class="pz-chb" type="button" data-rm-ep={epJSON(feat)} data-epid={feat.s.k + ':' + feat.i}><span class="pzfpi"><I n="play" /></span><span data-f="cta">Écouter depuis le début</span></button>
+          </div>
+          <div class="pz-chr">
+            <p class="pz-chh">Le fil de la matinale<span>{jour(feat.e.d)}</span></p>
+            {fil.map((x, i) => (
+              <button class="pz-seq" type="button" data-rm-ep={epJSON(x)} data-epid={x.s.k + ':' + x.i} style={`--c:${x.s.color}`}>
+                <span class="pz-sqt">{String(i + 1).padStart(2, '0')}</span>
+                <span class="pz-sqx"><b>{x.s.name}</b><span>{x.e.title}</span></span>
+                <span class="pz-sqd">{dur(x.e.s)}</span>
+                <span class="pz-sqp" aria-hidden="true"><I n="play" s={12} /></span>
+              </button>
+            ))}
+            {fil.length === 0 && <p class="pz-sqv">Les chroniques de la journée paraissent au fil de la matinale.</p>}
+          </div>
         </div>
-        {more && <a href={u('/podcasts/')} class="more" style="margin-top:20px;display:inline-flex;align-items:center;gap:10px;font-size:15px;font-weight:500">Tous les podcasts<I n="right" s={18} /></a>}
+      )}
+
+      <div class="pz-tree">
+        <p class="pz-treeh">Les {pods.length} rendez-vous<span>Classés par univers</span></p>
+        <div class="pz-brs">
+          {BRANCHES.map(([key, label, note, col, keys]) => {
+            const items = keys.map((k) => byKey[k]).filter(Boolean);
+            return items.length > 0 && (
+              <div class="pz-br" style={`--c:${col}`}>
+                <p class="pz-brh">{label}<i>{items.length}</i></p>
+                <p class="pz-brn">{note}</p>
+                <ul class="pz-brl">
+                  {items.map((s) => <li><a href={u('/podcasts/' + s.k + '/')}><b>{s.name}</b><span>{s.sub}</span></a></li>)}
+                </ul>
+              </div>
+            );
+          })}
+        </div>
+        {more && <a href={u('/podcasts/')} class="pz-all">Tous les podcasts<I n="right" s={18} /></a>}
       </div>
+
     </div>
-    <script type="application/json" id="pz-data" set:html={JSON.stringify({ shows: podData, labels: FEED_LABEL }).replace(/</g, '\\u003c')}></script>
   </section>
