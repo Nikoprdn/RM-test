@@ -9,19 +9,22 @@ const H = h1 ? 'h1' : 'h2';
 const pods = await getPodcasts();
 const byKey = Object.fromEntries(pods.map((s) => [s.k, s]));
 const all = pods.flatMap((s) => s.eps.slice(0, 7).map((e, i) => ({ s, e, i }))).sort((a, b) => (a.e.d < b.e.d ? 1 : -1));
-const feat = all.find((x) => x.s.k === 'morning') || all[0];
+// La journée retenue : la plus récente où la matinale a paru avec ses chroniques.
+const jours = {};
+pods.filter((s) => s.feed === 'emissions').forEach((s) => s.eps.slice(0, 10).forEach((e, i) => {
+  const d = e.d.slice(0, 10); (jours[d] = jours[d] || []).push({ s, e, i });
+}));
+const dates = Object.keys(jours).sort().reverse();
+const jourRef = dates.find((d) => jours[d].length >= 3 && jours[d].some((x) => x.s.k === 'morning')) || dates.find((d) => jours[d].length >= 3) || dates[0] || '';
+const duJour = jours[jourRef] || [];
+const feat = duJour.find((x) => x.s.k === 'morning') || all.find((x) => x.s.k === 'morning') || all[0];
 const epJSON = (x) => JSON.stringify({ id: x.s.k + ':' + x.i, url: ausAudio(x.e.au), title: x.e.title, show: x.s.name, color: x.s.color, ink: x.s.feed === 'mixdj' ? '#141218' : '#FFFFFF', img: ausImg(x.e.img), s: x.e.s });
 const when = (iso) => { const d = new Date(iso + 'Z'), t = new Date(); const diff = Math.round((new Date(t.getFullYear(), t.getMonth(), t.getDate()) - new Date(d.getFullYear(), d.getMonth(), d.getDate())) / 864e5); return diff <= 0 ? 'Aujourd’hui' : diff === 1 ? 'Hier' : diff < 7 ? `Il y a ${diff} jours` : dateShort(iso); };
 const jour = (iso) => new Date(iso + 'Z').toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
 // Les dernières publications, toutes émissions confondues.
 const recents = all.slice(0, 6);
-// Le fil de la matinale : les chroniques diffusées le même jour que le replay, dans l'ordre.
-const jourFeat = feat ? feat.e.d.slice(0, 10) : '';
-const fil = pods
-  .filter((s) => s.feed === 'emissions' && s.k !== 'morning')
-  .map((s) => { const i = s.eps.findIndex((e) => e.d.slice(0, 10) === jourFeat); return i < 0 ? null : { s, e: s.eps[i], i }; })
-  .filter(Boolean)
-  .sort((a, b) => (a.e.d < b.e.d ? -1 : 1));
+// Le fil de la matinale : les chroniques de cette journée, dans l'ordre de diffusion.
+const fil = duJour.filter((x) => x.s.k !== 'morning').sort((a, b) => (a.e.d < b.e.d ? -1 : 1)).slice(0, 8);
 // Une du magazine : les cinq derniers replays tournent en photo pleine page.
 const une = h1 ? all.slice(0, 5) : [];
 ---
