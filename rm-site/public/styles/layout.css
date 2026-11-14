@@ -524,19 +524,20 @@ html.menu-open{overflow:hidden} /* sur html seulement : sur body, l’en-tête c
 .uxb a,.uxb button{pointer-events:auto}
 /* La file des pochettes : le titre en cours, puis les deux précédents. */
 .uxq{display:flex;flex-direction:column;gap:11px;max-height:260px;overflow:hidden;padding-top:14px;border-top:1px solid rgba(255,255,255,.22);transition:opacity .45s ease,max-height .9s cubic-bezier(.65,0,.12,1),padding .9s cubic-bezier(.65,0,.12,1)}
-.uxqw{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:start}
+/* replié : la pochette du titre en cours, le morceau et l'artiste à sa droite */
+.uxqw{display:block}
 .uxql{display:contents}
-.uxql .uxqr{transition:opacity .45s ease}
-.uxqr{min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:7px;font-size:12.5px;line-height:1.25}
-.uxqr>img,.uxqr>.uxc{width:100%!important;max-width:118px;height:auto!important;aspect-ratio:1;object-fit:cover;border-radius:10px;background:rgba(255,255,255,.12);box-shadow:0 12px 26px -16px rgba(0,0,0,.75)}
+.uxql .uxqr{display:none}
+.uxqr{min-width:0;font-size:12.5px;line-height:1.25}
+.uxnow{display:grid;grid-template-columns:64px minmax(0,1fr);column-gap:15px;align-items:center}
+.uxnow>.uxc{grid-row:1 / 3;grid-column:1;width:64px!important;height:64px!important;aspect-ratio:1}
+.uxnow>b{grid-row:1;grid-column:2;align-self:end;font-size:16px}
+.uxnow>i{grid-row:2;grid-column:2;align-self:start;margin-top:3px;font-size:13.5px}
+.uxqr>img,.uxqr>.uxc{width:100%;max-width:118px;height:auto;aspect-ratio:1;object-fit:cover;border-radius:10px;background:rgba(255,255,255,.12);box-shadow:0 12px 26px -16px rgba(0,0,0,.75)}
 .uxqr>b,.uxqr>i{display:block;width:100%;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .uxqr>b{font-weight:600;color:#fff}
 .uxqr>i{font-style:normal;color:rgba(255,255,255,.66)}
-.uxqr:not(.uxnow){opacity:.72}
-.uxnl{display:flex;flex-direction:column;gap:2px;min-width:0;font-size:13.5px;line-height:1.25}
-.uxnl>b,.uxnl>i{display:block;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.uxnl>b{font-weight:600;color:#fff}
-.uxnl>i{font-style:normal;font-size:12.5px;color:rgba(255,255,255,.66)}
+.uxqr:not(.uxnow){opacity:.78}
 .uxqa{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#fff;text-decoration:underline;text-underline-offset:3px}
 .uvrow:hover .ux:not(:hover) .uxql .uxqr{opacity:0}
 @media (max-width:900px){
@@ -544,9 +545,10 @@ html.menu-open{overflow:hidden} /* sur html seulement : sur body, l’en-tête c
   .ux{aspect-ratio:auto;height:auto;min-height:min(76vh,540px);max-height:none;display:flex;flex-direction:column}
   .uxb{position:relative;inset:auto;flex:1 1 auto;display:flex;flex-direction:column;padding:20px 20px 24px}
   .uxq{order:3;margin-top:14px;padding-top:13px;gap:10px}
-  .uxqw{gap:10px}
-  /* sur mobile, seul le titre en cours est écrit, sous la file */
-  .uxqr>b,.uxqr>i{display:none}
+  .uxnow{grid-template-columns:62px minmax(0,1fr);column-gap:14px}
+  .uxnow>.uxc{width:62px!important;height:62px!important}
+  .uxnow>b{font-size:15.5px}
+  .uxnow>i{font-size:13px}
 }
 
 /* fiche The Sound of Monte-Carlo : deux départs */
@@ -656,14 +658,13 @@ body:has(.pl-bg){background:var(--bg)}
 
 /* ===== Volets allégés : au repos les pochettes, au survol les titres ===== */
 @media (min-width:901px){
-  .uxqw{gap:10px}
-  .uxqr{gap:0}
-  .uxqr>b,.uxqr>i{transition:max-height .6s cubic-bezier(.65,0,.12,1),opacity .3s ease,margin .6s cubic-bezier(.65,0,.12,1)}
-  .uxqr>b,.uxqr>i{max-height:0;opacity:0}
-  .uxnl{max-height:40px;opacity:1;overflow:hidden;transition:max-height .6s cubic-bezier(.65,0,.12,1),opacity .3s ease,margin .6s cubic-bezier(.65,0,.12,1)}
-  .ux:hover .uxnl{max-height:0;opacity:0;margin-top:-11px}
-  .ux:hover .uxqr>b,.ux:hover .uxqr>i{max-height:20px;opacity:1}
-  .ux:hover .uxqr>b{margin-top:8px}
+  /* déplié : les trois derniers disques, chacun avec son titre */
+  .ux:hover .uxqw{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:start}
+  .ux:hover .uxql .uxqr{display:flex}
+  .ux:hover .uxqr{display:flex;flex-direction:column;align-items:flex-start;gap:7px}
+  .ux:hover .uxnow>.uxc{width:100%!important;height:auto!important;max-width:118px}
+  .ux:hover .uxqr>b{font-size:12.5px;margin-top:0}
+  .ux:hover .uxqr>i{font-size:12.5px;margin-top:0}
 }
 
 /* ===== Lecteur : bulle opaque (façon mini-lecteur Apple) ===== */
