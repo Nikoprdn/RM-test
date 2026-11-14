@@ -1,94 +1,111 @@
 ---
-// Rubrique podcasts (épisode à la une, émissions, filtres, liste) — accueil et page « Podcasts »
+// Rubrique podcasts : bandeau photo et recherche, les podcasts à la une,
+// puis des rails par univers — accueil et page « Podcasts ».
 import I from './Icons.astro';
-import { u } from '../lib/url.js';
+import { u, asset } from '../lib/url.js';
 import { getPodcasts, ausImg, ausAudio, dur, dateShort, FEED_LABEL } from '../lib/data.js';
 const { eyebrow = 'Podcasts', h1 = false, more = true } = Astro.props;
 const H = h1 ? 'h1' : 'h2';
 const pods = await getPodcasts();
-const podData = pods.map((s) => ({ k: s.k, f: s.feed, n: s.name, sub: s.sub, c: s.color, e: s.eps.slice(0, 7).map((e) => [e.d, e.s, e.img, e.au, e.title]) }));
 const all = pods.flatMap((s) => s.eps.slice(0, 7).map((e, i) => ({ s, e, i }))).sort((a, b) => (a.e.d < b.e.d ? 1 : -1));
-const feat = all.find((x) => x.s.k === 'morning') || all[0];
-const list = feat ? [feat, ...all.filter((x) => x !== feat)].slice(0, 7) : [];
 const epJSON = (x) => JSON.stringify({ id: x.s.k + ':' + x.i, url: ausAudio(x.e.au), title: x.e.title, show: x.s.name, color: x.s.color, ink: x.s.feed === 'mixdj' ? '#141218' : '#FFFFFF', img: ausImg(x.e.img), s: x.e.s });
 const when = (iso) => { const d = new Date(iso + 'Z'), t = new Date(); const diff = Math.round((new Date(t.getFullYear(), t.getMonth(), t.getDate()) - new Date(d.getFullYear(), d.getMonth(), d.getDate())) / 864e5); return diff <= 0 ? 'Aujourd’hui' : diff === 1 ? 'Hier' : diff < 7 ? `Il y a ${diff} jours` : dateShort(iso); };
-// Entête : les dernières publications en volets photo, comme la page DJ sets.
-const une = all.slice(0, 6);
+const clean = (x) => String(x).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+// Les deux épisodes à la une, puis les derniers épisodes et les émissions par univers.
+const une = all.slice(0, 2);
+const derniers = all.slice(0, 10);
+const univers = [
+  ['Le Morning & les chroniques', pods.filter((s) => s.feed === 'emissions' || s.feed === 'horoscope')],
+  [FEED_LABEL.mixdj, pods.filter((s) => s.feed === 'mixdj')]
+].filter(([, l]) => l.length);
 ---
-<section class="djv-s pzv-s" data-full data-reveal data-snap>
-  <div class="djv-hd">
-    <div>
-      <p class="eb djv-eb">{eyebrow}</p>
-      <H class="djv-h">{h1
-        ? <><span class="m"><span>Nos</span></span>{' '}<span class="m"><span><b>podcasts.</b></span></span></>
-        : <><span class="m"><span>Dernières</span></span>{' '}<span class="m"><span><b>publications.</b></span></span></>}</H>
-      {h1 && <p class="pzv-lead">Plus de {pods.length} rendez-vous, à réécouter.</p>}
-    </div>
-    <a class="pzv-all" href={u('/podcasts/')}>Tous les podcasts<I n="right" s={18} /></a>
-  </div>
-  <div class="djv-row">
-    {une.map((x, i) => (
-      <article class="djv pzv" style={`--c:${x.s.color};--d:${(i * 0.05 + 0.1).toFixed(2)}s`}>
-        <img class="djv-ph" src={ausImg(x.e.img, true)} alt="" loading={i < 4 ? 'eager' : 'lazy'} />
-        <span class="djv-sc" aria-hidden="true"></span>
-        <span class="djv-bar" aria-hidden="true"></span>
-        <button class="djv-hit" type="button" data-rm-ep={epJSON(x)} data-epid={x.s.k + ':' + x.i} aria-label={`Écouter : ${x.e.title}`}></button>
-        <span class="djv-t"><b>{x.s.name}</b><i>{when(x.e.d)}</i></span>
-        <span class="djv-v" aria-hidden="true">{x.s.name}</span>
-        <span class="djv-b">
-          <span class="djv-k">{when(x.e.d)}<i>{dur(x.e.s)}</i></span>
-          <b class="djv-n">{x.e.title}</b>
-          <span class="djv-w">{x.s.sub}</span>
-          <span class="djv-go"><span class="pzv-pi"><I n="play" s={13} /></span>Écouter l’épisode</span>
-        </span>
-      </article>
-    ))}
-  </div>
-</section>
-  <section id="podcasts" data-full data-reveal data-snap class:list={['pzs', { 'pzs-sub': h1 }]}>
-    <div class="pzw">
-      <div class="pzleft">
-        {!h1 && <p class="eb" style="margin:0 0 18px;font-size:12px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:#6A6570">{eyebrow}</p>}
-        {!h1 && <H class="pzh"><span class="m"><span>Vos rendez-vous préférés,</span></span> <span class="m"><span style="font-weight:600">à la demande.</span></span></H>}
-        {h1 && <p class="pzsub">À l’écoute</p>}
-        {feat && (
-          <div class="pzfc rise" id="pz-feat" style={`--c:${feat.s.color};--d:.2s`}>
-            <button class="pzfcv" type="button" data-rm-ep={epJSON(feat)} aria-label={`Écouter : ${feat.s.name}`}><img src={ausImg(feat.e.img, true)} alt="" loading="lazy" /><span class="pzfcp"><I n="play" s={22} /></span></button>
-            <div class="pzfct">
-              <span class="pzfck"><span class="live-dot" style={`background:${feat.s.color}`}></span><span data-f="badge">{when(feat.e.d) === 'Aujourd’hui' ? 'Nouveau · aujourd’hui' : 'À la une'} · {feat.s.name}</span></span>
-              <span class="pzfctt" data-f="title">{feat.e.title}</span>
-              <span class="pzfcm" data-f="meta">{when(feat.e.d)} · {dur(feat.e.s)} · {feat.s.sub}</span>
-              <button class="pzfcb" type="button" data-rm-ep={epJSON(feat)}><span class="pzfpi"><I n="play" /></span><span data-f="cta">Écouter l’épisode</span></button>
-            </div>
-          </div>
-        )}
-        {h1 && <a class="pzall rise" href="#toutes" style="--d:.3s">Toutes nos émissions<I n="right" s={18} /></a>}
-        <div class="pzchw rise" hidden={h1} style="--d:.35s">
-          <p class="pzchh" data-chn data-default={`Nos ${pods.length} rendez-vous`}>Nos {pods.length} rendez-vous</p>
-          <div class="pzchips" id="pz-chips" aria-label="Nos émissions">
-            {pods.map((s) => <button class="pzchip2" type="button" data-show={s.k} aria-pressed="false" title={s.name} style={`--c:${s.color}`}><img src={ausImg(s.eps[0].img)} alt={s.name} loading="lazy" /></button>)}
-          </div>
-        </div>
+<section id="podcasts" data-reveal class:list={['pzs', { 'pod-s-h': h1 }]}>
+
+  {h1 && (
+    <div class="pod-b">
+      <img class="pod-b-im" src={asset('rm-studio.jpg')} alt="Le studio de Radio Monaco" fetchpriority="high" />
+      <span class="pod-b-sc" aria-hidden="true"></span>
+      <div class="pod-b-in">
+        <p class="eb pod-b-eb">{eyebrow}</p>
+        <h1 class="pod-b-h"><span class="m"><span>Écoutez vos</span></span>{' '}<span class="m"><span style="font-weight:600">podcasts préférés.</span></span></h1>
+        <form class="pod-q" role="search" onsubmit="return false">
+          <label class="vh" for="pz-q">Rechercher une émission ou un épisode</label>
+          <input id="pz-q" type="search" autocomplete="off" placeholder="Rechercher une émission, un épisode…" />
+          <span class="pod-q-b" aria-hidden="true"><I n="search" s={18} /></span>
+        </form>
+        <p class="pod-q-r" data-pz-count hidden></p>
       </div>
-      <div class="pzright rise" style="--d:.25s">
-        <div class="pzrh">
-          <div class="pzt" role="tablist" aria-label="Filtrer les podcasts">
-            {[['all', 'Tout'], ...Object.entries(FEED_LABEL)].map(([v, l]) => <button role="tab" type="button" class:list={['pztb', { on: v === 'all' }]} aria-selected={v === 'all' ? 'true' : 'false'} data-filter={v}>{l}</button>)}
-          </div>
-          <span class="pzls" id="pz-title">Derniers épisodes</span>
+    </div>
+  )}
+
+  <div class="pod-w">
+    {!h1 && (
+      <div class="pod-hd">
+        <div>
+          <p class="eb pod-eb">{eyebrow}</p>
+          <H class="pzh"><span class="m"><span>Vos rendez-vous préférés,</span></span>{' '}<span class="m"><span style="font-weight:600">à la demande.</span></span></H>
         </div>
-        <div class="pzlist" id="pz-list">
-          {list.map((x) => (
-            <button class="pzr2" type="button" data-rm-ep={epJSON(x)} data-epid={x.s.k + ':' + x.i} style={`--c:${x.s.color}`}>
-              <span class="pzr2c"><img src={ausImg(x.e.img)} alt="" loading="lazy" /></span>
-              <span class="pzr2x"><span class="pzrs">{x.s.name}</span><span class="pzr2t">{x.e.title}</span><span class="pzrm">{when(x.e.d)} · {dur(x.e.s)}</span></span>
-              <span class="pzr2p"><I n="play" s={13} /></span>
-              <span class="pzrbar" aria-hidden="true"><i style="width:0%"></i></span>
-            </button>
+        {more && <a class="pod-more" href={u('/podcasts/')}>Tous les podcasts<I n="right" s={18} /></a>}
+      </div>
+    )}
+
+    <div class="pod-r" data-pz-sec>
+      <div class="pod-r-h"><h3>Podcasts à la une</h3><i aria-hidden="true">›</i></div>
+      <div class="pod-u">
+        {une.map((x) => (
+          <article class="pod-c" data-pz-i={clean(x.s.name + ' ' + x.e.title + ' ' + x.s.sub)}>
+            <img src={ausImg(x.e.img, true)} alt="" loading="lazy" />
+            <span class="pod-c-sc" aria-hidden="true"></span>
+            <button class="pod-c-hit" type="button" data-rm-ep={epJSON(x)} data-epid={x.s.k + ':' + x.i} aria-label={`Écouter : ${x.e.title}`}></button>
+            <span class="pod-c-t"><b>{x.s.name}</b><span>{x.e.title}</span><em>{when(x.e.d)} · {dur(x.e.s)}</em></span>
+            <span class="pod-c-p" aria-hidden="true"><I n="play" s={20} /></span>
+          </article>
+        ))}
+      </div>
+    </div>
+
+    <div class="pod-r" data-pz-sec>
+      <div class="pod-r-h"><h3>Les derniers épisodes</h3><i aria-hidden="true">›</i><em>{all.length} à réécouter</em></div>
+      <div class="pod-r-w">
+        <button class="pod-r-n l" type="button" data-rail="-1" aria-label="Précédents"><I n="left" s={16} /></button>
+        <div class="pod-r-r" data-rail-row>
+          {derniers.map((x) => (
+            <article class="pod-t" data-pz-i={clean(x.s.name + ' ' + x.e.title + ' ' + x.s.sub)}>
+              <button class="pod-t-v" type="button" data-rm-ep={epJSON(x)} data-epid={x.s.k + ':' + x.i} aria-label={`Écouter : ${x.e.title}`}>
+                <img src={ausImg(x.e.img)} alt="" loading="lazy" />
+                <span class="pod-t-p" aria-hidden="true"><I n="play" s={15} /></span>
+              </button>
+              <b>{x.e.title}</b>
+              <span>{x.s.name} · {when(x.e.d)}</span>
+            </article>
           ))}
         </div>
-        {more && <a href={u('/podcasts/')} class="more" style="margin-top:20px;display:inline-flex;align-items:center;gap:10px;font-size:15px;font-weight:500">Tous les podcasts<I n="right" s={18} /></a>}
+        <button class="pod-r-n r" type="button" data-rail="1" aria-label="Suivants"><I n="right" s={16} /></button>
       </div>
     </div>
-    <script type="application/json" id="pz-data" set:html={JSON.stringify({ shows: podData, labels: FEED_LABEL }).replace(/</g, '\\u003c')}></script>
-  </section>
+
+    {univers.map(([label, list]) => (
+      <div class="pod-r" data-pz-sec>
+        <div class="pod-r-h"><h3>{label}</h3><i aria-hidden="true">›</i><em>{list.length} émissions</em></div>
+        <div class="pod-r-w">
+          <button class="pod-r-n l" type="button" data-rail="-1" aria-label="Précédentes"><I n="left" s={16} /></button>
+          <div class="pod-r-r" data-rail-row>
+            {list.map((s) => (
+              <article class="pod-t" data-pz-i={clean(label + ' ' + s.name + ' ' + s.sub + ' ' + s.eps[0].title)}>
+                <a class="pod-t-v" href={u('/podcasts/' + s.k + '/')} aria-label={s.name}>
+                  <img src={ausImg(s.eps[0].img)} alt="" loading="lazy" />
+                  <span class="pod-t-p" aria-hidden="true"><I n="right" s={15} /></span>
+                </a>
+                <b>{s.name}</b>
+                <span>{s.sub}</span>
+              </article>
+            ))}
+          </div>
+          <button class="pod-r-n r" type="button" data-rail="1" aria-label="Suivantes"><I n="right" s={16} /></button>
+        </div>
+      </div>
+    ))}
+
+    <p class="pod-q-none" data-pz-none hidden>Aucune émission ne correspond à votre recherche.</p>
+  </div>
+</section>

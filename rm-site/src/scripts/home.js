@@ -5,7 +5,7 @@ const ME = {}; window.__rmHome = ME; // seule la version la plus récente de ce 
 function init() {
   if (stop) stop();
   if (window.__rmHome !== ME) { stop = null; return; }
-  if (!document.querySelector('[data-hero], [data-ux], #pz-data, [data-scroller]')) { stop = null; return; }
+  if (!document.querySelector('[data-hero], [data-ux], [data-pz-sec], [data-scroller]')) { stop = null; return; }
   const ac = new AbortController(); const sig = { signal: ac.signal }; const timers = [];
   stop = () => { ac.abort(); timers.forEach(clearInterval); };
   const every = (ms, fn) => timers.push(setInterval(fn, ms));
@@ -92,67 +92,53 @@ const nice = (x) => { const k = (x || '').indexOf(' ('); return k > 0 ? nice1(x.
     loadPl(); every(30000, () => { if (!document.hidden) loadPl(); });
   });
 
-  // ---------- podcasts ----------
-  const dataEl = document.getElementById('pz-data');
-  if (dataEl) {
-    const D = JSON.parse(dataEl.textContent); const SH = D.shows; let filt = 'all', sel = '';
-    let chnShow = null;
-    const MOIS = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
-    const t0 = new Date(); t0.setHours(0, 0, 0, 0);
-    const when = (iso) => { const d = new Date(iso + 'Z'); const dd = new Date(d); dd.setHours(0, 0, 0, 0); const n = Math.round((t0 - dd) / 864e5); return n <= 0 ? 'Aujourd’hui' : n === 1 ? 'Hier' : n < 7 ? `Il y a ${n} jours` : d.getDate() + ' ' + MOIS[d.getMonth()]; };
-    const dur = (s) => { const m = Math.round(s / 60); if (m < 1) return s + ' s'; if (m < 60) return m + ' min'; const h = Math.floor(m / 60), r = m % 60; return h + ' h' + (r ? ' ' + String(r).padStart(2, '0') : ''); };
-    const img = (id, big) => `https://image.ausha.co/${id}_${big ? '1400x1400' : '400x400'}.jpeg`;
-    const ep = (sh, i) => { const e = sh.e[i]; return { id: sh.k + ':' + i, url: `https://audio.ausha.co/${e[3]}.mp3`, title: e[4], show: sh.n, color: sh.c, ink: sh.f === 'mixdj' ? '#141218' : '#FFFFFF', img: img(e[2]), s: e[1], d: e[0], big: img(e[2], true), sub: sh.sub }; };
-    const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-    const PLAY = '<svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>';
-    const EQ = '<span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>';
-    const draw = () => {
-      const shows = SH.filter((s) => filt === 'all' || s.f === filt);
-      const selShow = sel ? SH.find((s) => s.k === sel) : null;
-      const all = []; shows.forEach((s) => s.e.forEach((_, i) => all.push(ep(s, i)))); all.sort((a, b) => (a.d < b.d ? 1 : -1));
-      const feat = selShow ? ep(selShow, 0) : (all.find((x) => x.id.startsWith('morning:')) || all[0]);
-      const list = selShow ? selShow.e.map((_, i) => ep(selShow, i)).slice(0, 7) : [feat, ...all.filter((x) => x.id !== feat.id)].slice(0, 7);
-      document.getElementById('pz-title').textContent = selShow ? selShow.n + ' · ' + selShow.sub : (filt === 'all' ? 'Derniers épisodes' : D.labels[filt]);
-      document.getElementById('pz-list').innerHTML = list.map((x) => `<button class="pzr2" type="button" data-rm-ep='${esc(JSON.stringify(x))}' data-epid="${x.id}" style="--c:${x.color}"><span class="pzr2c"><img src="${x.img}" alt="" loading="lazy"></span><span class="pzr2x"><span class="pzrs">${esc(x.show)}</span><span class="pzr2t">${esc(x.title)}</span><span class="pzrm">${when(x.d)} · ${dur(x.s)}</span></span><span class="pzr2p">${PLAY}</span><span class="pzrbar" aria-hidden="true"><i style="width:0%"></i></span></button>`).join('');
-      const F = document.getElementById('pz-feat');
-      if (F && feat) {
-        F.style.setProperty('--c', feat.color);
-        F.querySelectorAll('[data-rm-ep]').forEach((b) => (b.dataset.rmEp = JSON.stringify(feat)));
-        const im = F.querySelector('.pzfcv img'); if (im.getAttribute('src') !== feat.big) im.src = feat.big;
-        F.querySelector('.live-dot').style.background = feat.color;
-        F.querySelector('[data-f=badge]').textContent = (when(feat.d) === 'Aujourd’hui' ? 'Nouveau · aujourd’hui' : 'À la une') + ' · ' + feat.show;
-        F.querySelector('[data-f=title]').textContent = feat.title;
-        F.querySelector('[data-f=meta]').textContent = when(feat.d) + ' · ' + dur(feat.s) + ' · ' + feat.sub;
-      }
-      $$('.pzchip2').forEach((c) => { const on = c.dataset.show === sel; c.classList.toggle('on', on); c.setAttribute('aria-pressed', on ? 'true' : 'false'); c.hidden = !(filt === 'all' || SH.find((s) => s.k === c.dataset.show).f === filt); });
-      $$('[data-filter]').forEach((t) => { const on = t.dataset.filter === filt; t.classList.toggle('on', on); t.setAttribute('aria-selected', on ? 'true' : 'false'); });
-      if (chnShow) chnShow(sel);
-      mark();
-    };
+  // ---------- podcasts : recherche et rails ----------
+  const PLAY = '<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>';
+  const EQ = '<span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>';
+  const pzSecs = $$('[data-pz-sec]');
+  if (pzSecs.length) {
+    // flèches : on fait défiler d'une page de vignettes, et on masque la flèche inutile
+    $$('[data-rail-row]').forEach((row) => {
+      const box = row.parentElement;
+      const btns = $$('[data-rail]', box);
+      const sync = () => {
+        const max = row.scrollWidth - row.clientWidth - 2;
+        btns.forEach((b) => (b.disabled = +b.dataset.rail < 0 ? row.scrollLeft <= 2 : row.scrollLeft >= max));
+      };
+      btns.forEach((b) => b.addEventListener('click', () => row.scrollBy({ left: +b.dataset.rail * Math.round(row.clientWidth * 0.8) }), sig));
+      row.addEventListener('scroll', () => { clearTimeout(row._t); row._t = setTimeout(sync, 90); }, { passive: true, ...sig });
+      addEventListener('resize', sync, sig); sync();
+    });
+
+    // recherche : on filtre les vignettes et les cartes à la une, les rails vides disparaissent
+    const q = document.getElementById('pz-q');
+    const count = document.querySelector('[data-pz-count]');
+    const none = document.querySelector('[data-pz-none]');
+    if (q) {
+      const items = $$('[data-pz-i]');
+      const norm = (x) => x.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+      const run = () => {
+        const t = norm(q.value);
+        let n = 0;
+        items.forEach((el) => { const on = !t || el.dataset.pzI.includes(t); el.hidden = !on; if (on) n++; });
+        pzSecs.forEach((s) => (s.hidden = !$$('[data-pz-i]:not([hidden])', s).length));
+        if (count) { count.hidden = !t; count.textContent = n > 1 ? n + ' résultats' : n === 1 ? '1 résultat' : 'Aucun résultat'; }
+        if (none) none.hidden = !t || n > 0;
+      };
+      q.addEventListener('input', () => { clearTimeout(q._t); q._t = setTimeout(run, 120); }, sig);
+      q.addEventListener('search', run, sig);
+    }
+
+    // marque l'épisode en cours d'écoute
     const mark = () => {
       const s = window.RM && window.RM.state; const cur = s && s.mode === 'pod' && s.ep ? s.ep.id : '';
-      $$('#pz-list .pzr2').forEach((r) => { const on = r.dataset.epid === cur; r.classList.toggle('on', on); r.querySelector('.pzr2p').innerHTML = on && s.playing ? EQ : PLAY; });
-      const F = document.getElementById('pz-feat');
-      if (F) { const fid = JSON.parse(F.querySelector('.pzfcb').dataset.rmEp).id; const on = cur === fid && s.playing; F.querySelector('[data-f=cta]').textContent = on ? 'Pause' : cur === fid ? 'Reprendre l’écoute' : 'Écouter l’épisode'; F.classList.toggle('playing', on); }
-    };
-    const prog = (e) => { const s = window.RM.state; if (s.mode !== 'pod' || !s.ep) return; const r = document.querySelector(`#pz-list [data-epid="${s.ep.id}"] .pzrbar i`); if (r && e.detail.d) r.style.width = ((100 * e.detail.t) / e.detail.d).toFixed(1) + '%'; };
-    $$('[data-filter]').forEach((t) => t.addEventListener('click', () => { filt = t.dataset.filter; sel = ''; draw(); }, sig));
-    $$('.pzchip2').forEach((c) => c.addEventListener('click', () => { sel = sel === c.dataset.show ? '' : c.dataset.show; draw(); }, sig));
-    // la ligne au-dessus du mur nomme l'émission survolée, sinon celle qui est choisie
-    const chn = document.querySelector('[data-chn]');
-    if (chn) {
-      const name = (k) => { const s = SH.find((x) => x.k === k); return s ? s.n + (s.sub ? ' · ' + s.sub : '') : ''; };
-      const show = (k) => { const t = k ? name(k) : ''; chn.textContent = t || chn.dataset.default; chn.classList.toggle('named', !!t); };
-      chnShow = show;
-      $$('.pzchip2').forEach((c) => {
-        c.addEventListener('mouseenter', () => show(c.dataset.show), sig);
-        c.addEventListener('focus', () => show(c.dataset.show), sig);
-        c.addEventListener('mouseleave', () => show(sel), sig);
-        c.addEventListener('blur', () => show(sel), sig);
+      $$('[data-epid]').forEach((el) => {
+        const on = el.dataset.epid === cur;
+        el.classList.toggle('on', on);
+        const p = el.querySelector('.pod-t-p'); if (p) p.innerHTML = on && s.playing ? EQ : PLAY;
       });
-    }
-    document.addEventListener('rm:state', mark, sig); document.addEventListener('rm:time', prog, sig);
-    mark();
+    };
+    document.addEventListener('rm:state', mark, sig); mark();
   }
 
   // ---------- actualités ----------
