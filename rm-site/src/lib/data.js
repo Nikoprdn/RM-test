@@ -252,13 +252,6 @@ export const PODCAST_SHOWS = [
   ['timeless', 'mixdj', 'Timeless', 'by Adore', /^timeless/i],
   ['weekend', 'mixdj', 'Week-End Change', 'by Pampa', /^week[- ]?end change/i]
 ];
-// Arborescence des rendez-vous : chaque émission appartient à une branche.
-export const BRANCHES = [
-  ['morning', 'Le Morning', 'La matinale et ses chroniques', '#E4032E', ['morning', 'feelgood', 'completez']],
-  ['principaute', 'La Principauté', 'L’actualité de Monaco et de la Riviera', '#141218', ['echo', 'business', 'feed', 'agenda']],
-  ['societe', 'Société & culture', 'Les décryptages et les tendances', '#2B4C7E', ['switchon', 'curious', 'etoiles']],
-  ['mix', 'Les DJ sets', 'Les résidents de 100 % Mix DJ', '#F59C00', ['sunny', 'goodvibes', 'golden', 'deelighted', 'house', 'afterchic', 'bemyguest', 'sidekick', 'timeless', 'weekend']]
-];
 export const FEED_COLOR = { emissions: '#E4032E', mixdj: '#F59C00', horoscope: '#2B4C7E' };
 export const FEED_LABEL = { emissions: 'Le Morning & chroniques', mixdj: '100 % Mix DJ', horoscope: 'Horoscope' };
 
