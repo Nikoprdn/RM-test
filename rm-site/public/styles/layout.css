@@ -1104,3 +1104,11 @@ html.pl-night .prog{background:#b88ad0}
 .pod-b-all:hover{gap:16px;border-color:#fff;color:#fff}
 .pod-s-h .pod-b{margin-top:0}
 .pg-home{padding-top:clamp(92px,12vh,140px);padding-bottom:clamp(20px,3vh,40px)}
+
+/* le studio : les photos de la régie se succèdent, et la liste a deux dossiers */
+.stu-bg{opacity:0;transition:opacity 2.2s ease}
+.stu-bg.on{opacity:1}
+.stu-tb{display:inline-flex;align-items:center;gap:9px}
+.stu-tb i{font-style:normal;font-size:11.5px;font-weight:600;color:rgba(255,255,255,.5);font-variant-numeric:tabular-nums}
+.stu-tb.on i{color:rgba(20,18,24,.45)}
+.stu-dot{width:7px;height:7px;border-radius:50%;background:#E4032E;flex:none;animation:pulseC 2.2s ease-out infinite}

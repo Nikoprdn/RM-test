@@ -15,7 +15,7 @@ const cfg = {
   stations: STATIONS.map((s) => ({ key: s.key, name: s.name, color: s.color, ink: s.ink, stream: s.stream, line: s.line, art: asset(s.logoInk), photo: asset(s.photo), fb: asset(s.cover) })),
   today,
   pods,
-  studio: asset('rm-studio.jpg'),
+  studio: ['rm-studio.jpg', 'rm-studio-2.jpg', 'rm-studio-3.jpg', 'rm-studio-4.jpg', 'rm-studio-5.jpg'].map(asset),
   icon: asset('icon-512.png')
 };
 ---
@@ -65,7 +65,7 @@ html[data-astro-transition] #dock{view-transition-name:player}
 
   <!-- Le studio : le lecteur en grand, dans le décor de la régie -->
 <div class="stu" id="stu" transition:persist="studio" role="dialog" aria-modal="true" aria-label="Le studio" hidden>
-    <img class="stu-bg" src={asset('rm-studio.jpg')} alt="" />
+    {cfg.studio.map((src, i) => <img class:list={['stu-bg', { on: i === 0 }]} data-stu-bg={i} src={src} alt="" loading={i === 0 ? 'eager' : 'lazy'} />)}
     <span class="stu-sc" aria-hidden="true"></span>
     <button class="stu-x" id="stu-close" type="button" aria-label="Fermer le studio">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
@@ -93,8 +93,8 @@ html[data-astro-transition] #dock{view-transition-name:player}
       </div>
       <div class="stu-r">
         <div class="stu-tabs" role="tablist">
-          <button class="stu-tb on" type="button" role="tab" data-stu-tab="pods" aria-selected="true">Derniers publiés</button>
-          <button class="stu-tb" type="button" role="tab" data-stu-tab="live" aria-selected="false">Nos radios</button>
+          <button class="stu-tb" type="button" role="tab" data-stu-tab="live" aria-selected="false"><span class="stu-dot" aria-hidden="true"></span>Les directs<i>4</i></button>
+          <button class="stu-tb on" type="button" role="tab" data-stu-tab="pods" aria-selected="true">Les podcasts<i>{pods.length}</i></button>
         </div>
         <div class="stu-list" id="stu-list"></div>
       </div>

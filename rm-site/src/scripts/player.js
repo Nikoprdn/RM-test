@@ -255,6 +255,7 @@ render();
   const box = $('stu'); if (!box) return;
   const list = $('stu-list'); const bar = $('stu-bar');
   let tab = 'pods';
+  const setTab = (t) => { tab = t; box.querySelectorAll('[data-stu-tab]').forEach((x) => { const on = x.dataset.stuTab === t; x.classList.toggle('on', on); x.setAttribute('aria-selected', on ? 'true' : 'false'); }); };
   const esc = (x) => String(x == null ? '' : x).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const mins = (v) => { const m = Math.round((v || 0) / 60); return m < 60 ? m + ' min' : Math.floor(m / 60) + ' h' + (m % 60 ? ' ' + String(m % 60).padStart(2, '0') : ''); };
   const jour = (d) => { const x = new Date(d + 'Z'), t = new Date(); const n = Math.round((new Date(t.getFullYear(), t.getMonth(), t.getDate()) - new Date(x.getFullYear(), x.getMonth(), x.getDate())) / 864e5); return n <= 0 ? 'Aujourd’hui' : n === 1 ? 'Hier' : n < 7 ? 'Il y a ' + n + ' jours' : x.getDate() + '/' + String(x.getMonth() + 1).padStart(2, '0'); };
@@ -295,13 +296,22 @@ render();
     $('stu-t1').textContent = s.mode === 'pod' ? '-' + fmt(Math.max(0, d - audio.currentTime)) : (ST[s.station] || {}).name || '';
   };
 
+  // les photos de la régie se succèdent lentement tant que le studio est ouvert
+  const bgs = [...box.querySelectorAll('[data-stu-bg]')];
+  let bgi = 0, bgt = 0;
+  const bgStop = () => { clearInterval(bgt); bgt = 0; };
+  const bgStart = () => {
+    if (bgt || bgs.length < 2 || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    bgt = setInterval(() => { bgi = (bgi + 1) % bgs.length; bgs.forEach((im, i) => im.classList.toggle('on', i === bgi)); }, 9000);
+  };
+
   let open = false;
   const show = (on) => {
     open = on;
     $('dock-open').setAttribute('aria-expanded', on ? 'true' : 'false');
     document.documentElement.style.overflow = on ? 'hidden' : '';
-    if (on) { box.hidden = false; paint(); requestAnimationFrame(() => box.classList.add('on')); $('stu-close').focus(); }
-    else { box.classList.remove('on'); setTimeout(() => { if (!open) box.hidden = true; }, 400); }
+    if (on) { box.hidden = false; setTab(RM.state.mode === 'live' ? 'live' : 'pods'); paint(); bgStart(); requestAnimationFrame(() => box.classList.add('on')); $('stu-close').focus(); }
+    else { bgStop(); box.classList.remove('on'); setTimeout(() => { if (!open) box.hidden = true; }, 400); }
   };
   $('dock-open').addEventListener('click', () => show(true));
   $('stu-close').addEventListener('click', () => show(false));
@@ -316,11 +326,7 @@ render();
     paint();
   });
   bar.addEventListener('click', (e) => { const r = bar.getBoundingClientRect(); const d = audio.duration; if (d) RM.seek(((e.clientX - r.left) / r.width) * d); });
-  box.querySelectorAll('[data-stu-tab]').forEach((b) => b.addEventListener('click', () => {
-    tab = b.dataset.stuTab;
-    box.querySelectorAll('[data-stu-tab]').forEach((x) => { const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-selected', on ? 'true' : 'false'); });
-    draw();
-  }));
+  box.querySelectorAll('[data-stu-tab]').forEach((b) => b.addEventListener('click', () => { setTab(b.dataset.stuTab); draw(); }));
   list.addEventListener('click', (e) => {
     const t = e.target.closest('[data-stu-ep],[data-stu-live]'); if (!t) return;
     if (t.hasAttribute('data-stu-live')) RM.playLive(+t.dataset.stuLive, true);
