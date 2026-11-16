@@ -114,6 +114,21 @@ Source : Dropbox `Radio Monaco/CHARTE GRAPHIQUE RM/`.
   fabriquées par `rm-site/scripts/make-logos.py` à partir des fichiers de marque.
   Les SVG officiels de `assets/charte/` sont désormais la meilleure source.
 
+### Direction artistique (validée par Nicolas le 16 novembre 2026)
+
+- **Couleur retenue** : au repos, les grandes images gardent environ un tiers de
+  leur couleur (`--rm-repos` dans `layout.css`). Le noir et blanc pur a été jugé
+  « trop triste ».
+- **Tonalité rouge au survol** (au toucher sur mobile), en fondu (`--rm-survol`).
+  Les deux filtres ont la même liste de fonctions pour que le fondu marche :
+  ne pas remplacer `--rm-survol` par un filtre SVG `url(#…)`, qui ne s'anime pas.
+- **Le rouge est un signal** (direct, lecture, élément actif), pas un fond.
+- **Ouverture de l'accueil** : trois photos du studio, aucune photo du port.
+  Trois des quatre photos de Monaco du dépôt montrent des yachts (`rm-monaco-port`,
+  `rm-monaco-baie`, `rm-night`) : ne pas les remettre en avant. `rm-night` sert
+  encore au volet Night Mood, faute de mieux.
+- Pas encore traité : les volets « Nos radios » et les autres pages.
+
 ---
 
 ## État des rubriques
