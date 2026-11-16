@@ -110,6 +110,51 @@ const nice = (x) => { const k = (x || '').indexOf(' ('); return k > 0 ? nice1(x.
       addEventListener('resize', sync, sig); sync();
     });
 
+    // défilement automatique des derniers épisodes : lent, il s'arrête au survol, au
+    // toucher, au clavier, pendant une recherche, hors écran ou si l'onglet est caché ;
+    // arrivé au bout, il marque une pause puis revient au début. Désactivé si
+    // l'utilisateur a réduit les animations.
+    if (!reduced) {
+      $$('[data-rail-auto]').forEach((row) => {
+        const box = row.parentElement;
+        const SPEED = 28; // pixels par seconde
+        let held = false, seen = true, phase = 'run', until = 0, last = 0, pos = row.scrollLeft, raf = 0;
+        const hold = (v) => () => { held = v; last = 0; };
+        box.addEventListener('pointerenter', hold(true), sig);
+        box.addEventListener('pointerleave', hold(false), sig);
+        box.addEventListener('focusin', hold(true), sig);
+        box.addEventListener('focusout', hold(false), sig);
+        // au toucher : pause, puis reprise quelques secondes après le dernier geste
+        row.addEventListener('touchstart', () => { held = true; clearTimeout(row._r); }, { passive: true, ...sig });
+        row.addEventListener('touchend', () => { clearTimeout(row._r); row._r = setTimeout(() => { held = false; last = 0; }, 4000); }, { passive: true, ...sig });
+        // un défilement par les flèches ou la molette : on repart de la nouvelle position
+        row.addEventListener('scroll', () => { if (phase === 'run' && Math.abs(row.scrollLeft - pos) > 2) pos = row.scrollLeft; }, { passive: true, ...sig });
+        const io = new IntersectionObserver(([e]) => { seen = e.isIntersecting; last = 0; });
+        io.observe(row);
+        const q = document.getElementById('pz-q');
+        const tick = (t) => {
+          raf = requestAnimationFrame(tick);
+          if (held || !seen || document.hidden || (q && q.value.trim())) { last = 0; return; }
+          const dt = last ? Math.min(t - last, 64) : 0; last = t;
+          // 'end' : pause au bout du rail ; 'back' : retour au début, puis courte pause
+          if (phase !== 'run') {
+            if (t < until) return;
+            if (phase === 'end') { phase = 'back'; until = t + 1800; pos = 0; row.scrollTo({ left: 0, behavior: 'smooth' }); return; }
+            phase = 'run'; pos = row.scrollLeft; return;
+          }
+          const max = row.scrollWidth - row.clientWidth;
+          if (max <= 0) return;
+          if (pos >= max - 1) { phase = 'end'; until = t + 2500; return; }
+          pos = Math.min(max, pos + (SPEED * dt) / 1000);
+          row.style.scrollBehavior = 'auto';
+          row.scrollLeft = pos;
+          row.style.scrollBehavior = '';
+        };
+        raf = requestAnimationFrame(tick);
+        sig.signal.addEventListener('abort', () => { cancelAnimationFrame(raf); io.disconnect(); clearTimeout(row._r); });
+      });
+    }
+
     // recherche : on filtre les vignettes et les cartes à la une, les rails vides disparaissent
     const q = document.getElementById('pz-q');
     const count = document.querySelector('[data-pz-count]');

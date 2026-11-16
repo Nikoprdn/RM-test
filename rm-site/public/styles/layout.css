@@ -1134,3 +1134,27 @@ html.pl-night .prog{background:#b88ad0}
 @media (prefers-reduced-motion:reduce){
   .pod-c>img,.pod-t-v img,.pg-im,#equipes .unv img,#equipes .thumb img{transition:none}
 }
+
+/* ── Podcasts : vignettes plus petites pour en voir davantage (16 novembre 2026) ── */
+.pod-t{flex:0 0 152px}
+.pod-r-r{gap:16px}
+.pod-t>b{margin-top:10px;font-size:13.5px}
+.pod-t>span{font-size:12px}
+.pod-t-p{width:34px;height:34px;right:8px;bottom:8px}
+@media (max-width:900px){
+  .pod-t{flex:0 0 128px}
+  .pod-r-r{gap:12px}
+  /* le rail qui défile seul ne doit pas être aimanté : l'aimantation bloquerait le mouvement */
+  .pod-r-auto{scroll-snap-type:none}
+}
+/* Écrans peu hauts (portables) : on resserre le bandeau pour que le rail des
+   derniers épisodes tienne en entier dans le premier écran. */
+@media (min-width:901px) and (max-height:820px){
+  .pod-b{padding-top:calc(84px + clamp(22px,3.6vh,54px));padding-bottom:clamp(26px,4vh,48px)}
+  .pod-b-eb{margin-bottom:10px}
+  .pod-b-h{font-size:clamp(32px,3.6vw,50px)}
+  .pod-q{margin-top:clamp(18px,2.6vh,26px);height:54px}
+  .pod-r{padding-top:clamp(22px,3.2vh,32px)}
+  .pod-r-h{margin-bottom:14px}
+  .pod-t{flex-basis:138px}
+}

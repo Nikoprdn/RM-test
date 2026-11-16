@@ -1,6 +1,6 @@
 ---
-// Rubrique podcasts : bandeau photo et recherche, les podcasts à la une,
-// puis des rails par univers — accueil et page « Podcasts ».
+// Rubrique podcasts : bandeau photo et recherche, les derniers épisodes qui
+// défilent seuls, puis des rails par univers — accueil et page « Podcasts ».
 import I from './Icons.astro';
 import { u, asset } from '../lib/url.js';
 import { getPodcasts, ausImg, ausAudio, dur, dateShort, FEED_LABEL } from '../lib/data.js';
@@ -11,9 +11,9 @@ const all = pods.flatMap((s) => s.eps.slice(0, 7).map((e, i) => ({ s, e, i }))).
 const epJSON = (x) => JSON.stringify({ id: x.s.k + ':' + x.i, url: ausAudio(x.e.au), title: x.e.title, show: x.s.name, color: x.s.color, ink: x.s.feed === 'mixdj' ? '#141218' : '#FFFFFF', img: ausImg(x.e.img), s: x.e.s });
 const when = (iso) => { const d = new Date(iso + 'Z'), t = new Date(); const diff = Math.round((new Date(t.getFullYear(), t.getMonth(), t.getDate()) - new Date(d.getFullYear(), d.getMonth(), d.getDate())) / 864e5); return diff <= 0 ? 'Aujourd’hui' : diff === 1 ? 'Hier' : diff < 7 ? `Il y a ${diff} jours` : dateShort(iso); };
 const clean = (x) => String(x).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
-// Les deux épisodes à la une, puis les derniers épisodes et les émissions par univers.
-const une = all.slice(0, 2);
-const derniers = all.slice(0, 10);
+// Les derniers épisodes (rail qui défile seul), puis les émissions par univers.
+// « Podcasts à la une » retiré à la demande de Nicolas (16 novembre 2026).
+const derniers = all.slice(0, 24);
 const univers = [
   ['Le Morning & les chroniques', pods.filter((s) => s.feed === 'emissions' || s.feed === 'horoscope')],
   [FEED_LABEL.mixdj, pods.filter((s) => s.feed === 'mixdj')]
@@ -40,25 +40,10 @@ const univers = [
   <div class="pod-w">
 
     <div class="pod-r" data-pz-sec>
-      <div class="pod-r-h"><h3>Podcasts à la une</h3><i aria-hidden="true">›</i></div>
-      <div class="pod-u">
-        {une.map((x) => (
-          <article class="pod-c" data-pz-i={clean(x.s.name + ' ' + x.e.title + ' ' + x.s.sub)}>
-            <img src={ausImg(x.e.img, true)} alt="" loading="lazy" />
-            <span class="pod-c-sc" aria-hidden="true"></span>
-            <button class="pod-c-hit" type="button" data-rm-ep={epJSON(x)} data-epid={x.s.k + ':' + x.i} aria-label={`Écouter : ${x.e.title}`}></button>
-            <span class="pod-c-t"><b>{x.s.name}</b><span>{x.e.title}</span><em>{when(x.e.d)} · {dur(x.e.s)}</em></span>
-            <span class="pod-c-p" aria-hidden="true"><I n="play" s={20} /></span>
-          </article>
-        ))}
-      </div>
-    </div>
-
-    <div class="pod-r" data-pz-sec>
       <div class="pod-r-h"><h3>Les derniers épisodes</h3><i aria-hidden="true">›</i><em>{all.length} à réécouter</em></div>
       <div class="pod-r-w">
         <button class="pod-r-n l" type="button" data-rail="-1" aria-label="Précédents"><I n="left" s={16} /></button>
-        <div class="pod-r-r" data-rail-row>
+        <div class="pod-r-r pod-r-auto" data-rail-row data-rail-auto>
           {derniers.map((x) => (
             <article class="pod-t" data-pz-i={clean(x.s.name + ' ' + x.e.title + ' ' + x.s.sub)}>
               <button class="pod-t-v" type="button" data-rm-ep={epJSON(x)} data-epid={x.s.k + ':' + x.i} aria-label={`Écouter : ${x.e.title}`}>

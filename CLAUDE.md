@@ -151,9 +151,14 @@ pochette du titre en cours avec le morceau et l'artiste à sa droite. Déplié :
 les trois derniers disques, chacun légendé.
 
 **Podcasts** (`Podcasts.astro`, accueil et `/podcasts/`) — modèle Radioplayer en
-version photo : bandeau de la régie avec la recherche en verre dépoli, « Podcasts
-à la une » en deux cartes larges, puis des rails qui défilent (derniers épisodes,
-Le Morning & les chroniques, 100 % Mix DJ). La recherche filtre vraiment, sur le
+version photo : bandeau de la régie avec la recherche en verre dépoli, puis des
+rails (derniers épisodes, Le Morning & les chroniques, 100 % Mix DJ). Vignettes
+de 152 px (128 px sur mobile). **Les derniers épisodes (24) défilent seuls**,
+lentement (`data-rail-auto`, `home.js`) : arrêt au survol, au toucher, au
+clavier, pendant une recherche, hors écran ; pause au bout puis retour au début.
+Sur les écrans peu hauts (≤ 820 px), le bandeau se resserre pour que ce rail
+tienne en entier dans le premier écran (vérifié en 1 288 × 663, l'écran de Nicolas).
+« Podcasts à la une » (deux grandes cartes) a été retiré à sa demande. La recherche filtre vraiment, sur le
 nom de l'émission, son sous-titre, le titre de l'épisode et le nom du rail.
 
 **Le lecteur** (`Player.astro` + `player.js`) — une capsule en bas de page, et un
