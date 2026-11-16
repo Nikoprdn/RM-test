@@ -116,9 +116,10 @@ Source : Dropbox `Radio Monaco/CHARTE GRAPHIQUE RM/`.
 
 ### Direction artistique (validée par Nicolas le 16 novembre 2026)
 
-- **Couleur retenue** : au repos, les grandes images gardent environ un tiers de
-  leur couleur (`--rm-repos` dans `layout.css`). Le noir et blanc pur a été jugé
-  « trop triste ».
+- **Couleur retenue** : au repos, les grandes images sont légèrement désaturées,
+  proches de la couleur naturelle (`--rm-repos` dans `layout.css`, `grayscale(.3)`).
+  Le noir et blanc pur a été jugé « trop triste », et une désaturation plus forte
+  (`grayscale(.62)`) trop éloignée du naturel.
 - **Au survol, la couleur revient** (au toucher sur mobile), en fondu
   (`--rm-survol`). Les deux filtres ont la même liste de fonctions pour que le
   fondu marche. La tonalité rouge au survol a été essayée : « horrible », refusée.
@@ -128,7 +129,8 @@ Source : Dropbox `Radio Monaco/CHARTE GRAPHIQUE RM/`.
   sans filtre** (volonté du propriétaire de la radio : des images de Monaco).
   Essayé et refusé le 16 novembre : le studio en ouverture ; des recadrages hauts
   qui sortaient le port (« horrible, on ne voit plus rien ») ; la couleur retenue
-  sur l'ouverture. Ne pas recadrer ni assombrir ces photos. Le port y apparaît :
+  sur l'ouverture. Ne pas recadrer ni assombrir ces photos. Pas de compteur
+  « 01 / 04 » sous la légende (retiré à sa demande). Le port y apparaît :
   la règle « pas de photo de bateau » ne s'applique pas à l'ouverture tant que
   le propriétaire n'a pas fourni d'autres photos de Monaco.
 - Pas encore traité : les volets « Nos radios » et les autres pages.
