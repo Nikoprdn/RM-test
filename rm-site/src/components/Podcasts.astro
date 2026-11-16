@@ -22,6 +22,8 @@ const duo = [
   ['Les derniers épisodes', eps.slice(0, 20), eps.length, 'à réécouter'],
   ['Les derniers mixs', mixs.slice(0, 20), mixs.length, 'mixs']
 ].filter(([, l]) => l.length);
+// candidats du volet « les podcasts du jour » : les 16 épisodes les plus récents
+const jour = all.slice(0, 16);
 const univers = [
   ['Le Morning & les chroniques', pods.filter((s) => s.feed === 'emissions' || s.feed === 'horoscope')],
   [FEED_LABEL.mixdj, pods.filter((s) => s.feed === 'mixdj')]
@@ -43,6 +45,32 @@ const univers = [
         <p class="pod-q-r" data-pz-count hidden></p>
         {!h1 && more && <a class="pod-b-all" href={u('/podcasts/')}>Tous les podcasts<I n="right" s={18} /></a>}
       </div>
+      {h1 && (
+        /* Volet « les podcasts du jour » : il glisse à l'ouverture de la page Podcasts.
+           Le tri par jour se fait dans le navigateur (le site est construit à l'avance) :
+           les épisodes d'aujourd'hui, sinon ceux du dernier jour publié. Fermé : jusqu'au lendemain. */
+        <aside class="pod-j" data-pod-j aria-label="Les podcasts du jour" hidden>
+          <div class="pod-j-h">
+            <span class="pod-j-k" data-pod-j-k>Aujourd’hui</span>
+            <b data-pod-j-n></b>
+            <button class="pod-j-x" type="button" aria-label="Fermer le volet">×</button>
+          </div>
+          <ul class="pod-j-l">
+            {jour.map((x) => (
+              <li data-pod-j-d={x.e.d} hidden>
+                <button type="button" data-rm-ep={epJSON(x)} data-epid={x.s.k + ':' + x.i} aria-label={`Écouter : ${x.s.name}, ${x.e.title}`}>
+                  <img src={ausImg(x.e.img)} alt="" loading="lazy" />
+                  <span class="pod-j-t">
+                    <em style={`--c:${x.s.color}`}>{x.s.name}</em>
+                    <span>{x.e.title}</span>
+                  </span>
+                  <span class="pod-j-p" aria-hidden="true"><I n="play" s={13} /></span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </aside>
+      )}
     </div>
 
   <div class="pod-w">
@@ -99,3 +127,36 @@ const univers = [
     <p class="pod-q-none" data-pz-none hidden>Aucune émission ne correspond à votre recherche.</p>
   </div>
 </section>
+
+<script>
+  // Volet « les podcasts du jour » (page Podcasts) : on garde les épisodes publiés
+  // aujourd'hui, sinon ceux du dernier jour publié ; quatre au plus. Fermé par la
+  // croix : il ne revient que le lendemain (mémorisé dans ce navigateur, sans risque
+  // si le stockage est indisponible).
+  function initJour() {
+    const box = document.querySelector('[data-pod-j]'); if (!box || box.dataset.ok) return; box.dataset.ok = '1';
+    const day = (d) => d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+    const today = day(new Date());
+    try { if (localStorage.getItem('rm-pod-j') === today) return; } catch (e) {}
+    const rows = [...box.querySelectorAll('[data-pod-j-d]')].map((li) => ({ li, k: day(new Date(li.dataset.podJD + 'Z')) }));
+    if (!rows.length) return;
+    let pick = rows.filter((r) => r.k === today), label = 'Aujourd’hui';
+    if (!pick.length) {
+      const last = rows[0].k; pick = rows.filter((r) => r.k === last);
+      const y = new Date(); y.setDate(y.getDate() - 1);
+      label = last === day(y) ? 'Hier' : 'Les plus récents';
+    }
+    const n = pick.length;
+    pick.slice(0, 4).forEach((r) => (r.li.hidden = false));
+    box.querySelector('[data-pod-j-k]').textContent = label;
+    box.querySelector('[data-pod-j-n]').textContent = n > 1 ? n + ' nouveaux podcasts' : '1 nouveau podcast';
+    box.hidden = false;
+    setTimeout(() => box.classList.add('in'), 900);
+    box.querySelector('.pod-j-x').addEventListener('click', () => {
+      box.classList.remove('in'); box.classList.add('out');
+      try { localStorage.setItem('rm-pod-j', today); } catch (e) {}
+      setTimeout(() => (box.hidden = true), 500);
+    });
+  }
+  document.addEventListener('astro:page-load', initJour); initJour();
+</script>

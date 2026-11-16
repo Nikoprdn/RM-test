@@ -167,7 +167,13 @@ et a été jugé trop rapide. Arrêt au survol, au toucher, au clavier, pendant 
 recherche, hors écran ; au bout, retour au début.
 Sur les écrans peu hauts (≤ 820 px), le bandeau se resserre pour que ces rails
 tiennent en entier dans le premier écran (vérifié en 1 288 × 663, l'écran de Nicolas).
-« Podcasts à la une » (deux grandes cartes) a été retiré à sa demande. La recherche filtre vraiment, sur le
+« Podcasts à la une » (deux grandes cartes) a été retiré à sa demande.
+**Volet « les podcasts du jour »** (page `/podcasts/` seulement, `.pod-j`) : à
+l'ouverture, une carte en verre dépoli (même style que les notifications de
+l'accueil) glisse à droite du bandeau avec les épisodes publiés aujourd'hui, sinon
+ceux du dernier jour publié (« Hier », « Les plus récents ») ; trois au plus, deux
+en dessous de 1 260 px où il passe sous la recherche. Le tri par jour se fait dans
+le navigateur. La croix le ferme jusqu'au lendemain (`localStorage` `rm-pod-j`). La recherche filtre vraiment, sur le
 nom de l'émission, son sous-titre, le titre de l'épisode et le nom du rail.
 
 **Le lecteur** (`Player.astro` + `player.js`) — une capsule en bas de page, et un
