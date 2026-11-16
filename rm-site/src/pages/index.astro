@@ -20,10 +20,10 @@ const TEAM = team.slice(0, 3);
 
 
 const HERO = [
-  ['rm-monaco-port.jpg', 'Le port Hercule et Monte-Carlo', '50% 60%', 'Le port Hercule'],
-  ['rm-monaco-baie.jpg', 'La baie de Monaco', '50% 55%', 'La baie de Monaco'],
-  ['rm-night.jpg', 'Monaco de nuit', '50% 50%', 'Monaco, la nuit'],
-  ['rm-casino.jpg', 'Le Casino de Monte-Carlo', '50% 30%', 'Le Casino de Monte-Carlo']
+  // Direction artistique : pas de photo de bateau ; le studio, lieu propre à la radio
+  ['rm-studio-2.jpg', 'Le studio de Radio Monaco', '50% 45%', 'Le studio'],
+  ['rm-studio-5.jpg', 'Le plateau de Radio Monaco', '50% 50%', 'Le plateau'],
+  ['rm-studio-4.jpg', 'La régie de Radio Monaco', '50% 50%', 'La régie']
 ];
 const jsonld = [{
   '@context': 'https://schema.org', '@type': 'WebSite', name: 'Radio Monaco', url: 'https://radio-monaco.com/', inLanguage: 'fr-FR'
@@ -54,9 +54,9 @@ const jsonld = [{
     <div class="fade f3" style="position:absolute;left:0;right:0;bottom:36px">
       <div class="wrap" style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:20px 40px">
         <div style="position:relative;height:44px;min-width:220px;flex:1 1 220px">
-          {HERO.map(([, , , cap], i) => <span class:list={['cap', { on: i === 0 }]} data-cap={i} style="position:absolute;left:0;bottom:0;display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;letter-spacing:.24em;text-transform:uppercase;opacity:.8">0{i + 1} / 04</span><span style="font-size:16px;font-weight:500">{cap}</span></span>)}
+          {HERO.map(([, , , cap], i) => <span class:list={['cap', { on: i === 0 }]} data-cap={i} style="position:absolute;left:0;bottom:0;display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;letter-spacing:.24em;text-transform:uppercase;opacity:.8">0{i + 1} / 0{HERO.length}</span><span style="font-size:16px;font-weight:500">{cap}</span></span>)}
         </div>
-        <div style="flex:0 1 260px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px">
+        <div style={`flex:0 1 260px;display:grid;grid-template-columns:repeat(${HERO.length},minmax(0,1fr));gap:8px`}>
           {HERO.map((_, i) => <button type="button" data-hgo={i} aria-label={`Photo ${i + 1}`} style="height:44px;padding:0;border:0;background:transparent;cursor:pointer;display:flex;align-items:center"><span class:list={['bar', { on: i === 0 }]} style="width:100%"><i></i></span></button>)}
         </div>
       </div>
@@ -145,7 +145,7 @@ const jsonld = [{
   <section id="equipes" data-reveal data-snap class="hsec" style="padding:140px 0 0">
     <div class="wrap">
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(460px,100%),1fr));gap:40px 72px;align-items:center">
-        <div class="unv" style="position:relative;aspect-ratio:1/1;max-height:620px;border-radius:24px;overflow:hidden;background:#E4032E;--d:.1s">
+        <div class="unv" style="position:relative;aspect-ratio:1/1;max-height:620px;border-radius:24px;overflow:hidden;background:#2A2730;--d:.1s">
           <div class="plx zm" style="position:absolute;inset:-8% 0">
             {TEAM.map((m, i) => <img class:list={['slide tsl-img', { on: i === 0 }]} data-t={i} src={m.img ? m.img.large : ''} alt={m.name} loading="lazy" style="object-position:50% 25%;position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />)}
             <img class="slide tsl-img" data-t={TEAM.length} src={asset('show-morning.jpg')} alt="L’équipe du Morning" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:70% 50%" />
@@ -159,7 +159,7 @@ const jsonld = [{
           </div>
           <div class="rise" style="margin-top:32px;display:flex;gap:12px;--d:.4s">
             {[...TEAM.map((m) => [m.name, m.img ? m.img.medium : '', '50% 25%']), ['Le Morning', asset('show-morning.jpg'), '72% 40%']].map(([label, img, pos], i) => (
-              <button class:list={['thumb', { on: i === 0 }]} type="button" data-tgo={i} aria-label={label} aria-pressed={i === 0 ? 'true' : 'false'} style="width:72px;height:72px;padding:0;border:0;border-radius:16px;overflow:hidden;cursor:pointer;background:#E4032E"><img src={img} alt="" loading="lazy" style={`width:100%;height:100%;object-fit:cover;display:block;object-position:${pos}`} /></button>
+              <button class:list={['thumb', { on: i === 0 }]} type="button" data-tgo={i} aria-label={label} aria-pressed={i === 0 ? 'true' : 'false'} style="width:72px;height:72px;padding:0;border:0;border-radius:16px;overflow:hidden;cursor:pointer;background:#2A2730"><img src={img} alt="" loading="lazy" style={`width:100%;height:100%;object-fit:cover;display:block;object-position:${pos}`} /></button>
             ))}
           </div>
           <a href={u('/lequipe/')} class="more" style="margin-top:36px;display:inline-flex;align-items:center;gap:10px;font-size:15px;font-weight:500">Toute l’équipe<I n="right" s={18} /></a>
