@@ -224,6 +224,11 @@ mosaïque de pochettes en fond, bascule par onglets.
 ## Ce qu'on attend de Nicolas
 
 - Une adresse de flux Behold.so ou un jeton Meta pour les vrais réels Instagram.
+  Le code est prêt (`src/lib/social.js`). Démarche expliquée le 16 novembre :
+  compte Behold gratuit, flux JSON limité aux réels, adresse `feeds.behold.so/…`
+  à coller dans `social.js` comme valeur par défaut d'`IG_FEED_URL` (l'adresse ne
+  contient pas de clé ; les variables GitHub ne sont pas accessibles d'ici).
+  Nicolas le fera plus tard.
 - Le nombre d'abonnés et les adresses Facebook, TikTok, LinkedIn.
 - La validation des 64 visuels.
 - Une relecture du texte de présentation de Monte-Carlo.
