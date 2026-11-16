@@ -154,8 +154,10 @@ les trois derniers disques, chacun légendé.
 version photo : bandeau de la régie avec la recherche en verre dépoli, puis des
 deux rails côte à côte, **les derniers épisodes à gauche et les derniers mixs à
 droite** (20 chacun ; l'un sous l'autre sur mobile), puis les rails par univers
-(Le Morning & les chroniques, 100 % Mix DJ). Vignettes de 152 px (128 px sur
-mobile) ; sous l'image : le nom de l'émission en gras, le titre de l'épisode, la
+(Le Morning & les chroniques, 100 % Mix DJ). **Rails équilibrés, rien ne dépasse** :
+la largeur des cartes se calcule pour qu'un nombre entier remplisse exactement le
+rail (`--n` dans `layout.css` : 4 par rail du haut et 8 par rail du bas sur
+ordinateur, 3 et 6 entre 901 et 1 199 px, 2 sur mobile) ; sous l'image : le nom de l'émission en gras, le titre de l'épisode, la
 date. **Les deux rails du haut défilent seuls, carte par carte** (toutes les 4 s,
 glissé doux ; `data-rail-auto`, `home.js`) pour que les vignettes restent
 entières : un défilement continu (28 px/s puis 12 px/s) laissait une carte coupée
