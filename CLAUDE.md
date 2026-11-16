@@ -124,12 +124,13 @@ Source : Dropbox `Radio Monaco/CHARTE GRAPHIQUE RM/`.
   fondu marche. La tonalité rouge au survol a été essayée : « horrible », refusée.
   Le liseré rouge au survol aussi, non retenu.
 - **Le rouge est un signal** (direct, lecture, élément actif), pas un fond.
-- **Ouverture de l'accueil : des images de Monaco**, volonté du propriétaire de la
-  radio. Mais toujours sans bateau : `rm-hero-nuit/jour/casino.jpg` sont des
-  recadrages hauts qui excluent le port. Définition limitée (1 080 à 1 454 px) :
-  à remplacer par de vraies photos de Monaco. Le studio en ouverture a été refusé.
-  `rm-monaco-port`, `rm-monaco-baie` et `rm-night` entiers montrent des yachts ;
-  `rm-night` sert encore au volet Night Mood, faute de mieux.
+- **Ouverture de l'accueil : les quatre photos de Monaco d'origine, entières et
+  sans filtre** (volonté du propriétaire de la radio : des images de Monaco).
+  Essayé et refusé le 16 novembre : le studio en ouverture ; des recadrages hauts
+  qui sortaient le port (« horrible, on ne voit plus rien ») ; la couleur retenue
+  sur l'ouverture. Ne pas recadrer ni assombrir ces photos. Le port y apparaît :
+  la règle « pas de photo de bateau » ne s'applique pas à l'ouverture tant que
+  le propriétaire n'a pas fourni d'autres photos de Monaco.
 - Pas encore traité : les volets « Nos radios » et les autres pages.
 
 ---

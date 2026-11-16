@@ -1122,7 +1122,6 @@ html.pl-night .prog{background:#b88ad0}
   --rm-repos:grayscale(.62) sepia(.12) saturate(1) hue-rotate(0deg) contrast(1.04) brightness(1);
   --rm-survol:grayscale(0) sepia(0) saturate(1) hue-rotate(0deg) contrast(1.02) brightness(1);
 }
-.hpx .hs{filter:var(--rm-repos) brightness(.78)}
 .pod-b-im{filter:var(--rm-repos) brightness(.62)}
 .pod-c>img,.pod-t-v img,.pg-im,#equipes .unv img,#equipes .thumb img{
   filter:var(--rm-repos);
