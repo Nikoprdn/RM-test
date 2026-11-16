@@ -187,7 +187,12 @@ d'une page à l'autre (`transition:persist`).
 heures, émission en cours mise en avant, relue toutes les 30 s.
 
 **DJ sets** (`/djs/`) — volets photo, jour et heure en haut, nom à la verticale,
-le volet survolé s'ouvre.
+le volet survolé s'ouvre. **Chaque photo a son point de cadrage** (`FOCUS` dans
+`DJSets.astro`, position du visage en % de la largeur) pour que le DJ reste centré
+dans un volet rétracté ; duos : le premier visage ; volet ouvert : retour au centre
+en douceur. Ordinateur seulement. Un nouveau DJ reste centré à 50 % : relever son
+point de cadrage. La photo de Be My Guest est une silhouette noire en paysage :
+elle reste sombre, à remplacer.
 
 **Playlist** (`/playlist/`) — deux univers (The Sound of Monte-Carlo, Night Mood),
 mosaïque de pochettes en fond, bascule par onglets.

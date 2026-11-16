@@ -1223,3 +1223,14 @@ html.pl-night .prog{background:#b88ad0}
   .pod-j.out{transform:translateY(16px)}
   .pod-j-l li:nth-child(n+3){display:none}
 }
+
+/* ── DJ sets : le DJ reste centré dans un volet rétracté ─────────────────────────
+   Chaque photo a son point de cadrage (--fx, posé dans DJSets.astro) ; le volet
+   ouvert revient au centre de la photo, en suivant l'ouverture. Ordinateur seulement :
+   sur mobile, les cartes sont assez larges pour tout montrer. */
+@media (min-width:901px){
+  .djv-ph{object-position:var(--fx,50%) 50%;transition:filter .8s ease,transform 1.6s cubic-bezier(.16,.84,.12,1),object-position .95s cubic-bezier(.65,0,.12,1)}
+}
+@media (min-width:901px) and (hover:hover){
+  .djv:hover .djv-ph{object-position:50% 50%}
+}

@@ -6,6 +6,12 @@ import { getDJs } from '../lib/data.js';
 const { h1 = false, more = false, id } = Astro.props;
 const H = h1 ? 'h1' : 'h2';
 const djs = await getDJs();
+// Point de cadrage horizontal de chaque photo (position du visage, en % de la largeur),
+// pour qu'un volet rétracté, étroit, garde le DJ au centre. Duos : le premier visage ;
+// le volet ouvert revient au centre et montre les deux. Relevé sur les photos le 16/11/2026 ;
+// une photo nouvelle ou inconnue reste centrée (50 %).
+const FOCUS = { 'good vibes': 48, 'sunny time': 49, 'golden hour': 45, 'lafter chic': 54, 'deelighted': 34, 'house therapy': 29, 'week-end change': 45, 'adore': 28, 'sidekick radio show': 76, 'be my guest': 70 };
+const fkey = (x) => String(x || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[’']/g, '').trim();
 const sets = djs.map((d) => ({
   ...d,
   days: d.slots.length ? d.slots.map((s) => s.day).join(' & ') : 'Au fil des semaines',
@@ -27,7 +33,7 @@ const sets = djs.map((d) => ({
     <div class="djv-row">
       {sets.map((d, i) => (
         <article class="djv" style={`--d:${(i * 0.05 + 0.1).toFixed(2)}s`}>
-          {d.img && <img class="djv-ph" src={d.img.card} alt="" loading={i < 4 ? 'eager' : 'lazy'} />}
+          {d.img && <img class="djv-ph" src={d.img.card} alt="" loading={i < 4 ? 'eager' : 'lazy'} style={`--fx:${FOCUS[fkey(d.show)] ?? 50}%`} />}
           <span class="djv-sc" aria-hidden="true"></span>
           <span class="djv-bar" aria-hidden="true"></span>
           <a class="djv-hit" href={u(d.path)} aria-label={`${d.show}, ${d.name}`}></a>
