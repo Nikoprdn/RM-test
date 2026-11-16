@@ -49,7 +49,7 @@ jobs:
       - run: npm ci
       - name: Construction de la structure (contenus de démonstration, podcasts réels)
         run: |
-          mkdir -p public/assets && cp ../assets/* public/assets/
+          mkdir -p public/assets && cp -r ../assets/* public/assets/
           node -e "const j=require('../podcasts.json');require('fs').writeFileSync('fixtures/podcasts.txt',j.lines.join('\n'))"
           RM_FIXTURES=1 npm run build
       - name: Greffe sur le site en ligne

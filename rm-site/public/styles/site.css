@@ -4,6 +4,32 @@
 @font-face{font-family:'Barlow';src:url(../assets/Barlow-Medium.ttf) format('truetype');font-weight:500;font-style:normal;font-display:swap}
 @font-face{font-family:'Barlow';src:url(../assets/Barlow-SemiBold.ttf) format('truetype');font-weight:600;font-style:normal;font-display:swap}
 @font-face{font-family:'Barlow';src:url(../assets/Barlow-Bold.ttf) format('truetype');font-weight:700;font-style:normal;font-display:swap}
+/* Charte graphique Radio Monaco (brand book 2023) : Barlow complète, 18 styles.
+   Le navigateur ne télécharge une graisse que si une page l'utilise. */
+@font-face{font-family:'Barlow';src:url(../assets/Barlow-Thin.ttf) format('truetype');font-weight:100;font-style:normal;font-display:swap}
+@font-face{font-family:'Barlow';src:url(../assets/Barlow-ExtraLight.ttf) format('truetype');font-weight:200;font-style:normal;font-display:swap}
+@font-face{font-family:'Barlow';src:url(../assets/Barlow-ExtraBold.ttf) format('truetype');font-weight:800;font-style:normal;font-display:swap}
+@font-face{font-family:'Barlow';src:url(../assets/Barlow-Black.ttf) format('truetype');font-weight:900;font-style:normal;font-display:swap}
+@font-face{font-family:'Barlow';src:url(../assets/Barlow-ThinItalic.ttf) format('truetype');font-weight:100;font-style:italic;font-display:swap}
+@font-face{font-family:'Barlow';src:url(../assets/Barlow-ExtraLightItalic.ttf) format('truetype');font-weight:200;font-style:italic;font-display:swap}
+@font-face{font-family:'Barlow';src:url(../assets/Barlow-LightItalic.ttf) format('truetype');font-weight:300;font-style:italic;font-display:swap}
+@font-face{font-family:'Barlow';src:url(../assets/Barlow-Italic.ttf) format('truetype');font-weight:400;font-style:italic;font-display:swap}
+@font-face{font-family:'Barlow';src:url(../assets/Barlow-MediumItalic.ttf) format('truetype');font-weight:500;font-style:italic;font-display:swap}
+@font-face{font-family:'Barlow';src:url(../assets/Barlow-SemiBoldItalic.ttf) format('truetype');font-weight:600;font-style:italic;font-display:swap}
+@font-face{font-family:'Barlow';src:url(../assets/Barlow-BoldItalic.ttf) format('truetype');font-weight:700;font-style:italic;font-display:swap}
+@font-face{font-family:'Barlow';src:url(../assets/Barlow-ExtraBoldItalic.ttf) format('truetype');font-weight:800;font-style:italic;font-display:swap}
+@font-face{font-family:'Barlow';src:url(../assets/Barlow-BlackItalic.ttf) format('truetype');font-weight:900;font-style:italic;font-display:swap}
+/* Couleurs officielles de la charte. Préfixe --rm- : ne remplace pas les variables
+   du site (--ink, --red…) définies dans layout.css. Teintes 75/50/25 % = mélange au blanc. */
+:root{
+  --rm-rouge:#E4032E;--rm-rouge-fonce:#AF0D21;          /* Monte-Carlo, corporate */
+  --rm-bleu:#005EA1;--rm-bleu-fonce:#004F87;            /* New York */
+  --rm-orange:#F59C00;--rm-orange-fonce:#D08600;        /* 100 % Mix DJ */
+  --rm-vert:#93C01F;--rm-vert-fonce:#80A51B;            /* Feel Good */
+  --rm-violet:#8A5AA1;--rm-violet-fonce:#73427F;        /* Night Mood */
+  --rm-noir:#000000;                                     /* « radio » du logo */
+  --rm-anthracite:#37333E;                               /* « monaco » du logo */
+}
 body{margin:0;background:#F6F3EE}
 a{color:inherit;text-decoration:none}
 a:hover{color:inherit}

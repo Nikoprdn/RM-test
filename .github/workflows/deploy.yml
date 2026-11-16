@@ -49,7 +49,7 @@ jobs:
       - run: npm ci
       # les images sont dans le dossier assets/ à la racine du dépôt
       - name: Images
-        run: mkdir -p public/assets && cp ../assets/* public/assets/
+        run: mkdir -p public/assets && cp -r ../assets/* public/assets/
       # dernier contenu WordPress connu, réutilisé si le site WordPress ne répond pas pendant la construction
       - uses: actions/cache@v4
         with:

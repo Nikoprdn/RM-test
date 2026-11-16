@@ -67,9 +67,9 @@ ligne avec des changements structurels greffés, si WordPress reste injoignable.
 - Variables : `SITE_URL=https://nikoprdn.github.io`, `BASE_PATH=/RM-test`,
   `INDEXABLE=0`, plus `IG_FEED_URL` / `IG_TOKEN`.
 - Les images vivent dans `assets/` à la racine et sont copiées dans
-  `rm-site/public/assets/` par le workflow. **En local, penser à
-  `cp ../assets/* public/assets/` après avoir ajouté une image**, sinon elle
-  manque au rendu.
+  `rm-site/public/assets/` par le workflow (`cp -r` : `assets/charte/` est un
+  sous-dossier). **En local, penser à `cp -r ../assets/* public/assets/` après
+  avoir ajouté une image**, sinon elle manque au rendu.
 
 ### Essais en local
 
@@ -94,12 +94,25 @@ connecté. Quand il ne l'est pas : le dire, et s'en tenir au rendu local.
 
 ## Charte
 
-- Rouge `#E4032E` · crème `#F6F3EE` · encre `#141218` · gris `#6A6570`
-- Mix DJ orange `#F59C00` · Night Mood violet `#8A5AA1` · horoscope bleu `#2B4C7E`
+**La charte officielle est importée dans le dépôt : lire `charte/README.md`**
+(brand book 2023 V6.6, pages clés dans `charte/pages/`). Fichiers de marque dans
+`assets/charte/` : logos et sigles SVG des 7 déclinaisons, PNG @3x, motif rouge.
+Source : Dropbox `Radio Monaco/CHARTE GRAPHIQUE RM/`.
+
+- Couleurs officielles (variables `--rm-*` dans `site.css`) : rouge Monte-Carlo
+  `#E4032E` · bleu New York `#005EA1` · orange Mix DJ `#F59C00` · vert Feel Good
+  `#93C01F` · violet Night Mood `#8A5AA1`, chacune avec sa teinte foncée ;
+  noir `#000000` (« radio ») et anthracite `#37333E` (« monaco »).
+- Couleurs propres au site, hors charte : crème `#F6F3EE` · encre `#141218` ·
+  gris `#6A6570` (variables `--bg`, `--ink`, `--muted` de `layout.css`) ·
+  horoscope bleu `#2B4C7E`. Ne pas les remplacer sans l'accord de Nicolas.
 - **Le violet est réservé à Night Mood.**
-- Typographie **Barlow**, cinq graisses, auto-hébergée.
+- Zone de protection du logo : un carré N tout autour, rien dedans.
+- Typographie **Barlow**, auto-hébergée, les 18 styles (100 à 900, droits et
+  italiques). Le logo utilise Regular, Bold et ExtraBold (800).
 - Logos des radios : versions couleur en 1175 px, `assets/wr-*-rgb.png`,
   fabriquées par `rm-site/scripts/make-logos.py` à partir des fichiers de marque.
+  Les SVG officiels de `assets/charte/` sont désormais la meilleure source.
 
 ---
 
