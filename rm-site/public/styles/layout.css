@@ -1144,8 +1144,6 @@ html.pl-night .prog{background:#b88ad0}
 @media (max-width:900px){
   .pod-t{flex:0 0 128px}
   .pod-r-r{gap:12px}
-  /* le rail qui défile seul ne doit pas être aimanté : l'aimantation bloquerait le mouvement */
-  .pod-r-auto{scroll-snap-type:none}
 }
 /* Écrans peu hauts (portables) : on resserre le bandeau pour que le rail des
    derniers épisodes tienne en entier dans le premier écran. */
@@ -1157,4 +1155,17 @@ html.pl-night .prog{background:#b88ad0}
   .pod-r{padding-top:clamp(22px,3.2vh,32px)}
   .pod-r-h{margin-bottom:14px}
   .pod-t{flex-basis:138px}
+}
+
+/* ── Podcasts : deux rails côte à côte, épisodes à gauche et mixs à droite ── */
+.pod-duo{display:flex;gap:clamp(28px,3.4vw,56px);align-items:flex-start}
+.pod-duo>.pod-r{flex:1 1 0;min-width:0}
+.pod-duo>.pod-r[hidden]{display:none}
+/* cartes lisibles : l'émission en gras, puis l'épisode, puis la date */
+.pod-t-ep>b{margin-top:10px;font-size:14px;font-weight:600;line-height:1.2;-webkit-line-clamp:1;color:#141218}
+.pod-t-ep>span{margin-top:3px;font-size:13px;line-height:1.3;color:#3B3740;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pod-t-ep>small{display:block;margin-top:4px;font-size:12px;color:#8A858F}
+@media (max-width:900px){
+  .pod-duo{flex-direction:column;gap:0}
+  .pod-duo>.pod-r{width:100%}
 }

@@ -152,12 +152,17 @@ les trois derniers disques, chacun légendé.
 
 **Podcasts** (`Podcasts.astro`, accueil et `/podcasts/`) — modèle Radioplayer en
 version photo : bandeau de la régie avec la recherche en verre dépoli, puis des
-rails (derniers épisodes, Le Morning & les chroniques, 100 % Mix DJ). Vignettes
-de 152 px (128 px sur mobile). **Les derniers épisodes (24) défilent seuls**,
-lentement (`data-rail-auto`, `home.js`) : arrêt au survol, au toucher, au
-clavier, pendant une recherche, hors écran ; pause au bout puis retour au début.
-Sur les écrans peu hauts (≤ 820 px), le bandeau se resserre pour que ce rail
-tienne en entier dans le premier écran (vérifié en 1 288 × 663, l'écran de Nicolas).
+deux rails côte à côte, **les derniers épisodes à gauche et les derniers mixs à
+droite** (20 chacun ; l'un sous l'autre sur mobile), puis les rails par univers
+(Le Morning & les chroniques, 100 % Mix DJ). Vignettes de 152 px (128 px sur
+mobile) ; sous l'image : le nom de l'émission en gras, le titre de l'épisode, la
+date. **Les deux rails du haut défilent seuls, carte par carte** (toutes les 4 s,
+glissé doux ; `data-rail-auto`, `home.js`) pour que les vignettes restent
+entières : un défilement continu (28 px/s puis 12 px/s) laissait une carte coupée
+et a été jugé trop rapide. Arrêt au survol, au toucher, au clavier, pendant une
+recherche, hors écran ; au bout, retour au début.
+Sur les écrans peu hauts (≤ 820 px), le bandeau se resserre pour que ces rails
+tiennent en entier dans le premier écran (vérifié en 1 288 × 663, l'écran de Nicolas).
 « Podcasts à la une » (deux grandes cartes) a été retiré à sa demande. La recherche filtre vraiment, sur le
 nom de l'émission, son sous-titre, le titre de l'épisode et le nom du rail.
 

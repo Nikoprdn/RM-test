@@ -11,9 +11,15 @@ const all = pods.flatMap((s) => s.eps.slice(0, 7).map((e, i) => ({ s, e, i }))).
 const epJSON = (x) => JSON.stringify({ id: x.s.k + ':' + x.i, url: ausAudio(x.e.au), title: x.e.title, show: x.s.name, color: x.s.color, ink: x.s.feed === 'mixdj' ? '#141218' : '#FFFFFF', img: ausImg(x.e.img), s: x.e.s });
 const when = (iso) => { const d = new Date(iso + 'Z'), t = new Date(); const diff = Math.round((new Date(t.getFullYear(), t.getMonth(), t.getDate()) - new Date(d.getFullYear(), d.getMonth(), d.getDate())) / 864e5); return diff <= 0 ? 'Aujourd’hui' : diff === 1 ? 'Hier' : diff < 7 ? `Il y a ${diff} jours` : dateShort(iso); };
 const clean = (x) => String(x).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
-// Les derniers épisodes (rail qui défile seul), puis les émissions par univers.
+// Deux rails qui défilent seuls : les derniers épisodes (émissions, horoscope) et
+// les derniers mixs, puis les émissions par univers.
 // « Podcasts à la une » retiré à la demande de Nicolas (16 novembre 2026).
-const derniers = all.slice(0, 24);
+const eps = all.filter((x) => x.s.feed !== 'mixdj');
+const mixs = all.filter((x) => x.s.feed === 'mixdj');
+const duo = [
+  ['Les derniers épisodes', eps.slice(0, 20), eps.length, 'à réécouter'],
+  ['Les derniers mixs', mixs.slice(0, 20), mixs.length, 'mixs']
+].filter(([, l]) => l.length);
 const univers = [
   ['Le Morning & les chroniques', pods.filter((s) => s.feed === 'emissions' || s.feed === 'horoscope')],
   [FEED_LABEL.mixdj, pods.filter((s) => s.feed === 'mixdj')]
@@ -39,24 +45,31 @@ const univers = [
 
   <div class="pod-w">
 
-    <div class="pod-r" data-pz-sec>
-      <div class="pod-r-h"><h3>Les derniers épisodes</h3><i aria-hidden="true">›</i><em>{all.length} à réécouter</em></div>
-      <div class="pod-r-w">
-        <button class="pod-r-n l" type="button" data-rail="-1" aria-label="Précédents"><I n="left" s={16} /></button>
-        <div class="pod-r-r pod-r-auto" data-rail-row data-rail-auto>
-          {derniers.map((x) => (
-            <article class="pod-t" data-pz-i={clean(x.s.name + ' ' + x.e.title + ' ' + x.s.sub)}>
-              <button class="pod-t-v" type="button" data-rm-ep={epJSON(x)} data-epid={x.s.k + ':' + x.i} aria-label={`Écouter : ${x.e.title}`}>
-                <img src={ausImg(x.e.img)} alt="" loading="lazy" />
-                <span class="pod-t-p" aria-hidden="true"><I n="play" s={15} /></span>
-              </button>
-              <b>{x.e.title}</b>
-              <span>{x.s.name} · {when(x.e.d)}</span>
-            </article>
-          ))}
+    {/* Deux rails côte à côte qui défilent seuls : les derniers épisodes à gauche,
+        les derniers mixs à droite (demande de Nicolas, 16 novembre 2026). */}
+    <div class="pod-duo">
+      {duo.map(([titre, liste, total, unite]) => (
+        <div class="pod-r" data-pz-sec>
+          <div class="pod-r-h"><h3>{titre}</h3><i aria-hidden="true">›</i><em>{total} {unite}</em></div>
+          <div class="pod-r-w">
+            <button class="pod-r-n l" type="button" data-rail="-1" aria-label="Précédents"><I n="left" s={16} /></button>
+            <div class="pod-r-r pod-r-auto" data-rail-row data-rail-auto>
+              {liste.map((x) => (
+                <article class="pod-t pod-t-ep" data-pz-i={clean(titre + ' ' + x.s.name + ' ' + x.e.title + ' ' + x.s.sub)}>
+                  <button class="pod-t-v" type="button" data-rm-ep={epJSON(x)} data-epid={x.s.k + ':' + x.i} aria-label={`Écouter : ${x.s.name}, ${x.e.title}`}>
+                    <img src={ausImg(x.e.img)} alt="" loading="lazy" />
+                    <span class="pod-t-p" aria-hidden="true"><I n="play" s={15} /></span>
+                  </button>
+                  <b>{x.s.name}</b>
+                  <span>{x.e.title}</span>
+                  <small>{when(x.e.d)}</small>
+                </article>
+              ))}
+            </div>
+            <button class="pod-r-n r" type="button" data-rail="1" aria-label="Suivants"><I n="right" s={16} /></button>
+          </div>
         </div>
-        <button class="pod-r-n r" type="button" data-rail="1" aria-label="Suivants"><I n="right" s={16} /></button>
-      </div>
+      ))}
     </div>
 
     {univers.map(([label, list]) => (
