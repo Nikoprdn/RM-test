@@ -1185,3 +1185,9 @@ html.pl-night .prog{background:#b88ad0}
 @media (max-width:900px){
   .pod-r-r,.pod-duo .pod-r-r{--n:2;--g:12px}
 }
+
+/* ── Cartes d'épisodes : même présentation que les fiches d'émissions ──
+   surtitre (la chronique, dans sa couleur), titre de l'épisode en gras, depuis quand. */
+.pod-t-ep>.pod-t-f{display:block;margin-top:12px;font-style:normal;font-size:10.5px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--c,#E4032E);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pod-t-ep>b{margin-top:6px;font-size:15px;font-weight:600;letter-spacing:-.01em;line-height:1.22;color:#141218;-webkit-line-clamp:2}
+.pod-t-ep>small{display:block;margin-top:5px;font-size:12.5px;color:#6A6570}

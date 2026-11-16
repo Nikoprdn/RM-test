@@ -157,8 +157,10 @@ droite** (20 chacun ; l'un sous l'autre sur mobile), puis les rails par univers
 (Le Morning & les chroniques, 100 % Mix DJ). **Rails équilibrés, rien ne dépasse** :
 la largeur des cartes se calcule pour qu'un nombre entier remplisse exactement le
 rail (`--n` dans `layout.css` : 4 par rail du haut et 8 par rail du bas sur
-ordinateur, 3 et 6 entre 901 et 1 199 px, 2 sur mobile) ; sous l'image : le nom de l'émission en gras, le titre de l'épisode, la
-date. **Les deux rails du haut défilent seuls, carte par carte** (toutes les 4 s,
+ordinateur, 3 et 6 entre 901 et 1 199 px, 2 sur mobile) ; sous l'image, **même présentation que les fiches d'émissions** (validée par
+Nicolas) : la chronique en surtitre (petites capitales espacées, dans la couleur
+de l'émission), le titre de l'épisode en gras, puis depuis quand il est publié,
+toujours en relatif (« Il y a 3 jours », « Il y a 2 semaines »). **Les deux rails du haut défilent seuls, carte par carte** (toutes les 4 s,
 glissé doux ; `data-rail-auto`, `home.js`) pour que les vignettes restent
 entières : un défilement continu (28 px/s puis 12 px/s) laissait une carte coupée
 et a été jugé trop rapide. Arrêt au survol, au toucher, au clavier, pendant une
