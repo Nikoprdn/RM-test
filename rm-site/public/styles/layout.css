@@ -1113,13 +1113,14 @@ html.pl-night .prog{background:#b88ad0}
 .stu-tb.on i{color:rgba(20,18,24,.45)}
 .stu-dot{width:7px;height:7px;border-radius:50%;background:#E4032E;flex:none;animation:pulseC 2.2s ease-out infinite}
 
-/* ── Direction artistique : couleur retenue, tonalité rouge au survol ──────────
+/* ── Direction artistique : couleur retenue, la couleur revient au survol ───────
    Au repos, les grandes images gardent environ un tiers de leur couleur ; au survol
-   (au toucher sur mobile), elles basculent en tonalité rouge de la charte.
-   Les deux filtres ont la même liste de fonctions : le navigateur peut faire le fondu. */
+   (au toucher sur mobile), elles retrouvent leurs vraies couleurs.
+   Les deux filtres ont la même liste de fonctions : le navigateur peut faire le fondu.
+   (La tonalité rouge au survol a été essayée et refusée.) */
 :root{
   --rm-repos:grayscale(.62) sepia(.12) saturate(1) hue-rotate(0deg) contrast(1.04) brightness(1);
-  --rm-survol:grayscale(1) sepia(.85) saturate(2.4) hue-rotate(-58deg) contrast(1.25) brightness(.8);
+  --rm-survol:grayscale(0) sepia(0) saturate(1) hue-rotate(0deg) contrast(1.02) brightness(1);
 }
 .hpx .hs{filter:var(--rm-repos) brightness(.78)}
 .pod-b-im{filter:var(--rm-repos) brightness(.62)}

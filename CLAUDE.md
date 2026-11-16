@@ -119,14 +119,17 @@ Source : Dropbox `Radio Monaco/CHARTE GRAPHIQUE RM/`.
 - **Couleur retenue** : au repos, les grandes images gardent environ un tiers de
   leur couleur (`--rm-repos` dans `layout.css`). Le noir et blanc pur a été jugé
   « trop triste ».
-- **Tonalité rouge au survol** (au toucher sur mobile), en fondu (`--rm-survol`).
-  Les deux filtres ont la même liste de fonctions pour que le fondu marche :
-  ne pas remplacer `--rm-survol` par un filtre SVG `url(#…)`, qui ne s'anime pas.
+- **Au survol, la couleur revient** (au toucher sur mobile), en fondu
+  (`--rm-survol`). Les deux filtres ont la même liste de fonctions pour que le
+  fondu marche. La tonalité rouge au survol a été essayée : « horrible », refusée.
+  Le liseré rouge au survol aussi, non retenu.
 - **Le rouge est un signal** (direct, lecture, élément actif), pas un fond.
-- **Ouverture de l'accueil** : trois photos du studio, aucune photo du port.
-  Trois des quatre photos de Monaco du dépôt montrent des yachts (`rm-monaco-port`,
-  `rm-monaco-baie`, `rm-night`) : ne pas les remettre en avant. `rm-night` sert
-  encore au volet Night Mood, faute de mieux.
+- **Ouverture de l'accueil : des images de Monaco**, volonté du propriétaire de la
+  radio. Mais toujours sans bateau : `rm-hero-nuit/jour/casino.jpg` sont des
+  recadrages hauts qui excluent le port. Définition limitée (1 080 à 1 454 px) :
+  à remplacer par de vraies photos de Monaco. Le studio en ouverture a été refusé.
+  `rm-monaco-port`, `rm-monaco-baie` et `rm-night` entiers montrent des yachts ;
+  `rm-night` sert encore au volet Night Mood, faute de mieux.
 - Pas encore traité : les volets « Nos radios » et les autres pages.
 
 ---
