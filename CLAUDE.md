@@ -179,7 +179,7 @@ deux rails côte à côte, **les derniers épisodes à gauche et les derniers mi
 droite** (20 chacun ; l'un sous l'autre sur mobile), puis les rails par univers
 (Le Morning & les chroniques, compté en « chroniques » et non en « émissions » ;
 100 % Mix DJ). Leurs cartes ont la même présentation que celles du haut : surtitre
-« Chronique » (rouge ; « Matinale » pour Le Morning, « Horoscope » pour Les Étoilés)
+« Chronique » (rouge ; « L’intégrale » pour Le Morning (le replay intégral), « Horoscope » pour Les Étoilés)
 ou « Mix DJ » (orange), le nom de l'émission en gras, puis la description ou le nom
 du DJ (sans « by »). **Rails équilibrés, rien ne dépasse** :
 la largeur des cartes se calcule pour qu'un nombre entier remplisse exactement le

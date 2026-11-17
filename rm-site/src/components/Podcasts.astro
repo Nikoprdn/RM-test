@@ -25,9 +25,9 @@ const duo = [
 // candidats du volet « les podcasts du jour » : les 16 épisodes les plus récents
 const jour = all.slice(0, 16);
 // surtitre des cartes d'émissions, même présentation que les cartes d'épisodes :
-// « Mix DJ » (orange), « Chronique » pour les chroniques du Morning, « Matinale » pour
-// Le Morning lui-même, « Horoscope » pour Les Étoilés.
-const genre = (s) => (s.feed === 'mixdj' ? 'Mix DJ' : s.feed === 'horoscope' ? 'Horoscope' : s.k === 'morning' ? 'Matinale' : 'Chronique');
+// « Mix DJ » (orange), « Chronique » pour les chroniques du Morning, « L’intégrale » pour
+// Le Morning lui-même (le replay intégral de l’émission), « Horoscope » pour Les Étoilés.
+const genre = (s) => (s.feed === 'mixdj' ? 'Mix DJ' : s.feed === 'horoscope' ? 'Horoscope' : s.k === 'morning' ? 'L’intégrale' : 'Chronique');
 const univers = [
   ['Le Morning & les chroniques', pods.filter((s) => s.feed === 'emissions' || s.feed === 'horoscope')],
   [FEED_LABEL.mixdj, pods.filter((s) => s.feed === 'mixdj')]
