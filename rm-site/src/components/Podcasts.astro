@@ -24,6 +24,10 @@ const duo = [
 ].filter(([, l]) => l.length);
 // candidats du volet « les podcasts du jour » : les 16 épisodes les plus récents
 const jour = all.slice(0, 16);
+// surtitre des cartes d'émissions, même présentation que les cartes d'épisodes :
+// « Mix DJ » (orange), « Chronique » pour les chroniques du Morning, « Matinale » pour
+// Le Morning lui-même, « Horoscope » pour Les Étoilés.
+const genre = (s) => (s.feed === 'mixdj' ? 'Mix DJ' : s.feed === 'horoscope' ? 'Horoscope' : s.k === 'morning' ? 'Matinale' : 'Chronique');
 const univers = [
   ['Le Morning & les chroniques', pods.filter((s) => s.feed === 'emissions' || s.feed === 'horoscope')],
   [FEED_LABEL.mixdj, pods.filter((s) => s.feed === 'mixdj')]
@@ -104,18 +108,19 @@ const univers = [
 
     {univers.map(([label, list]) => (
       <div class="pod-r" data-pz-sec>
-        <div class="pod-r-h"><h3>{label}</h3><i aria-hidden="true">›</i><em>{list.length} émissions</em></div>
+        <div class="pod-r-h"><h3>{label}</h3><i aria-hidden="true">›</i><em>{list.length} {list[0].feed === 'mixdj' ? 'émissions' : 'chroniques'}</em></div>
         <div class="pod-r-w">
           <button class="pod-r-n l" type="button" data-rail="-1" aria-label="Précédentes"><I n="left" s={16} /></button>
           <div class="pod-r-r" data-rail-row>
             {list.map((s) => (
-              <article class="pod-t" data-pz-i={clean(label + ' ' + s.name + ' ' + s.sub + ' ' + s.eps[0].title)}>
+              <article class="pod-t pod-t-ep" data-pz-i={clean(label + ' ' + s.name + ' ' + s.sub + ' ' + s.eps[0].title)}>
                 <a class="pod-t-v" href={u('/podcasts/' + s.k + '/')} aria-label={s.name}>
                   <img src={ausImg(s.eps[0].img)} alt="" loading="lazy" />
                   <span class="pod-t-p" aria-hidden="true"><I n="right" s={15} /></span>
                 </a>
+                <em class="pod-t-f" style={`--c:${s.color}`}>{genre(s)}</em>
                 <b>{s.name}</b>
-                <span>{s.sub}</span>
+                <small>{s.feed === 'mixdj' ? s.sub.replace(/^by\s+/i, '') : s.sub}</small>
               </article>
             ))}
           </div>

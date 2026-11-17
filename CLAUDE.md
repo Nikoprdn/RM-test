@@ -154,7 +154,11 @@ les trois derniers disques, chacun légendé.
 version photo : bandeau de la régie avec la recherche en verre dépoli, puis des
 deux rails côte à côte, **les derniers épisodes à gauche et les derniers mixs à
 droite** (20 chacun ; l'un sous l'autre sur mobile), puis les rails par univers
-(Le Morning & les chroniques, 100 % Mix DJ). **Rails équilibrés, rien ne dépasse** :
+(Le Morning & les chroniques, compté en « chroniques » et non en « émissions » ;
+100 % Mix DJ). Leurs cartes ont la même présentation que celles du haut : surtitre
+« Chronique » (rouge ; « Matinale » pour Le Morning, « Horoscope » pour Les Étoilés)
+ou « Mix DJ » (orange), le nom de l'émission en gras, puis la description ou le nom
+du DJ (sans « by »). **Rails équilibrés, rien ne dépasse** :
 la largeur des cartes se calcule pour qu'un nombre entier remplisse exactement le
 rail (`--n` dans `layout.css` : 4 par rail du haut et 8 par rail du bas sur
 ordinateur, 3 et 6 entre 901 et 1 199 px, 2 sur mobile) ; sous l'image, **même présentation que les fiches d'émissions** (validée par
