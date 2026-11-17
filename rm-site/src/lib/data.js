@@ -302,14 +302,7 @@ function epTitle(feed, e) {
   const d = new Date(e.d + 'Z');
   return e.t ? `${e.t} · ${d.getDate()} ${MOISC[d.getMonth()]}` : `Émission du ${d.getDate()} ${MOIS[d.getMonth()]}`;
 }
-// Visuels Mix DJ : version orange préparée avant la construction (scripts/mix-orange.mjs),
-// sinon la pochette Ausha d'origine.
-let MIXOR = null;
-const mixOrange = () => {
-  if (!MIXOR) { try { MIXOR = new Set(JSON.parse(readFileSync(new URL('../../public/assets/mix/index.json', import.meta.url), 'utf8'))); } catch (e) { MIXOR = new Set(); } }
-  return MIXOR;
-};
-export const ausImg = (id, big) => (mixOrange().has(id) ? `${BASEP}/assets/mix/${id}.jpg` : `https://image.ausha.co/${id}_${big ? '1400x1400' : '400x400'}.jpeg`);
+export const ausImg = (id, big) => `https://image.ausha.co/${id}_${big ? '1400x1400' : '400x400'}.jpeg`;
 export const ausAudio = (id) => `https://audio.ausha.co/${id}.mp3`;
 export const dur = (s) => { const m = Math.round(s / 60); if (m < 1) return s + ' s'; if (m < 60) return m + ' min'; const h = Math.floor(m / 60), r = m % 60; return h + ' h' + (r ? ' ' + String(r).padStart(2, '0') : ''); };
 

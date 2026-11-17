@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "node scripts/mix-orange.mjs && astro build",
+    "build": "astro build",
     "preview": "astro preview"
   },
   "dependencies": {
