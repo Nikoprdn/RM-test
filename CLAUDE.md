@@ -214,6 +214,16 @@ place du contour rectangulaire général du site ; non retenus : halo clair, pil
 blanche, trait rouge. La recherche filtre vraiment, sur le
 nom de l'émission, son sous-titre, le titre de l'épisode et le nom du rail.
 
+**Visuels Mix DJ en orange** (17 novembre, demande de Nicolas) : sur le site, les
+pochettes Ausha du flux `mixdj` passent du fond rouge du gabarit à l'orange de la
+charte `#F59C00`. `scripts/mix-orange.mjs` (lancé par `npm run build`) télécharge
+chaque pochette, recolore le fond (`src/lib/mixorange.js` : rouge relevé au bord de
+chaque image, relief du motif et ombre gardés, seules les grandes zones rouges et les
+coins de fond changent) et écrit `public/assets/mix/<id>.jpg` + `index.json`.
+`ausImg` (data.js) sert la version orange si elle existe, sinon l'originale : un échec
+ne casse jamais la construction. Les pochettes restent rouges sur Ausha, Spotify et
+Apple Podcasts. En local, le flux est injoignable : aucune version orange.
+
 **Sur nos réseaux** (accueil, `#reseaux`, classes `.igc-*`) — piste G « les colonnes »,
 choisie par Nicolas le 17 novembre parmi huit maquettes (A téléphone, B planche,
 C pile, D mur vivant, E la une, F profil, G colonnes, H stories). Texte fixe à
