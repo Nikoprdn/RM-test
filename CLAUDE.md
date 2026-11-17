@@ -208,6 +208,16 @@ place du contour rectangulaire général du site ; non retenus : halo clair, pil
 blanche, trait rouge. La recherche filtre vraiment, sur le
 nom de l'émission, son sous-titre, le titre de l'épisode et le nom du rail.
 
+**Sur nos réseaux** (accueil, `#reseaux`, classes `.igc-*`) — piste G « les colonnes »,
+choisie par Nicolas le 17 novembre parmi huit maquettes (A téléphone, B planche,
+C pile, D mur vivant, E la une, F profil, G colonnes, H stories). Texte fixe à
+gauche (abonnés, phrase, bouton du compte) ; à droite, trois colonnes de reels qui
+montent lentement (≈ 8 à 10 px/s, chacune à sa vitesse), en boucle, arrêt au survol,
+au clavier, hors écran et si les animations sont réduites. Rubrique `data-full` :
+elle occupe l'écran sous l'en-tête et s'arrête au-dessus du lecteur. Reels
+distribués en alternance entre colonnes (au moins trois par colonne). Mobile :
+deux colonnes sous le texte.
+
 **Le lecteur** (`Player.astro` + `player.js`) — une capsule en bas de page, et un
 **studio** en plein écran qui s'ouvre en cliquant le titre : photos de la régie
 qui se succèdent en fondu, pochette en grand, progression, −15 / +30 s,

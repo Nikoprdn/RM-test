@@ -214,6 +214,12 @@ const nice = (x) => { const k = (x || '').indexOf(' ('); return k > 0 ? nice1(x.
   $$('[data-scroller]').forEach((el) => { el.addEventListener('mouseenter', () => (hold[el.dataset.scroller] = true), sig); el.addEventListener('mouseleave', () => (hold[el.dataset.scroller] = false), sig); el.addEventListener('touchstart', () => (hold[el.dataset.scroller] = true), { passive: true, ...sig }); });
   const step = (el) => { const c = el.querySelector('[data-card]'); return (c ? c.offsetWidth : 280) + 14; };
   $$('[data-scroll]').forEach((b) => b.addEventListener('click', () => { const el = document.querySelector(`[data-scroller="${b.dataset.scroll}"]`); el.scrollBy({ left: +b.dataset.dir * step(el), behavior: 'smooth' }); }, sig));
+  // Sur nos réseaux : les colonnes de reels ne tournent que lorsque la rubrique est à l'écran
+  $$('.igc').forEach((sec) => {
+    const io = new IntersectionObserver(([e]) => sec.classList.toggle('off', !e.isIntersecting));
+    io.observe(sec); ac.signal.addEventListener('abort', () => io.disconnect());
+  });
+
   if (!reduced) every(3600, () => $$('[data-scroller]').forEach((el) => {
     if (hold[el.dataset.scroller]) return; const max = el.scrollWidth - el.clientWidth; if (max <= 4) return;
     const r = el.getBoundingClientRect(); if (r.bottom < 0 || r.top > innerHeight) return;
