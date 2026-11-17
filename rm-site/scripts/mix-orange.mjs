@@ -17,7 +17,10 @@ const done = [];
 try {
   mkdirSync(OUT, { recursive: true });
   const xml = await (await fetch(FEED)).text();
-  const ids = [...new Set([...xml.matchAll(/image\.ausha\.co\/([A-Za-z0-9]+)_1400x1400/g)].map((m) => m[1]))];
+  // seuls les épisodes récents sont affichés (12 par émission) : les 250 premiers suffisent,
+  // et la construction horaire reste rapide
+  const items = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].slice(0, 250).map((m) => m[1]).join('');
+  const ids = [...new Set([...items.matchAll(/image\.ausha\.co\/([A-Za-z0-9]+)_1400x1400/g)].map((m) => m[1]))];
   for (const id of ids) {
     try {
       const r = await fetch(`https://image.ausha.co/${id}_1400x1400.jpeg`);
