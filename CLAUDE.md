@@ -172,12 +172,17 @@ recherche, hors écran ; au bout, retour au début.
 Sur les écrans peu hauts (≤ 820 px), le bandeau se resserre pour que ces rails
 tiennent en entier dans le premier écran (vérifié en 1 288 × 663, l'écran de Nicolas).
 « Podcasts à la une » (deux grandes cartes) a été retiré à sa demande.
-**Volet « les podcasts du jour »** (page `/podcasts/` seulement, `.pod-j`) : à
-l'ouverture, une carte en verre dépoli (même style que les notifications de
-l'accueil) glisse à droite du bandeau avec les épisodes publiés aujourd'hui, sinon
-ceux du dernier jour publié (« Hier », « Les plus récents ») ; trois au plus, deux
-en dessous de 1 260 px où il passe sous la recherche. Le tri par jour se fait dans
-le navigateur. La croix le ferme jusqu'au lendemain (`localStorage` `rm-pod-j`). La recherche filtre vraiment, sur le
+**Pastille « les podcasts du jour »** (page `/podcasts/` seulement, `.pod-n`,
+choix N1 de Nicolas le 17 novembre) : une ligne en verre sous la recherche, avec
+trois vignettes, un point rouge et « 4 nouveaux podcasts ajoutés aujourd'hui »
+(sinon « hier », « récemment »). Au clic, la liste de tous ces épisodes se pose
+par-dessus la page (menu déroulant ; sa hauteur s'adapte à la place jusqu'à la
+capsule du lecteur, puis elle défile) ; Échap ou un clic ailleurs la referme. Le tri
+par jour se fait dans le navigateur. Refusé avant : la carte en verre flottant à
+droite du bandeau ; non retenus : bandeau en pied, pile de notifications, ligne
+éditoriale. **Recherche sélectionnée** : anneau rouge arrondi (choix S4) à la
+place du contour rectangulaire général du site ; non retenus : halo clair, pilule
+blanche, trait rouge. La recherche filtre vraiment, sur le
 nom de l'émission, son sous-titre, le titre de l'épisode et le nom du rail.
 
 **Le lecteur** (`Player.astro` + `player.js`) — une capsule en bas de page, et un

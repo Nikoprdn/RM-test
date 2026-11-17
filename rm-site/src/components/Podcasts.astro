@@ -47,34 +47,36 @@ const univers = [
           <span class="pod-q-b" aria-hidden="true"><I n="search" s={18} /></span>
         </form>
         <p class="pod-q-r" data-pz-count hidden></p>
+        {h1 && (
+          /* Pastille « les podcasts du jour » (page Podcasts, choix N1 du 17/11/2026) : une
+             ligne sous la recherche ; au clic, la liste des épisodes du jour se déroule.
+             Le tri par jour se fait dans le navigateur (le site est construit à l'avance) :
+             les épisodes d'aujourd'hui, sinon ceux du dernier jour publié. */
+          <div class="pod-n" data-pod-j hidden>
+            <button class="pod-n-b" type="button" aria-expanded="false" aria-controls="pod-n-l">
+              <span class="pod-n-av" data-pod-j-av aria-hidden="true"></span>
+              <span class="pod-n-dot" aria-hidden="true"></span>
+              <span class="pod-n-t" data-pod-j-n></span>
+              <span class="pod-n-c" aria-hidden="true"><I n="right" s={14} /></span>
+            </button>
+            <ul class="pod-n-l" id="pod-n-l" hidden>
+              {jour.map((x) => (
+                <li data-pod-j-d={x.e.d} hidden>
+                  <button type="button" data-rm-ep={epJSON(x)} data-epid={x.s.k + ':' + x.i} aria-label={`Écouter : ${x.s.name}, ${x.e.title}`}>
+                    <img src={ausImg(x.e.img)} alt="" loading="lazy" />
+                    <span class="pod-n-e">
+                      <em style={`--c:${x.s.color}`}>{x.s.name}</em>
+                      <span>{x.e.title}</span>
+                    </span>
+                    <span class="pod-n-p" aria-hidden="true"><I n="play" s={13} /></span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
         {!h1 && more && <a class="pod-b-all" href={u('/podcasts/')}>Tous les podcasts<I n="right" s={18} /></a>}
       </div>
-      {h1 && (
-        /* Volet « les podcasts du jour » : il glisse à l'ouverture de la page Podcasts.
-           Le tri par jour se fait dans le navigateur (le site est construit à l'avance) :
-           les épisodes d'aujourd'hui, sinon ceux du dernier jour publié. Fermé : jusqu'au lendemain. */
-        <aside class="pod-j" data-pod-j aria-label="Les podcasts du jour" hidden>
-          <div class="pod-j-h">
-            <span class="pod-j-k" data-pod-j-k>Aujourd’hui</span>
-            <b data-pod-j-n></b>
-            <button class="pod-j-x" type="button" aria-label="Fermer le volet">×</button>
-          </div>
-          <ul class="pod-j-l">
-            {jour.map((x) => (
-              <li data-pod-j-d={x.e.d} hidden>
-                <button type="button" data-rm-ep={epJSON(x)} data-epid={x.s.k + ':' + x.i} aria-label={`Écouter : ${x.s.name}, ${x.e.title}`}>
-                  <img src={ausImg(x.e.img)} alt="" loading="lazy" />
-                  <span class="pod-j-t">
-                    <em style={`--c:${x.s.color}`}>{x.s.name}</em>
-                    <span>{x.e.title}</span>
-                  </span>
-                  <span class="pod-j-p" aria-hidden="true"><I n="play" s={13} /></span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </aside>
-      )}
     </div>
 
   <div class="pod-w">
@@ -134,34 +136,36 @@ const univers = [
 </section>
 
 <script>
-  // Volet « les podcasts du jour » (page Podcasts) : on garde les épisodes publiés
-  // aujourd'hui, sinon ceux du dernier jour publié ; quatre au plus. Fermé par la
-  // croix : il ne revient que le lendemain (mémorisé dans ce navigateur, sans risque
-  // si le stockage est indisponible).
+  // Pastille « les podcasts du jour » (page Podcasts) : les épisodes publiés aujourd'hui,
+  // sinon ceux du dernier jour publié. La pastille annonce leur nombre ; un clic déroule
+  // la liste de tous ces épisodes, posée par-dessus la page. Échap ou un clic ailleurs la referme.
   function initJour() {
     const box = document.querySelector('[data-pod-j]'); if (!box || box.dataset.ok) return; box.dataset.ok = '1';
     const day = (d) => d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
     const today = day(new Date());
-    try { if (localStorage.getItem('rm-pod-j') === today) return; } catch (e) {}
     const rows = [...box.querySelectorAll('[data-pod-j-d]')].map((li) => ({ li, k: day(new Date(li.dataset.podJD + 'Z')) }));
     if (!rows.length) return;
-    let pick = rows.filter((r) => r.k === today), label = 'Aujourd’hui';
+    let pick = rows.filter((r) => r.k === today), quand = 'aujourd’hui';
     if (!pick.length) {
       const last = rows[0].k; pick = rows.filter((r) => r.k === last);
       const y = new Date(); y.setDate(y.getDate() - 1);
-      label = last === day(y) ? 'Hier' : 'Les plus récents';
+      quand = last === day(y) ? 'hier' : 'récemment';
     }
     const n = pick.length;
-    pick.slice(0, 4).forEach((r) => (r.li.hidden = false));
-    box.querySelector('[data-pod-j-k]').textContent = label;
-    box.querySelector('[data-pod-j-n]').textContent = n > 1 ? n + ' nouveaux podcasts' : '1 nouveau podcast';
+    pick.forEach((r) => { r.li.hidden = false; r.li.querySelector('img').loading = 'eager'; });
+    box.querySelector('[data-pod-j-n]').innerHTML = (n > 1 ? `<b>${n} nouveaux podcasts</b> ajoutés ` : '<b>1 nouveau podcast</b> ajouté ') + quand;
+    const av = box.querySelector('[data-pod-j-av]');
+    pick.slice(0, 3).forEach((r) => { const i = document.createElement('img'); i.src = r.li.querySelector('img').getAttribute('src'); i.alt = ''; av.appendChild(i); });
+    const btn = box.querySelector('.pod-n-b'), list = box.querySelector('.pod-n-l');
+    const fit = () => { const top = btn.getBoundingClientRect().bottom + 10; list.style.maxHeight = Math.max(170, innerHeight - top - 104) + 'px'; }; // place jusqu'à la capsule du lecteur
+    const set = (open) => { btn.setAttribute('aria-expanded', String(open)); box.classList.toggle('open', open); if (open) { fit(); list.hidden = false; } else setTimeout(() => { if (!box.classList.contains('open')) list.hidden = true; }, 380); };
+    btn.addEventListener('click', () => set(btn.getAttribute('aria-expanded') !== 'true'));
+    const ctl = new AbortController();
+    document.addEventListener('click', (e) => { if (!box.contains(e.target) && box.classList.contains('open')) set(false); }, { signal: ctl.signal });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && box.classList.contains('open')) { set(false); btn.focus(); } }, { signal: ctl.signal });
+    document.addEventListener('astro:before-swap', () => ctl.abort(), { once: true });
     box.hidden = false;
-    setTimeout(() => box.classList.add('in'), 900);
-    box.querySelector('.pod-j-x').addEventListener('click', () => {
-      box.classList.remove('in'); box.classList.add('out');
-      try { localStorage.setItem('rm-pod-j', today); } catch (e) {}
-      setTimeout(() => (box.hidden = true), 500);
-    });
+    requestAnimationFrame(() => box.classList.add('in'));
   }
   document.addEventListener('astro:page-load', initJour); initJour();
 </script>

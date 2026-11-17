@@ -1192,37 +1192,47 @@ html.pl-night .prog{background:#b88ad0}
 .pod-t-ep>b{margin-top:6px;font-size:15px;font-weight:600;letter-spacing:-.01em;line-height:1.22;color:#141218;-webkit-line-clamp:2}
 .pod-t-ep>small{display:block;margin-top:5px;font-size:12.5px;color:#6A6570}
 
-/* ── Page Podcasts : volet « les podcasts du jour » ────────────────────────────
-   Même verre dépoli que les notifications de l'accueil (.ntf). Il flotte à droite
-   du bandeau, centré dans l'espace sous l'en-tête ; trois épisodes au plus.
-   En dessous de 1 260 px, il se place sous la recherche pour ne pas toucher le titre. */
-.pod-j{position:absolute;z-index:4;right:clamp(20px,2.6vw,44px);top:50%;transform:translate(28px,-50%);width:clamp(258px,21vw,300px);padding:12px 10px 8px;border-radius:20px;text-align:left;color:#141218;background:rgba(255,255,255,.7);-webkit-backdrop-filter:blur(22px) saturate(1.4);backdrop-filter:blur(22px) saturate(1.4);box-shadow:0 24px 50px -28px rgba(0,0,0,.6),inset 0 0 0 1px rgba(255,255,255,.5);opacity:0;transition:opacity .55s ease,transform .8s cubic-bezier(.2,1.2,.35,1)}
-.pod-j[hidden]{display:none}
-.pod-j.in{opacity:1;transform:translate(0,-50%)}
-.pod-j.out{opacity:0;transform:translate(28px,-50%);transition-duration:.4s}
-.pod-j-h{display:flex;align-items:baseline;gap:9px;padding:0 30px 9px 6px;border-bottom:1px solid rgba(20,18,24,.08)}
-.pod-j-k{font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#E4032E}
-.pod-j-h b{font-size:13px;font-weight:600;white-space:nowrap}
-.pod-j-x{position:absolute;right:9px;top:8px;width:24px;height:24px;border:0;border-radius:50%;padding:0;background:rgba(20,18,24,.06);color:#141218;font-size:15px;line-height:24px;cursor:pointer;transition:background .25s}
-.pod-j-x:hover{background:rgba(20,18,24,.14)}
-.pod-j-l{list-style:none;margin:4px 0 0;padding:0}
-.pod-j-l li[hidden],.pod-j-l li:nth-child(n+4){display:none}
-.pod-j-l button{display:flex;align-items:center;gap:10px;width:100%;margin:0;padding:5px 6px;border:0;border-radius:12px;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer;transition:background .25s}
-.pod-j-l button:hover{background:rgba(255,255,255,.6)}
-.pod-j-l img{flex:none;width:38px;height:38px;border-radius:9px;object-fit:cover;filter:var(--rm-repos);transition:filter .45s ease}
-.pod-j-l button:hover img{filter:var(--rm-survol)}
-.pod-j-t{min-width:0;flex:1;display:flex;flex-direction:column;gap:1px}
-.pod-j-t em{font-style:normal;font-size:9.5px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--c,#E4032E);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pod-j-t span{font-size:13px;font-weight:600;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pod-j-p{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:#E4032E;color:#fff;opacity:0;transform:scale(.85);transition:opacity .25s,transform .25s}
-.pod-j-l button:hover .pod-j-p,.pod-j-l button:focus-visible .pod-j-p{opacity:1;transform:none}
-@media (hover:none){.pod-j-p{opacity:1;transform:none}}
-@media (max-width:1259px){
-  .pod-j{position:relative;right:auto;top:auto;z-index:2;width:auto;max-width:620px;margin:20px auto 0;transform:translateY(16px)}
-  .pod-j.in{transform:none}
-  .pod-j.out{transform:translateY(16px)}
-  .pod-j-l li:nth-child(n+3){display:none}
-}
+/* ── Page Podcasts : pastille « les podcasts du jour » (choix N1, 17/11/2026) ───
+   Une ligne en verre sous la recherche ; au clic, la liste des épisodes du jour se
+   déroule dessous, dans le flux du bandeau (rien n'est coupé, sur aucun écran). */
+.pod-n{margin:18px auto 0;max-width:520px;width:max-content;opacity:0;transform:translateY(8px);transition:opacity .6s ease .5s,transform .8s cubic-bezier(.16,.84,.12,1) .5s}
+.pod-n[hidden]{display:none}
+.pod-n.in{opacity:1;transform:none}
+.pod-n-b{display:inline-flex;align-items:center;gap:11px;margin:0;padding:6px 14px 6px 7px;border-radius:999px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.13);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);color:#fff;font:inherit;font-size:14px;cursor:pointer;transition:background .25s,border-color .25s}
+.pod-n-b:hover,.pod-n.open .pod-n-b{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.55)}
+.pod-n-av{display:flex}
+.pod-n-av img{width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid #2a1c22;margin-left:-9px}
+.pod-n-av img:first-child{margin-left:0}
+.pod-n-dot{flex:none;width:7px;height:7px;border-radius:50%;background:#E4032E;box-shadow:0 0 0 4px rgba(228,3,46,.25)}
+.pod-n-t{white-space:nowrap}
+.pod-n-t b{font-weight:600}
+.pod-n-c{display:inline-flex;opacity:.75;transition:transform .35s cubic-bezier(.16,.84,.12,1)}
+.pod-n.open .pod-n-c{transform:rotate(90deg)}
+/* la liste se pose par-dessus la page (menu déroulant) : le bandeau de la page
+   Podcasts laisse dépasser son contenu et passe au-dessus des rails */
+.pod-s-h .pod-b{overflow:visible;z-index:6}
+.pod-n{position:relative}
+.pod-n-l{position:absolute;left:50%;top:calc(100% + 10px);z-index:20;width:min(460px,calc(100vw - 32px));max-height:min(420px,52vh);overflow-y:auto;overscroll-behavior:contain;margin:0;margin-left:calc(min(460px,calc(100vw - 32px)) / -2);list-style:none;padding:6px;border-radius:20px;text-align:left;color:#141218;background:rgba(250,248,245,.94);-webkit-backdrop-filter:blur(22px) saturate(1.4);backdrop-filter:blur(22px) saturate(1.4);box-shadow:0 30px 60px -24px rgba(0,0,0,.55),inset 0 0 0 1px rgba(255,255,255,.5);opacity:0;transform:translateY(-6px);transition:opacity .3s ease,transform .38s cubic-bezier(.16,.84,.12,1)}
+.pod-n.open .pod-n-l{opacity:1;transform:none}
+.pod-n-l li[hidden]{display:none}
+.pod-n-l button{display:flex;align-items:center;gap:11px;width:100%;margin:0;padding:6px 8px;border:0;border-radius:14px;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer;transition:background .25s}
+.pod-n-l button:hover{background:rgba(255,255,255,.7)}
+.pod-n-l img{flex:none;width:40px;height:40px;border-radius:10px;object-fit:cover;filter:var(--rm-repos);transition:filter .45s ease}
+.pod-n-l button:hover img{filter:var(--rm-survol)}
+.pod-n-e{min-width:0;flex:1;display:flex;flex-direction:column;gap:1px}
+.pod-n-e em{font-style:normal;font-size:9.5px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--c,#E4032E);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pod-n-e span{font-size:13.5px;font-weight:600;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pod-n-p{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#E4032E;color:#fff;opacity:0;transform:scale(.85);transition:opacity .25s,transform .25s}
+.pod-n-l button:hover .pod-n-p,.pod-n-l button:focus-visible .pod-n-p{opacity:1;transform:none}
+@media (hover:none){.pod-n-p{opacity:1;transform:none}}
+@media (max-width:640px){.pod-n-b{font-size:13px;gap:9px}.pod-n-av img{width:24px;height:24px}}
+@media (prefers-reduced-motion:reduce){.pod-n,.pod-n-l,.pod-n-c{transition:none}}
+
+/* ── Recherche : anneau rouge arrondi quand on y entre (choix S4, 17/11/2026) ──
+   remplace le contour rectangulaire général du site, qui l'emportait ici. */
+.rm .pod-q input:focus-visible{outline:none}
+.pod-q{transition:background .25s,border-color .25s,box-shadow .3s}
+.pod-q:focus-within{background:rgba(255,255,255,.16);border-color:transparent;box-shadow:0 0 0 2px #E4032E,0 0 0 8px rgba(228,3,46,.22)}
 
 /* ── DJ sets : le DJ reste centré dans un volet rétracté ─────────────────────────
    Chaque photo a son point de cadrage (--fx, posé dans DJSets.astro) ; le volet
