@@ -110,6 +110,29 @@ const nice = (x) => { const k = (x || '').indexOf(' ('); return k > 0 ? nice1(x.
       addEventListener('resize', sync, sig); sync();
     });
 
+    // le lecteur ne doit rien cacher : sur ordinateur, les deux rails du haut prennent
+    // des cartes un peu plus petites (toujours un nombre entier par rail) tant que leur
+    // texte finirait sous la capsule du lecteur, une fois la rubrique posée à l'écran.
+    const fitDuo = () => $$('.pod-duo').forEach((duo) => {
+      const rows = $$('.pod-r-r', duo);
+      rows.forEach((r) => r.style.removeProperty('--n'));
+      if (innerWidth <= 900 || !rows.length) return;
+      const sec = duo.closest('section');
+      const top = sec.getBoundingClientRect().top + scrollY;
+      const rest = top < 10 ? 0 : top - 84; // position de défilement où la rubrique se pose
+      const dock = 96; // capsule du lecteur et sa marge
+      const n0 = parseInt(getComputedStyle(rows[0]).getPropertyValue('--n'), 10) || 4;
+      for (let n = n0; n <= n0 + 2; n++) {
+        rows.forEach((r) => r.style.setProperty('--n', n));
+        const low = Math.max(...$$('.pod-t', duo).map((t) => t.getBoundingClientRect().bottom + scrollY - rest));
+        if (low <= innerHeight - dock) break;
+      }
+      rows.forEach((r) => (r.scrollLeft = 0));
+    });
+    fitDuo();
+    document.fonts?.ready.then(fitDuo);
+    let fitT; addEventListener('resize', () => { clearTimeout(fitT); fitT = setTimeout(fitDuo, 150); }, sig);
+
     // défilement automatique des derniers épisodes et des derniers mixs : carte par
     // carte (toutes les 4 s, glissé doux), pour que les vignettes restent entières.
     // Il s'arrête au survol, au toucher, au clavier, pendant une recherche, hors écran

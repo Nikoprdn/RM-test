@@ -28,7 +28,7 @@ const hm = (iso) => { const d = new Date(iso); const m = d.getMinutes(); return 
       ))}
     </div>
 
-    <div class="pg-stage">
+    <div class="pg-stage" data-dock-fit>
       <button class="pg-nav" type="button" id="pg-prev" aria-label="Émission précédente"><I n="left" s={20} /></button>
       <div class="pg-slides" id="pg-slides">
         {today.map((x, i) => (

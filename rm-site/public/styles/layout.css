@@ -1244,3 +1244,64 @@ html.pl-night .prog{background:#b88ad0}
 @media (min-width:901px) and (hover:hover){
   .djv:hover .djv-ph{object-position:50% 50%}
 }
+
+/* ── Le lecteur ne cache rien (17/11/2026) ─────────────────────────────────────
+   La capsule du lecteur flotte en bas de l'écran (16 px du bord, 64 px de haut).
+   Chaque écran « posé » (haut de page, rubrique aimantée) garde cette zone libre :
+   les contenus ancrés en bas finissent au-dessus. Les rails du haut de Podcasts
+   règlent en plus la taille de leurs cartes (home.js, fitDuo). */
+:root{--dock-zone:calc(96px + env(safe-area-inset-bottom))}
+/* accueil : la légende des photos et leurs barres passent au-dessus de la capsule sur mobile */
+@media (max-width:900px){.hct~.fade.f3{bottom:var(--dock-zone)!important}}
+/* Nos radios et DJ sets : les volets tiennent dans l'écran même peu haut */
+@media (min-width:901px){
+  .uvs{min-height:540px}
+  .uxb{bottom:calc(var(--dock-zone) + 8px)}
+  .djv-s{min-height:520px}
+  .djv-b{padding-bottom:calc(clamp(18px,3vh,36px) + var(--dock-zone))}
+  .djv-v{bottom:calc(clamp(18px,3vh,36px) + var(--dock-zone))}
+}
+/* Programme : la diapositive s'arrête au-dessus de la capsule (--dock-fit, site.js) ;
+   quand la place manque, elle se resserre : horaire et nom, sans la description. */
+.pg-s{min-height:clamp(240px,var(--dock-fit,58vh),520px)}
+@media (max-width:860px){.pg-s{min-height:clamp(240px,var(--dock-fit,62vh),440px)}}
+.dock-tight .pg-s{min-height:clamp(170px,var(--dock-fit),520px);padding:22px 26px}
+.dock-tight .pg-tx{gap:8px}
+.dock-tight .pg-n{font-size:clamp(26px,3vw,40px)}
+.dock-tight .pg-d{display:none}
+@media (min-width:861px) and (max-height:820px){.pg-home{padding-top:36px}}
+/* Podcasts : le bandeau commence sous l'en-tête collant ; les 84 px qu'il lui
+   réservait en haut étaient du vide. On les rend aux rails, qui gardent ainsi
+   leurs cartes à taille normale au-dessus de la capsule. */
+@media (min-width:901px){.pod-b{padding-top:clamp(40px,7vh,88px)}}
+@media (min-width:901px) and (max-height:820px){.pod-b{padding-top:clamp(28px,4.4vh,40px)}}
+@media (max-width:900px){.pod-b{padding-top:40px}}
+/* Podcasts, écrans peu hauts : le bandeau se resserre encore */
+@media (min-width:901px) and (max-height:760px){
+  /* le bandeau commence sous l'en-tête : pas besoin d'y réserver ses 84 px */
+  .pod-b{padding-top:30px;padding-bottom:22px}
+  .pod-b-eb{display:none}
+  .pod-q{margin-top:16px;height:50px}
+  .pod-n{margin-top:12px}
+  .pod-b-all{margin-top:14px}
+  .pod-r{padding-top:16px}
+  .pod-r-h{margin-bottom:10px}
+  .pod-duo .pod-t-ep>b{-webkit-line-clamp:1}
+}
+/* la date tient sur une ligne, quelle que soit la largeur de la carte */
+.pod-t-ep>small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* mobile : les cartes des DJs et des radios s'arrêtent au-dessus de la capsule */
+@media (max-width:900px){
+  .djv{aspect-ratio:auto;height:clamp(320px,calc(var(--dock-fit,412px) - 26px),412px)}
+  .ux{min-height:clamp(380px,calc(var(--dock-fit,540px) - 28px),540px)}
+}
+/* accueil, Nos équipes : la photo s'arrête au-dessus de la capsule */
+@media (min-width:901px){.hsec .unv[data-dock-fit]{max-height:min(620px,max(320px,var(--dock-fit,620px)))!important}}
+/* Actualités : la grande carte « à la une » finit au-dessus de la capsule */
+@media (min-width:701px){.feat{min-height:clamp(340px,var(--dock-fit,62vh),600px)}}
+@media (min-width:701px){
+  .feat.dock-tight{min-height:clamp(200px,var(--dock-fit),600px)}
+  .feat.dock-tight .feat-tx{gap:10px;padding:26px 30px}
+  .feat.dock-tight .feat-t{font-size:clamp(26px,2.6vw,38px)}
+  .feat.dock-tight .feat-e{display:none}
+}

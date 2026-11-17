@@ -11,7 +11,7 @@ const plHref = (r) => u('/playlist/') + (r.key === 'nightmood' ? '#nightmood' : 
 const qLink = (r) => (r.playlist !== null ? { href: plHref(r), label: 'Toute la playlist' } : { href: u('/djs/'), label: 'Tous les DJ sets' });
 ---
   <section id={id} data-full data-reveal data-snap class="uvs">
-    <div class="uvrow">
+    <div class="uvrow" data-dock-fit>
       {UNIVERS.map((r, g) => (
         <article class:list={['ux', { dk: r.ink === '#141218', 'ux-g': r.playlist !== null }]} data-ux={r.ids[0]} data-ux-st={r.ids.join(',')} style={`--c:${r.color};--w:${r.wash};--d:${(g * 0.09 + 0.12).toFixed(2)}s`}>
           <img class="uxp" src={asset(r.photo)} alt="" loading="lazy" style={`object-position:${r.pos}`} />

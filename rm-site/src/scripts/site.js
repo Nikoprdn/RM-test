@@ -74,6 +74,25 @@ function init() {
   onScroll();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { active = '__'; onScroll(); });
 
+  // ---- le lecteur ne cache rien ----
+  // Un bloc marqué data-dock-fit reçoit --dock-fit : la hauteur dont il dispose,
+  // depuis son haut jusqu'au-dessus de la capsule du lecteur, quand sa rubrique est
+  // posée à l'écran. Sous 260 px, il passe en version serrée (.dock-tight).
+  const dockFit = () => document.querySelectorAll('[data-dock-fit]').forEach((el) => {
+    const sec = el.closest('[data-snap]');
+    const secTop = sec ? sec.getBoundingClientRect().top + se().scrollTop : 0;
+    const pt = sec ? parseFloat(getComputedStyle(sec).paddingTop) || 0 : 0;
+    const rest = !sec || sec.hasAttribute('data-hero') ? 0 // même calcul que le magnétisme ci-dessous
+      : !sec.hasAttribute('data-full') && sec.classList.contains('hsec') ? secTop + pt - 84 - 52
+      : Math.max(0, secTop - 84);
+    const fit = Math.round(innerHeight - 96 - (el.getBoundingClientRect().top + se().scrollTop - rest));
+    el.style.setProperty('--dock-fit', fit + 'px');
+    el.classList.toggle('dock-tight', fit < 260);
+  });
+  dockFit();
+  window.addEventListener('resize', dockFit, sig);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(dockFit);
+
   // ---- glissé long et freiné vers les ancres de la page ----
   const glide = (to) => {
     const from = se().scrollTop, dist = to - from;

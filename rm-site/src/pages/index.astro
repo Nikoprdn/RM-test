@@ -145,7 +145,7 @@ const jsonld = [{
   <section id="equipes" data-reveal data-snap class="hsec" style="padding:140px 0 0">
     <div class="wrap">
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(460px,100%),1fr));gap:40px 72px;align-items:center">
-        <div class="unv" style="position:relative;aspect-ratio:1/1;max-height:620px;border-radius:24px;overflow:hidden;background:#2A2730;--d:.1s">
+        <div class="unv" data-dock-fit style="position:relative;aspect-ratio:1/1;max-height:620px;border-radius:24px;overflow:hidden;background:#2A2730;--d:.1s">
           <div class="plx zm" style="position:absolute;inset:-8% 0">
             {TEAM.map((m, i) => <img class:list={['slide tsl-img', { on: i === 0 }]} data-t={i} src={m.img ? m.img.large : ''} alt={m.name} loading="lazy" style="object-position:50% 25%;position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />)}
             <img class="slide tsl-img" data-t={TEAM.length} src={asset('show-morning.jpg')} alt="L’équipe du Morning" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:70% 50%" />

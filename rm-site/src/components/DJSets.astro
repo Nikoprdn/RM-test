@@ -30,7 +30,7 @@ const sets = djs.map((d) => ({
       </div>
     </div>
 
-    <div class="djv-row">
+    <div class="djv-row" data-dock-fit>
       {sets.map((d, i) => (
         <article class="djv" style={`--d:${(i * 0.05 + 0.1).toFixed(2)}s`}>
           {d.img && <img class="djv-ph" src={d.img.card} alt="" loading={i < 4 ? 'eager' : 'lazy'} style={`--fx:${FOCUS[fkey(d.show)] ?? 50}%`} />}

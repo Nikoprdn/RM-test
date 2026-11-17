@@ -137,6 +137,29 @@ Source : Dropbox `Radio Monaco/CHARTE GRAPHIQUE RM/`.
 
 ---
 
+## Le lecteur ne cache rien (consigne du 17 novembre)
+
+« Toujours veiller que le lecteur ne cache pas des contenus » et « calibrer toutes
+les pages pour que l'affichage soit propre, et ne dépasse pas ». La capsule flotte
+à 16 px du bas et fait 64 px : la zone à garder libre est `--dock-zone`
+(96 px + zone de sécurité, `layout.css`). Chaque écran posé (haut de page, rubrique
+aimantée) finit au-dessus :
+- `data-dock-fit` sur un bloc (`site.js`) lui donne `--dock-fit`, la hauteur dont
+  il dispose jusqu'à la capsule une fois sa rubrique posée, et `.dock-tight` sous
+  260 px. Utilisé par la diapositive du Programme (version serrée : sans la
+  description), la carte « à la une » des Actualités (serrée : sans le résumé),
+  la photo de Nos équipes, les cartes mobiles des DJs et des radios.
+- Rails du haut de Podcasts : `fitDuo` (`home.js`) prend une carte de plus par
+  rail (au plus deux) si le texte finirait sous la capsule. Le bandeau ne réserve
+  plus 84 px vides en haut (il commence sous l'en-tête collant).
+- Volets Nos radios et DJ sets : hauteur minimale abaissée, contenu ancré au-dessus
+  de `--dock-zone`.
+- Ce qui reste admis : le début de la rubrique suivante qui affleure sous la
+  capsule, et le défilement normal des longues pages (listes, articles) ; le bas
+  de chaque page garde 96 px libres.
+- Contrôle : `audit.cjs` (dossier de travail) — 16 pages × 7 tailles, débordement
+  horizontal et textes sous la capsule aux arrêts aimantés. Aucun débordement.
+
 ## État des rubriques
 
 **Accueil** — héros photo, puis les rubriques. Le défilement est aimanté : les
