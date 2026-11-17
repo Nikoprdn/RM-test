@@ -133,6 +133,12 @@ Source : Dropbox `Radio Monaco/CHARTE GRAPHIQUE RM/`.
   « 01 / 04 » sous la légende (retiré à sa demande). Le port y apparaît :
   la règle « pas de photo de bateau » ne s'applique pas à l'ouverture tant que
   le propriétaire n'a pas fourni d'autres photos de Monaco.
+- **Pas de surtitre au-dessus des titres de rubrique** (17 novembre) : la petite
+  ligne « — NOS RADIOS » (trait rouge, petites capitales espacées, qui répétait le
+  titre) faisait « trop IA ». Retirée partout ; le grand titre porte seul la rubrique.
+  Non retenus : chiffre romain à la manière du brand book (« I. NOS RADIOS »),
+  surtitre en phrase utile (« ● 4 radios en direct »). Les étiquettes des cartes
+  (Chronique, Mix DJ, L'intégrale) restent.
 - Pas encore traité : les volets « Nos radios » et les autres pages.
 
 ---

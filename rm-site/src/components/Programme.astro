@@ -12,7 +12,6 @@ const hm = (iso) => { const d = new Date(iso); const m = d.getMinutes(); return 
     <header class="page-hd pg-hd">
       <div>
         {h1 && <nav class="crumbs" aria-label="Fil d’Ariane"><a href={u('/')}>Accueil</a><span class="sep">/</span><span>Programme</span></nav>}
-        {!h1 && <p class="eb pg-eb">Programme</p>}
         <H class="h1">Aujourd’hui sur <b>Radio Monaco.</b></H>
         <p class="lead" id="pg-date">Le programme heure par heure, mis à jour en direct.</p>
       </div>
