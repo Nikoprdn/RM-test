@@ -28,6 +28,9 @@ const jour = all.slice(0, 16);
 // « Mix DJ » (orange), « Chronique » pour les chroniques du Morning, « L’intégrale » pour
 // Le Morning lui-même (le replay intégral de l’émission), « Horoscope » pour Les Étoilés.
 const genre = (s) => (s.feed === 'mixdj' ? 'Mix DJ' : s.feed === 'horoscope' ? 'Horoscope' : s.k === 'morning' ? 'L’intégrale' : 'Chronique');
+// grandes thématiques (demande de Nicolas, 17/11/2026) : les émissions et chroniques,
+// chacune vers sa page, sous la recherche du bandeau
+const themes = pods.filter((s) => s.feed !== 'mixdj');
 const univers = [
   ['Le Morning & les chroniques', pods.filter((s) => s.feed === 'emissions' || s.feed === 'horoscope')],
   [FEED_LABEL.mixdj, pods.filter((s) => s.feed === 'mixdj')]
@@ -74,6 +77,9 @@ const univers = [
             </ul>
           </div>
         )}
+        <nav class="pod-th" aria-label="Les émissions">
+          {themes.map((s) => <a href={u('/podcasts/' + s.k + '/')}>{s.name}</a>)}
+        </nav>
         {!h1 && more && <a class="pod-b-all" href={u('/podcasts/')}>Tous les podcasts<I n="right" s={18} /></a>}
       </div>
     </div>

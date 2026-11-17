@@ -201,6 +201,10 @@ recherche, hors écran ; au bout, retour au début.
 Sur les écrans peu hauts (≤ 820 px), le bandeau se resserre pour que ces rails
 tiennent en entier dans le premier écran (vérifié en 1 288 × 663, l'écran de Nicolas).
 « Podcasts à la une » (deux grandes cartes) a été retiré à sa demande.
+**Les thématiques** (17 novembre) : sous la recherche du bandeau (accueil et page
+Podcasts), une ligne de pastilles en verre, une par émission ou chronique (Le Morning,
+L'Écho du Rocher, Switch On, Le Feed, L'Agenda…, pas les mixs), chacune vers sa page.
+Une seule ligne dès 1 180 px, deux en dessous, défilement au doigt sur mobile (`.pod-th`).
 **Pastille « les podcasts du jour »** (page `/podcasts/` seulement, `.pod-n`,
 choix N1 de Nicolas le 17 novembre) : une ligne en verre sous la recherche, avec
 trois vignettes, un point rouge et « 4 nouveaux podcasts ajoutés aujourd'hui »
