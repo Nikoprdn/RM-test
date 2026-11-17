@@ -218,6 +218,18 @@ place du contour rectangulaire général du site ; non retenus : halo clair, pil
 blanche, trait rouge. La recherche filtre vraiment, sur le
 nom de l'émission, son sous-titre, le titre de l'épisode et le nom du rail.
 
+**Pages d'émission** (`/podcasts/<émission>/`, `[show].astro`, classes `.shw-*`) —
+piste B « le studio », choisie par Nicolas le 17 novembre (non retenues : A pochette
+sur fond crème avec carte du dernier épisode, C grand bloc dans la couleur de
+l'émission). Bandeau sombre : pochette floutée en fond, pochette nette, retour « Tous
+les podcasts », étiquette (Chronique, L'intégrale, Horoscope, Mix DJ), nom, sous-titre,
+repères (rythme déduit des dates de publication, durée moyenne, dernier épisode en
+relatif), « Écouter le dernier épisode ». Puis tous les épisodes en lignes (vignette,
+titre, description sur une ligne, date relative, durée, lecture ; l'épisode en cours
+passe en rouge), puis « Les autres chroniques » / « Les autres mixs » en pastilles.
+Attention : dans le préambule d'un `.astro`, un gabarit `${…}` contenant `>` a fait
+dupliquer `getStaticPaths` par le compilateur (« Unexpected export ») : l'éviter.
+
 **Sur nos réseaux** (accueil, `#reseaux`, classes `.igc-*`) — piste G « les colonnes »,
 choisie par Nicolas le 17 novembre parmi huit maquettes (A téléphone, B planche,
 C pile, D mur vivant, E la une, F profil, G colonnes, H stories). Texte fixe à

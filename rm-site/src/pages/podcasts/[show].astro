@@ -1,27 +1,94 @@
 ---
 import Base from '../../layouts/Base.astro';
-import EpisodeList from '../../components/EpisodeList.astro';
 import I from '../../components/Icons.astro';
 import { u } from '../../lib/url.js';
-import { getPodcasts, ausImg, ausAudio, FEED_LABEL } from '../../lib/data.js';
+import { getPodcasts, ausImg, ausAudio, dur } from '../../lib/data.js';
 export async function getStaticPaths() { return (await getPodcasts()).map((p) => ({ params: { show: p.k }, props: { pod: p } })); }
+// Page d'une émission — piste B « le studio », choisie par Nicolas le 17/11/2026 :
+// un bandeau sombre (la pochette floutée en fond, la pochette nette, le nom, les repères,
+// « Écouter le dernier épisode »), puis tous les épisodes en lignes sur le fond crème,
+// et les autres émissions du même univers.
 const { pod } = Astro.props;
+const isMix = (x) => x.feed === 'mixdj';
+const others = (await getPodcasts()).filter((o) => o.k !== pod.k && isMix(o) === isMix(pod));
 const PROD = (process.env.PROD_URL || 'https://radio-monaco.com').replace(/\/$/, '');
 const ld = { '@context': 'https://schema.org', '@type': 'PodcastSeries', name: pod.name, description: pod.sub, url: PROD + '/podcasts/' + pod.k + '/', image: ausImg(pod.eps[0].img, true), publisher: { '@id': PROD + '/#organisation' },
   hasPart: pod.eps.slice(0, 12).map((e) => ({ '@type': 'PodcastEpisode', name: e.title, datePublished: e.d + ':00Z', timeRequired: 'PT' + Math.round(e.s / 60) + 'M', associatedMedia: { '@type': 'MediaObject', contentUrl: ausAudio(e.au) } })) };
-const first = { id: pod.k + ':0', url: ausAudio(pod.eps[0].au), title: pod.eps[0].title, show: pod.name, color: pod.color, ink: pod.feed === 'mixdj' ? '#141218' : '#FFFFFF', img: ausImg(pod.eps[0].img), s: pod.eps[0].s };
+const mix = pod.feed === 'mixdj';
+const genre = mix ? 'Mix DJ' : pod.feed === 'horoscope' ? 'Horoscope' : pod.k === 'morning' ? 'L’intégrale' : 'Chronique';
+const sub = mix ? pod.sub.replace(/^by\s+/i, '') : pod.sub;
+const epJSON = (e, i) => JSON.stringify({ id: pod.k + ':' + i, url: ausAudio(e.au), title: e.title, show: pod.name, color: pod.color, ink: mix ? '#141218' : '#FFFFFF', img: ausImg(e.img), s: e.s });
+// « depuis quand publié », toujours relatif, comme sur les cartes
+const depuis = (iso) => {
+  const d = new Date(iso + 'Z'), t = new Date();
+  const j = Math.round((new Date(t.getFullYear(), t.getMonth(), t.getDate()) - new Date(d.getFullYear(), d.getMonth(), d.getDate())) / 864e5);
+  const pl = (n, w) => 'Il y a ' + n + ' ' + w + (n > 1 && w !== 'mois' ? 's' : '');
+  if (j <= 0) return 'Aujourd’hui';
+  if (j === 1) return 'Hier';
+  if (j < 7) return pl(j, 'jour');
+  if (j < 30) return pl(Math.round(j / 7), 'semaine');
+  if (j < 365) return pl(Math.round(j / 30), 'mois');
+  return pl(Math.round(j / 365), 'an');
+};
+// rythme, déduit des dates de publication (il n'existe pas dans les données)
+const JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+const rythme = (() => {
+  const ds = pod.eps.map((e) => new Date(e.d + 'Z'));
+  if (ds.length < 3) return '';
+  const gaps = ds.slice(1).map((d, i) => (ds[i] - d) / 864e5).sort((a, b) => a - b);
+  const g = gaps[gaps.length >> 1];
+  const wd = new Set(ds.map((d) => d.getUTCDay()));
+  if (g <= 1.6) return [...wd].every((x) => x >= 1 && x <= 5) ? 'Du lundi au vendredi' : 'Chaque jour';
+  if (g >= 5 && g <= 9) return wd.size === 1 ? 'Chaque ' + JOURS[[...wd][0]] : 'Chaque semaine';
+  return '';
+})();
+const moyenne = dur(pod.eps.reduce((a, e) => a + e.s, 0) / pod.eps.length);
+const facts = [rythme, moyenne + ' en moyenne', 'Dernier épisode ' + depuis(pod.eps[0].d).toLowerCase()].filter(Boolean);
 ---
 <Base title={`${pod.name} — Podcast Radio Monaco`} description={`${pod.name} : ${pod.sub}. Tous les épisodes à réécouter sur Radio Monaco.`} image={ausImg(pod.eps[0].img, true)} path={'/podcasts/' + pod.k + '/'} jsonld={[ld]}>
-  <div class="wrap">
-    <div class="profile pod-hd">
-      <div class="ph" style="aspect-ratio:1/1"><img src={ausImg(pod.eps[0].img, true)} alt="" /></div>
-      <div>
-        <nav class="crumbs"><a href={u('/')}>Accueil</a><span class="sep">/</span><a href={u('/podcasts/')}>Podcasts</a><span class="sep">/</span><span>{FEED_LABEL[pod.feed]}</span></nav>
-        <h1 class="h1"><b>{pod.name}</b></h1>
-        <p class="lead">{pod.sub}</p>
-        <button class="btn-play" type="button" data-rm-ep={JSON.stringify(first)} style={`--c:${pod.color}`}><span class="pi"><I n="play" /></span>Écouter le dernier épisode</button>
+  <section class="shw-h">
+    <img class="shw-bg" src={ausImg(pod.eps[0].img)} alt="" aria-hidden="true" />
+    <div class="shw-in">
+      <img class="shw-c" src={ausImg(pod.eps[0].img, true)} alt={pod.name} fetchpriority="high" />
+      <div class="shw-t">
+        <a class="shw-bk" href={u('/podcasts/')}><span aria-hidden="true">←</span> Tous les podcasts</a>
+        <p class="shw-g">{genre}</p>
+        <h1>{pod.name}</h1>
+        <p class="shw-s">{sub}</p>
+        <p class="shw-f">{facts.map((f) => <span>{f}</span>)}</p>
+        <button class="shw-pb" type="button" data-rm-ep={epJSON(pod.eps[0], 0)} style={`--c:${pod.color}`}><span class="pi"><I n="play" s={14} /></span>Écouter le dernier épisode</button>
       </div>
     </div>
-    <section class="pod-eps"><div class="sec-t"><h2>Tous les <b>épisodes.</b></h2></div><EpisodeList show={pod} limit={12} /></section>
+  </section>
+
+  <div class="wrap">
+    <section class="shw-l">
+      <h2>Tous les <b>épisodes.</b></h2>
+      <ol data-eps>
+        {pod.eps.map((e, i) => (
+          <li>
+            <button type="button" data-rm-ep={epJSON(e, i)} data-epid={pod.k + ':' + i} aria-label={`Écouter : ${e.title}`}>
+              <img src={ausImg(e.img)} alt="" loading="lazy" />
+              <span class="x"><b>{e.title}</b>{e.desc && <span class="d">{e.desc}</span>}<span class="m">{depuis(e.d)} · {dur(e.s)}</span></span>
+              <span class="w">{depuis(e.d)}</span>
+              <span class="du">{dur(e.s)}</span>
+              <span class="pl" aria-hidden="true"><I n="play" s={13} /></span>
+            </button>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    {others.length > 0 && (
+      <section class="shw-o">
+        <h2>Les autres <b>{mix ? 'mixs.' : 'chroniques.'}</b></h2>
+        <nav aria-label={mix ? 'Les autres mixs' : 'Les autres chroniques'}>{others.map((o) => <a href={u('/podcasts/' + o.k + '/')}>{o.name}</a>)}</nav>
+      </section>
+    )}
   </div>
+  <script>
+  // surbrillance de l'épisode en cours de lecture
+  const mark = () => { const s = window.RM && window.RM.state; const cur = s && s.mode === 'pod' && s.ep ? s.ep.id : ''; document.querySelectorAll('[data-eps] [data-epid]').forEach((b) => b.classList.toggle('on', b.dataset.epid === cur && !!(s && s.playing))); };
+  document.addEventListener('rm:state', mark); document.addEventListener('astro:page-load', mark);
+</script>
 </Base>
