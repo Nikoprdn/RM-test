@@ -239,6 +239,16 @@ au clavier, hors écran et si les animations sont réduites. Rubrique `data-full
 elle occupe l'écran sous l'en-tête et s'arrête au-dessus du lecteur. Reels
 distribués en alternance entre colonnes (au moins trois par colonne). Mobile :
 deux colonnes sous le texte.
+**Côté texte : le profil Instagram** (piste A, choisie le 18 novembre ; non retenues :
+B la story en fond sombre, C le rond seul à côté du titre) — classes `.igp-*`. Rond
+du compte avec le sigle blanc sur rouge ; nom, « Radio Monaco », publications, abonnés,
+abonnements, la bio du compte, « Suivre », puis les 10 stories à la une du compte
+(titres et adresses réels, images prises dans nos visuels faute d'accès par l'API ;
+réglage dans `IG_PROFILE`, `src/lib/social.js`). Le rond porte l'anneau rouge et orange
+et « Nouvelle story » tant qu'une story est en ligne : il faut `IG_TOKEN` (API
+Instagram) pour lire `me/stories` à chaque construction ; `home.js` éteint le rond 24 h
+après la publication. Sans jeton : chiffres saisis à la main (201 · 19 k · 446 au
+18 novembre) et rond gris.
 
 **Le lecteur** (`Player.astro` + `player.js`) — une capsule en bas de page, et un
 **studio** en plein écran qui s'ouvre en cliquant le titre : photos de la régie
@@ -297,6 +307,8 @@ mosaïque de pochettes en fond, bascule par onglets.
   contient pas de clé ; les variables GitHub ne sont pas accessibles d'ici).
   Nicolas le fera plus tard.
 - Le nombre d'abonnés et les adresses Facebook, TikTok, LinkedIn.
+- Un jeton de l'API Instagram (`IG_TOKEN`) pour que le rond suive les stories et que
+  les chiffres du profil se mettent à jour seuls.
 - La validation des 64 visuels.
 - Une relecture du texte de présentation de Monte-Carlo.
 - Une exception durable pour `radio-monaco.com/wp-json/` dans le service de

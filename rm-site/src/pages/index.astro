@@ -18,6 +18,7 @@ const REELS = ig.reels;
 // que la boucle couvre toute la hauteur de l'écran.
 const IGCOLS = [0, 1, 2].map((c) => { const n = REELS.length, col = REELS.filter((_, i) => i % 3 === c); while (col.length < 3) col.push(REELS[(col.length * 3 + c + 1) % n]); return col; });
 const FOLLOW = social.filter((x) => x.followers);
+const IGP = { ...ig.profile, story: ig.story };
 const une = posts.filter((p) => p.une && p.img).slice(0, 3);
 const heads = posts.filter((p) => !une.includes(p)).slice(0, 3);
 const TEAM = team.slice(0, 3);
@@ -123,11 +124,23 @@ const jsonld = [{
        vitesse, et s'arrêtent au survol. La rubrique tient dans l'écran, au-dessus du lecteur. -->
   <section id="reseaux" data-full data-reveal data-snap class="hsec igc">
     <div class="wrap igc-w">
-      <div class="igc-t">
+      <div class="igc-t igp">
         <h2 class="igc-h"><span class="m"><span>Sur nos</span></span> <span class="m"><span style="font-weight:600">réseaux.</span></span></h2>
-        {FOLLOW.length > 0 && <div class="soc-n rise" style="--d:.3s">{FOLLOW.map((x) => <a href={x.url || undefined} rel="noopener"><b>{fmtFollowers(x.followers)}</b><span>abonnés {x.name}</span></a>)}</div>}
-        <p class="igc-p rise" style="--d:.32s">Les coulisses de l’antenne, Monaco et la Riviera, en vidéo chaque semaine.</p>
-        <div class="rise" style="--d:.35s"><a href="https://www.instagram.com/radiomonaco_officiel/" rel="noopener" class="btn" style="display:inline-flex;align-items:center;gap:10px;height:50px;padding:0 22px;border-radius:999px;background:#141218;color:#fff;font-size:14px;font-weight:500"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.3" cy="6.7" r=".6"></circle></svg>@radiomonaco_officiel</a></div>
+        <!-- profil Instagram (piste A, 18/11/2026) : le rond s'allume tant qu'une story est en ligne (24 h) -->
+        <div class="igp-top rise" style="--d:.28s">
+          <a class="igp-av" href={IGP.story ? 'https://www.instagram.com/stories/' + IGP.user + '/' : 'https://www.instagram.com/' + IGP.user + '/'} rel="noopener" data-ig-story={IGP.story ? String(IGP.story + 864e5) : undefined} aria-label={'Instagram de ' + IGP.name}><span><img src={asset('charte/sigle-blanc.svg')} alt="" /></span></a>
+          <div class="igp-n"><b>{IGP.user}</b><span>{IGP.name}</span><em class="igp-live">Nouvelle story</em></div>
+        </div>
+        <dl class="igp-s rise" style="--d:.3s">
+          <div><dt>publications</dt><dd>{IGP.posts}</dd></div>
+          <div><dt>abonnés</dt><dd>{fmtFollowers(IGP.followers)}</dd></div>
+          <div><dt>abonnements</dt><dd>{IGP.following}</dd></div>
+        </dl>
+        <p class="igp-b rise" style="--d:.32s">{IGP.bio.map((l) => <span>{l}</span>)}</p>
+        <div class="rise" style="--d:.35s"><a href={'https://www.instagram.com/' + IGP.user + '/'} rel="noopener" class="igp-f"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.3" cy="6.7" r=".6"></circle></svg>Suivre @{IGP.user}</a></div>
+        <div class="igp-hl rise" style="--d:.38s" aria-label="Stories à la une">
+          {IGP.highlights.map((h) => <a href={'https://www.instagram.com/stories/highlights/' + h.id + '/'} rel="noopener"><span class="igp-hc"><span><img src={asset(h.img)} alt="" loading="lazy" /></span></span><small>{h.t}</small></a>)}
+        </div>
       </div>
     </div>
     <div class="igc-c" data-igc aria-label="Derniers reels Instagram">
