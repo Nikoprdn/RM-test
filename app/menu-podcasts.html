@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Podcasts</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style type="text/css">
+/* « Podcasts » — reprise de la rubrique Podcasts du site (Podcasts.astro, version mobile), 20 novembre 2026.
+   Bandeau de la régie avec la recherche en verre, la pastille des nouveaux podcasts et les thématiques,
+   puis les rails : derniers épisodes, derniers mixs, Le Morning & les chroniques, 100 % Mix DJ.
+   Une émission s'ouvre en fiche « le studio » par-dessus la page. Le son est partagé avec le reste de l'application.
+   Données : app-podcasts.json, publié par le site (les flux Ausha ne sont pas lisibles depuis l'application). */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#F6F3EE;font-family:Barlow,system-ui,sans-serif;color:#141218;-webkit-tap-highlight-color:transparent}
+body{padding-bottom:6px}   /* GoodBarber réserve déjà la place de la barre d'onglets */
+button,input{font:inherit;color:inherit;background:none;border:0}
+button{cursor:pointer}
+button:focus,button:focus-visible,input:focus{outline:none}
+img{display:block}
+
+/* bandeau de la régie */
+.bd{position:relative;overflow:hidden;background:#141218;color:#fff;text-align:center;padding:34px 20px 22px}
+.bd-im{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 56%;filter:grayscale(.3) brightness(.62)}
+.bd-sc{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,8,12,.7) 0%,rgba(10,8,12,.4) 46%,rgba(10,8,12,.86) 100%)}
+.bd-in{position:relative;z-index:1}
+.bd h1{font-size:34px;font-weight:300;letter-spacing:-.035em;line-height:1.02}
+.bd h1 b{display:block;font-weight:600}
+.q{display:flex;align-items:center;gap:10px;height:52px;margin:22px 0 0;padding:0 7px 0 20px;border-radius:999px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.3);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);transition:background .3s,box-shadow .3s,border-color .3s}
+.q:focus-within{background:rgba(255,255,255,.2);border-color:transparent;box-shadow:0 0 0 2px #E4032E}
+.q input{flex:1;min-width:0;height:100%;font-size:15px;color:#fff;-webkit-appearance:none;appearance:none}
+.q input::placeholder{color:rgba(255,255,255,.72)}
+.q input::-webkit-search-cancel-button{-webkit-appearance:none}
+.q-b{flex:none;width:38px;height:38px;border-radius:50%;background:#fff;color:#141218;display:grid;place-items:center}
+.q-x{display:none}
+.q.has .q-x{display:grid}
+.q.has .q-s{display:none}
+
+/* pastille des nouveaux podcasts */
+.nw{display:flex;align-items:center;gap:10px;width:100%;margin:10px 0 0;padding:6px 14px 6px 6px;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);text-align:left;font-size:13.5px;color:rgba(255,255,255,.85);opacity:0;transition:opacity .5s}
+.nw.in{opacity:1}
+.nw-av{display:flex;flex:none}
+.nw-av img{width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid #2a2530}
+.nw-av img+img{margin-left:-9px}
+.nw-d{flex:none;width:7px;height:7px;border-radius:50%;background:#E4032E;box-shadow:0 0 0 0 rgba(228,3,46,.6);animation:pu 1.8s ease-in-out infinite}
+@keyframes pu{0%,100%{box-shadow:0 0 0 0 rgba(228,3,46,.55)}50%{box-shadow:0 0 0 6px rgba(228,3,46,0)}}
+.nw-t{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nw-t b{color:#fff;font-weight:600}
+.nw-c{flex:none;font-size:15px;color:rgba(255,255,255,.7);transition:transform .3s}
+.nw.open .nw-c{transform:rotate(90deg)}
+.nl{display:none;margin:8px 0 0;max-height:300px;overflow-y:auto;border-radius:20px;background:rgba(20,18,24,.72);border:1px solid rgba(255,255,255,.16);-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);text-align:left;padding:6px}
+.nl.open{display:block}
+.nl button{display:flex;align-items:center;gap:12px;width:100%;padding:8px;border-radius:14px;text-align:left}
+.nl button:active{background:rgba(255,255,255,.08)}
+.nl img{width:46px;height:46px;border-radius:10px;object-fit:cover;flex:none}
+.nl span{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.nl em{font-style:normal;font-size:10.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--c)}
+.nl b{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* thématiques */
+.th{display:flex;gap:8px;margin:14px -20px 0;padding:0 20px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.th::-webkit-scrollbar{display:none}
+.th button{flex:none;height:36px;padding:0 15px;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.28);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);font-size:14px;font-weight:500;color:#fff;white-space:nowrap;transition:background .3s,color .3s}
+.th button.on{background:#fff;color:#141218;border-color:#fff}
+
+/* écoute en cours, collée en haut */
+.np{position:sticky;top:0;z-index:5;display:none;align-items:center;gap:12px;padding:9px 12px 9px 9px;margin:0;background:rgba(246,243,238,.86);-webkit-backdrop-filter:blur(20px) saturate(1.4);backdrop-filter:blur(20px) saturate(1.4);border-bottom:1px solid rgba(20,18,24,.08)}
+.np.on{display:flex}
+.np img{width:42px;height:42px;border-radius:10px;object-fit:cover;flex:none}
+.np-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.np-t em{font-style:normal;font-size:10.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--c)}
+.np-t b{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.np-pr{position:absolute;left:0;bottom:-1px;height:2px;background:#E4032E;width:0}
+.np-k{flex:none;width:40px;height:40px;border-radius:50%;background:#141218;color:#fff;display:grid;place-items:center}
+
+/* rails */
+.rl{padding:28px 0 0}
+.rl[hidden]{display:none}
+.rl-h{display:flex;align-items:center;gap:9px;padding:0 20px;margin:0 0 14px}
+.rl-h h2{white-space:nowrap;font-size:20px;font-weight:600;letter-spacing:-.02em;line-height:1.1}
+.rl-h i{font-style:normal;font-size:18px;color:#9B969F}
+.rl-h em{margin-left:auto;font-style:normal;font-size:11px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:#9B969F;white-space:nowrap}
+.rr{display:flex;gap:12px;overflow-x:auto;padding:2px 20px 6px;scroll-snap-type:x mandatory;scroll-padding-left:20px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.rr::-webkit-scrollbar{display:none}
+.t{flex:0 0 150px;min-width:0;scroll-snap-align:start;text-align:left}
+.t[hidden]{display:none}
+.t-v{position:relative;display:block;width:100%;border-radius:14px;overflow:hidden;background:#E8E3DC}
+.t-v img{width:100%;aspect-ratio:1;object-fit:cover;filter:grayscale(.3);transition:filter .6s}
+.t:active .t-v img,.t.cur .t-v img{filter:none}
+.t-p{position:absolute;right:8px;bottom:8px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.94);color:#141218;display:grid;place-items:center;box-shadow:0 8px 18px -10px rgba(0,0,0,.6)}
+.t.cur .t-p{background:#E4032E;color:#fff}
+.t em{display:block;margin-top:11px;font-style:normal;font-size:10.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--c);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.t b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:4px;font-size:14.5px;font-weight:600;letter-spacing:-.008em;line-height:1.22}
+.t.cur b{color:#E4032E}
+.t small{display:block;margin-top:4px;font-size:12.5px;color:#6A6570;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.none{display:none;padding:34px 20px 10px;font-size:16px;color:#6A6570}
+.none.on{display:block}
+.ld{padding:40px 20px;color:#6A6570;font-size:15px}
+.end{height:18px}
+
+/* fiche d'une émission (piste B « le studio » du site) */
+.sh{position:fixed;inset:0;z-index:20;background:#F6F3EE;overflow-y:auto;-webkit-overflow-scrolling:touch;transform:translateY(100%);transition:transform .45s cubic-bezier(.16,.84,.12,1);padding-bottom:102px}
+.sh.open{transform:none}
+.sh-b{position:relative;overflow:hidden;background:#141218;color:#fff;padding:16px 20px 24px}
+.sh-bg{position:absolute;inset:-40px;width:calc(100% + 80px);height:calc(100% + 80px);object-fit:cover;filter:blur(40px) saturate(1.3) brightness(.55)}
+.sh-in{position:relative}
+.sh-x{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 14px 0 10px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.24);font-size:13.5px;font-weight:500;color:#fff}
+.sh-top{display:flex;gap:16px;align-items:flex-end;margin-top:18px}
+.sh-cv{width:118px;height:118px;flex:none;border-radius:16px;object-fit:cover;box-shadow:0 20px 40px -20px rgba(0,0,0,.8)}
+.sh-tt{min-width:0}
+.sh-tt em{font-style:normal;font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#fff;opacity:.85}
+.sh-tt h2{margin-top:6px;font-size:26px;font-weight:600;letter-spacing:-.025em;line-height:1.05}
+.sh-tt p{margin-top:6px;font-size:13.5px;color:rgba(255,255,255,.75);line-height:1.3}
+.sh-m{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:18px;font-size:12.5px;color:rgba(255,255,255,.72)}
+
+.sh-go{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:48px;margin-top:18px;border-radius:999px;background:#fff;color:#141218;font-size:15px;font-weight:600}
+.sh-go i{width:24px;height:24px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center}
+.sh-l{padding:8px 12px 0}
+.e{display:flex;align-items:center;gap:12px;width:100%;padding:12px 8px;border-bottom:1px solid rgba(20,18,24,.08);text-align:left}
+.e img{width:56px;height:56px;border-radius:10px;object-fit:cover;flex:none}
+.e-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.e-t b{font-size:14.5px;font-weight:600;line-height:1.22;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.e-t span{font-size:12.5px;color:#6A6570;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.e-t small{font-size:12px;color:#9B969F}
+.e-p{flex:none;width:36px;height:36px;border-radius:50%;border:1px solid rgba(20,18,24,.18);display:grid;place-items:center;color:#141218}
+.e.cur b{color:#E4032E}
+.e.cur .e-p{background:#E4032E;border-color:#E4032E;color:#fff}
+.sh-o{padding:26px 20px 0}
+.sh-o h3{font-size:18px;font-weight:600;letter-spacing:-.015em;margin-bottom:12px}
+.sh-o div{display:flex;flex-wrap:wrap;gap:8px}
+.sh-o button{height:34px;padding:0 14px;border-radius:999px;border:1px solid rgba(20,18,24,.18);font-size:13.5px;font-weight:500}
+svg{display:block}
+</style>
+</head>
+<body>
+<section class="bd">
+  <img class="bd-im" src="https://nikoprdn.github.io/RM-test/assets/rm-studio.jpg" alt="">
+  <span class="bd-sc"></span>
+  <div class="bd-in">
+    <h1>Écoutez vos <b>podcasts préférés.</b></h1>
+    <form class="q" id="qf" role="search" onsubmit="return false">
+      <input id="q" type="search" autocomplete="off" placeholder="Rechercher une émission, un épisode…" aria-label="Rechercher">
+      <span class="q-b q-s" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></span>
+      <button class="q-b q-x" id="qx" type="button" aria-label="Effacer"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </form>
+    <button class="nw" id="nw" type="button" hidden><span class="nw-av" id="nwav"></span><span class="nw-d"></span><span class="nw-t" id="nwt"></span><span class="nw-c">›</span></button>
+    <div class="nl" id="nl"></div>
+    <nav class="th" id="th"></nav>
+  </div>
+</section>
+<div class="np" id="np"><img id="npi" alt=""><span class="np-t"><em id="nps"></em><b id="npt"></b></span><button class="np-k" id="npk" type="button" aria-label="Pause"></button><span class="np-pr" id="npr"></span></div>
+<main id="main"><p class="ld">Chargement des podcasts…</p></main>
+<p class="none" id="none">Aucun podcast ne correspond à votre recherche.</p>
+<div class="end"></div>
+<div class="sh" id="sh"></div>
+
+<script>
+(function () {
+var DATA = 'https://nikoprdn.github.io/RM-test/app-podcasts.json';
+var IC_PLAY = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg>';
+var IC_PAUSE = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4.5" width="4" height="15" rx="1"/><rect x="14" y="4.5" width="4" height="15" rx="1"/></svg>';
+var IC_RIGHT = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>';
+function $(id) { return document.getElementById(id); }
+function esc(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function clean(s) { return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+function real(e) { return !(e && e.isTrusted === false); }   /* GoodBarber envoie des clics synthétiques */
+
+/* son partagé avec le reste de l'application */
+var H = window; try { if (window.parent && window.parent.document) H = window.parent; } catch (e) {}
+var au = H.__rmAudio;
+if (!au) { au = H.document.createElement('audio'); au.preload = 'none'; au.setAttribute('playsinline', ''); au.style.display = 'none'; H.document.body.appendChild(au); H.__rmAudio = au; }
+
+function day(d) { return d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate(); }
+function depuis(iso) {
+  var d = new Date(iso + 'Z'), t = new Date();
+  var j = Math.round((new Date(t.getFullYear(), t.getMonth(), t.getDate()) - new Date(d.getFullYear(), d.getMonth(), d.getDate())) / 864e5);
+  if (j <= 0) return 'Aujourd’hui'; if (j === 1) return 'Hier'; if (j < 14) return 'Il y a ' + j + ' jours';
+  if (j < 60) return 'Il y a ' + Math.round(j / 7) + ' semaines';
+  var m = Math.round(j / 30.4); return m < 12 ? 'Il y a ' + m + ' mois' : 'Il y a plus d’un an';
+}
+function dur(s) { var m = Math.round(s / 60); if (m < 60) return m + ' min'; var h = Math.floor(m / 60), r = m % 60; return h + ' h' + (r ? ' ' + (r < 10 ? '0' : '') + r : ''); }
+
+var shows = [], EP = {}, filter = '', q = '';
+
+function card(x) {
+  var s = x.s, e = x.e;
+  return '<button class="t" type="button" data-ep="' + x.id + '" data-i="' + esc(clean(s.name + ' ' + s.sub + ' ' + e.t)) + '" data-k="' + s.k + '" style="--c:' + s.color + '">' +
+    '<span class="t-v"><img src="' + e.img + '" alt="" loading="lazy"><span class="t-p">' + IC_PLAY + '</span></span>' +
+    '<em>' + esc(s.name) + '</em><b>' + esc(e.t) + '</b><small>' + depuis(e.d) + '</small></button>';
+}
+function showCard(s) {
+  var e = s.eps[0];
+  return '<button class="t" type="button" data-show="' + s.k + '" data-i="' + esc(clean(s.name + ' ' + s.sub + ' ' + e.t)) + '" data-k="' + s.k + '" style="--c:' + s.color + '">' +
+    '<span class="t-v"><img src="' + e.img + '" alt="" loading="lazy"><span class="t-p">' + IC_RIGHT + '</span></span>' +
+    '<em>' + esc(s.genre) + '</em><b>' + esc(s.name) + '</b><small>' + esc(s.feed === 'mixdj' ? s.sub.replace(/^by\s+/i, '') : s.sub) + '</small></button>';
+}
+function rail(title, count, html) {
+  return '<section class="rl"><div class="rl-h"><h2>' + title + '</h2><i>›</i><em>' + count + '</em></div><div class="rr">' + html + '</div></section>';
+}
+
+function build(j) {
+  shows = j.shows || [];
+  var all = [];
+  shows.forEach(function (s) { s.eps.slice(0, 7).forEach(function (e, i) { var x = { id: s.k + ':' + i, s: s, e: e }; all.push(x); }); s.eps.forEach(function (e, i) { EP[s.k + ':' + i] = { id: s.k + ':' + i, s: s, e: e }; }); });
+  all.sort(function (a, b) { return a.e.d < b.e.d ? 1 : -1; });
+  var eps = all.filter(function (x) { return x.s.feed !== 'mixdj'; }), mixs = all.filter(function (x) { return x.s.feed === 'mixdj'; });
+  var chro = shows.filter(function (s) { return s.feed !== 'mixdj'; }), mx = shows.filter(function (s) { return s.feed === 'mixdj'; });
+  var h = '';
+  if (eps.length) h += rail('Les derniers épisodes', eps.length + ' épisodes', eps.slice(0, 20).map(card).join(''));
+  if (mixs.length) h += rail('Les derniers mixs', mixs.length + ' mixs', mixs.slice(0, 20).map(card).join(''));
+  if (chro.length) h += rail('Le Morning & les chroniques', chro.length + ' chroniques', chro.map(showCard).join(''));
+  if (mx.length) h += rail('100 % Mix DJ', mx.length + ' émissions', mx.map(showCard).join(''));
+  $('main').innerHTML = h;
+
+  /* thématiques : les émissions et chroniques (pas les mixs), qui filtrent la page */
+  $('th').innerHTML = '<button type="button" class="on" data-th="">Tout</button>' + chro.map(function (s) { return '<button type="button" data-th="' + s.k + '">' + esc(s.name) + '</button>'; }).join('') + '<button type="button" data-th="mixdj">Mix DJ</button>';
+
+  /* pastille : les épisodes du jour, sinon ceux du dernier jour publié */
+  var today = day(new Date()), pick = all.filter(function (x) { return day(new Date(x.e.d + 'Z')) === today; }), quand = 'aujourd’hui';
+  if (!pick.length && all.length) {
+    var last = day(new Date(all[0].e.d + 'Z')); pick = all.filter(function (x) { return day(new Date(x.e.d + 'Z')) === last; });
+    var y = new Date(); y.setDate(y.getDate() - 1); quand = last === day(y) ? 'hier' : 'récemment';
+  }
+  if (pick.length) {
+    var n = pick.length;
+    $('nwt').innerHTML = (n > 1 ? '<b>' + n + ' nouveaux podcasts</b> ajoutés ' : '<b>1 nouveau podcast</b> ajouté ') + quand;
+    $('nwav').innerHTML = pick.slice(0, 3).map(function (x) { return '<img src="' + x.e.img + '" alt="">'; }).join('');
+    $('nl').innerHTML = pick.map(function (x) { return '<button type="button" data-ep="' + x.id + '" style="--c:' + x.s.color + '"><img src="' + x.e.img + '" alt=""><span><em>' + esc(x.s.name) + '</em><b>' + esc(x.e.t) + '</b></span></button>'; }).join('');
+    $('nw').hidden = false; requestAnimationFrame(function () { $('nw').classList.add('in'); });
+  }
+  paint();
+}
+
+function apply() {
+  var words = clean(q).split(/\s+/).filter(Boolean), any = false;
+  [].forEach.call(document.querySelectorAll('.rl'), function (sec) {
+    var vis = 0;
+    [].forEach.call(sec.querySelectorAll('.t'), function (t) {
+      var k = t.getAttribute('data-k'), s = shows.filter(function (x) { return x.k === k; })[0];
+      var ok = (!filter || k === filter || (filter === 'mixdj' && s && s.feed === 'mixdj')) && words.every(function (w) { return t.getAttribute('data-i').indexOf(w) >= 0; });
+      t.hidden = !ok; if (ok) vis++;
+    });
+    sec.hidden = !vis; if (vis) { any = true; sec.querySelector('.rr').scrollLeft = 0; }
+  });
+  $('none').classList.toggle('on', !any && !!shows.length);
+}
+
+/* lecture */
+function cur() { var r = H.__rmRadio || ''; return au.src && r.indexOf('ep:') === 0 ? r.slice(3) : ''; }
+function playEp(id) {
+  var x = EP[id]; if (!x) return;
+  if (cur() === id) { if (au.paused) au.play().catch(function () {}); else au.pause(); paint(); return; }
+  H.__rmRadio = 'ep:' + id; H.__rmEp = { id: id, img: x.e.img, show: x.s.name, title: x.e.t, color: x.s.color };
+  au.src = x.e.au; au.play().catch(function () { setTimeout(function () { au.play().catch(function () {}); }, 500); });
+  paint();
+}
+function paint() {
+  var id = cur(), x = EP[id], on = !!x;
+  [].forEach.call(document.querySelectorAll('[data-ep]'), function (b) { var c = b.getAttribute('data-ep') === id; b.classList.toggle('cur', c); var p = b.querySelector('.t-p,.e-p'); if (p) p.innerHTML = c && !au.paused ? IC_PAUSE : IC_PLAY; });
+  $('np').classList.toggle('on', on);
+  if (on) {
+    $('np').style.setProperty('--c', x.s.color);
+    if ($('npi').getAttribute('src') !== x.e.img) $('npi').src = x.e.img;
+    $('nps').textContent = x.s.name; $('npt').textContent = x.e.t;
+    $('npk').innerHTML = au.paused ? IC_PLAY : IC_PAUSE;
+  }
+}
+['play', 'pause', 'ended', 'emptied'].forEach(function (ev) { au.addEventListener(ev, paint); });
+au.addEventListener('timeupdate', function () { if (cur() && au.duration) $('npr').style.width = (au.currentTime / au.duration * 100) + '%'; });
+
+/* fiche d'une émission */
+function openShow(k) {
+  var s = shows.filter(function (x) { return x.k === k; })[0]; if (!s) return;
+  var e0 = s.eps[0], ds = s.eps.map(function (e) { return new Date(e.d + 'Z').getTime(); }), gap = ds.length > 2 ? (ds[0] - ds[ds.length - 1]) / (ds.length - 1) / 864e5 : 0;
+  var rythme = !gap ? '' : gap < 2 ? 'Chaque jour' : gap < 4 ? 'Plusieurs fois par semaine' : gap < 10 ? 'Chaque semaine' : 'Chaque mois';
+  var moy = Math.round(s.eps.reduce(function (a, e) { return a + e.s; }, 0) / s.eps.length);
+  var others = shows.filter(function (x) { return x.k !== k && (x.feed === 'mixdj') === (s.feed === 'mixdj'); });
+  var idx = function (i) { return s.k + ':' + i; };
+  $('sh').innerHTML =
+    '<div class="sh-b" style="--c:' + s.color + '"><img class="sh-bg" src="' + e0.img + '" alt=""><div class="sh-in">' +
+    '<button class="sh-x" type="button" data-close>‹ Tous les podcasts</button>' +
+    '<div class="sh-top"><img class="sh-cv" src="' + e0.img + '" alt=""><div class="sh-tt"><em>' + esc(s.genre) + '</em><h2>' + esc(s.name) + '</h2><p>' + esc(s.sub) + '</p></div></div>' +
+    '<div class="sh-m">' + [rythme, dur(moy) + ' en moyenne', 'Dernier : ' + depuis(e0.d).toLowerCase()].filter(Boolean).join(' · ') + '</div>' +
+    '<button class="sh-go" type="button" data-ep="' + idx(0) + '"><i>' + IC_PLAY + '</i>Écouter le dernier épisode</button></div></div>' +
+    '<div class="sh-l">' + s.eps.map(function (e, i) { return '<button class="e" type="button" data-ep="' + idx(i) + '"><img src="' + e.img + '" alt="" loading="lazy"><span class="e-t"><b>' + esc(e.t) + '</b>' + (e.desc ? '<span>' + esc(e.desc) + '</span>' : '') + '<small>' + depuis(e.d) + ' · ' + dur(e.s) + '</small></span><span class="e-p">' + IC_PLAY + '</span></button>'; }).join('') + '</div>' +
+    (others.length ? '<div class="sh-o"><h3>' + (s.feed === 'mixdj' ? 'Les autres mixs' : 'Les autres chroniques') + '</h3><div>' + others.map(function (o) { return '<button type="button" data-show="' + o.k + '">' + esc(o.name) + '</button>'; }).join('') + '</div></div>' : '');
+  $('sh').scrollTop = 0; $('sh').classList.add('open'); paint();
+}
+
+document.addEventListener('click', function (ev) {
+  if (!real(ev)) return;
+  var t = ev.target;
+  var ep = t.closest('[data-ep]'), sh = t.closest('[data-show]'), th = t.closest('[data-th]');
+  if (t.closest('[data-close]')) { $('sh').classList.remove('open'); return; }
+  if (t.closest('#npk')) { if (au.paused) au.play().catch(function () {}); else au.pause(); return; }
+  if (t.closest('#np')) { var x = EP[cur()]; if (x) openShow(x.s.k); return; }
+  if (ep) { playEp(ep.getAttribute('data-ep')); if (ep.closest('#nl')) { $('nl').classList.remove('open'); $('nw').classList.remove('open'); } return; }
+  if (sh) { openShow(sh.getAttribute('data-show')); return; }
+  if (th) {
+    filter = th.getAttribute('data-th');
+    [].forEach.call(document.querySelectorAll('[data-th]'), function (b) { b.classList.toggle('on', b === th); });
+    apply(); return;
+  }
+  if (t.closest('#nw')) { var o = !$('nl').classList.contains('open'); $('nl').classList.toggle('open', o); $('nw').classList.toggle('open', o); return; }
+  if (t.closest('#qx')) { $('q').value = ''; q = ''; $('qf').classList.remove('has'); apply(); return; }
+  if (!t.closest('#nl') && $('nl').classList.contains('open')) { $('nl').classList.remove('open'); $('nw').classList.remove('open'); }
+});
+$('q').addEventListener('input', function () { q = this.value; $('qf').classList.toggle('has', !!q); apply(); });
+$('q').addEventListener('keydown', function (e) { if (e.key === 'Enter') this.blur(); });
+
+function load(n) {
+  fetch(DATA, { cache: 'no-cache' }).then(function (r) { return r.json(); }).then(build).catch(function () {
+    if (n < 2) setTimeout(function () { load(n + 1); }, 1500);
+    else $('main').innerHTML = '<p class="ld">Les podcasts ne sont pas disponibles pour le moment.</p>';
+  });
+}
+load(0);
+})();
+</script>
+</body>
+</html>

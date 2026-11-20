@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nos univers</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style type="text/css">
+/* « Nos univers » — reprise de la rubrique « Nos radios » du site (Univers.astro, version mobile), 20 novembre 2026.
+   Une carte photo par radio, avec sous la carte le texte de présentation de la page « Nos radios » du site, qu'on fait glisser : logo couleur, bouton lecture,
+   « En direct » et l'info locale, la pochette et le titre en cours, le lien vers la radio, la barre de couleur.
+   Le son est partagé avec le reste de l'application. */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#F6F3EE;font-family:Barlow,system-ui,sans-serif;color:#141218;-webkit-tap-highlight-color:transparent;overflow:hidden}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+button:focus,button:focus-visible{outline:none}
+.pg{height:100%;display:flex;flex-direction:column;padding-bottom:6px}   /* GoodBarber réserve déjà la place de la barre d'onglets sous la page */
+.row{flex:1;min-height:0;display:flex;gap:10px;padding:12px 16px 12px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-left:16px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.row::-webkit-scrollbar{display:none}
+.sl{flex:0 0 88%;max-width:420px;height:100%;display:flex;flex-direction:column;gap:14px;scroll-snap-align:start}
+.tx{flex:none;height:calc(4 * 1.42em);overflow:hidden;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;font-size:14px;line-height:1.42;color:#6A6570;padding:0 4px}
+.tx b{color:#141218;font-weight:600}
+.ux{position:relative;flex:1;min-height:0;width:100%;border-radius:24px;overflow:hidden;isolation:isolate;color:#fff;background:#141218;box-shadow:0 26px 50px -30px rgba(20,18,24,.6);cursor:pointer}
+.uxp{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;filter:saturate(1.04) contrast(1.02)}
+.uxs{position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(10,10,16,.5) 0%,rgba(10,10,16,0) 24%,rgba(10,10,16,0) 40%,rgba(10,10,16,.5) 62%,rgba(10,10,16,.9) 100%)}
+.uxbar{position:absolute;left:0;right:0;bottom:0;height:4px;background:var(--c)}
+.uxb{position:absolute;top:20px;left:20px;right:20px;bottom:22px;display:flex;flex-direction:column}
+.uxh{display:flex;align-items:flex-start;justify-content:space-between}
+.uxl{width:142px;height:auto;display:block}
+.uxpl{position:relative;width:44px;height:44px;flex:0 0 44px;border-radius:50%;background:rgba(255,255,255,.92);color:#141218;box-shadow:0 10px 24px -12px rgba(0,0,0,.6)}
+.uxpl:before{content:"";position:absolute;left:17px;top:14px;border-left:13px solid currentColor;border-top:8px solid transparent;border-bottom:8px solid transparent}
+.ux.on .uxpl{background:var(--c);color:var(--ink)}
+.ux.on .uxpl:before{left:16px;top:15px;border:0;width:4px;height:14px;background:currentColor;box-shadow:8px 0 currentColor}
+.ux.wait .uxpl:before{left:11px;top:11px;width:22px;height:22px;border:3px solid rgba(255,255,255,.35);border-top-color:currentColor;border-radius:50%;background:none;box-shadow:none;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.uxlv{margin-top:auto;font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px}
+.uxlv i{display:block;width:100%;font-style:normal;font-size:12.5px;font-weight:500;letter-spacing:.01em;text-transform:none;color:rgba(255,255,255,.82)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--c);animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 var(--w)}50%{box-shadow:0 0 0 6px transparent}}
+.uxq{margin-top:20px;padding-top:18px;border-top:1px solid rgba(255,255,255,.22);display:flex;flex-direction:column;gap:12px}
+.uxnow{display:grid;grid-template-columns:62px minmax(0,1fr);column-gap:14px;align-items:center}
+.uxc{position:relative;grid-row:1/3;width:62px;height:62px;border-radius:12px;overflow:hidden;background:rgba(255,255,255,.16)}
+.uxc img{width:100%;height:100%;object-fit:cover;transition:opacity .4s}
+.uxc img.out{opacity:0}
+.uxc .eq{position:absolute;inset:0;display:none;align-items:center;justify-content:center;gap:4px;background:rgba(10,10,16,.38)}
+.ux.on .uxc .eq{display:flex}
+.eq s{width:4px;height:8px;border-radius:2px;background:#fff;animation:eq 1s ease-in-out infinite}
+.eq s:nth-child(2){animation-delay:.2s}.eq s:nth-child(3){animation-delay:.4s}
+@keyframes eq{0%,100%{height:6px}50%{height:19px}}
+.uxnow b{align-self:end;font-size:15.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.uxnow i{align-self:start;margin-top:3px;font-style:normal;font-size:13px;color:rgba(255,255,255,.66);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.uxqa{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#fff;text-decoration:underline;text-underline-offset:3px}
+.uxqa:after{content:"→";text-decoration:none;font-weight:500}
+.end{flex:0 0 8px}
+.dots{display:flex;justify-content:center;gap:6px;padding-bottom:4px}
+.dots i{width:6px;height:6px;border-radius:3px;background:#D5CEC5;transition:width .3s,background .3s}
+.dots i.on{width:20px;background:#141218}
+@media (max-height:620px){.uxq{margin-top:14px;padding-top:12px}.tx{font-size:13px}}
+</style>
+</head>
+<body>
+<div class="pg">
+  <div class="row" id="row"></div>
+  <div class="dots" id="dots"></div>
+</div>
+<script>
+var SITE = 'https://nikoprdn.github.io/RM-test/assets/';
+var R = [
+  { k: 'montecarlo', n: 'Monte-Carlo', c: '#E4032E', ink: '#FFFFFF', w: 'rgba(228,3,46,.55)', logo: 'wr-montecarlo-rgb.png', ph: 'rm-casino.jpg', pos: '50% 28%', cover: 'rm-cover-mc.png', local: 'Info Monaco & Riviera', line: 'The sound of Monte-Carlo', txt: 'Depuis 2007, <b>Radio Monaco</b> fait vibrer la Principauté : une sélection musicale pointue, l’info de Monaco et de la Riviera, et Le Morning « Made in Monte-Carlo ».', st: 'https://radiomonaco.ice.infomaniak.ch/radiomonaco-128.mp3', sec: 79602094, slug: 'monte-carlo-lecteur-sur-mesure', more: 'Ouvrir la radio' },
+  { k: 'paris', n: 'Paris', c: '#E4032E', ink: '#FFFFFF', w: 'rgba(228,3,46,.5)', logo: 'wr-paris-rgb.png', ph: 'rm-paris.jpg', pos: '50% 40%', cover: 'rm-cover-mc.png', local: 'Info Paris & Île-de-France', line: 'La webradio Radio Monaco', txt: 'Retrouvez les programmes <b>Radio Monaco</b>, avec vos informations franciliennes. En DAB+ à Paris et en Île-de-France.', st: 'https://radiomonacoparis.ice.infomaniak.ch/radiomonacoparis-320.aac', meta: 'https://radiomonaco.ice.infomaniak.ch/radiomonaco-128.mp3', sec: 79602477, slug: 'paris-1', more: 'Ouvrir la radio' },
+  { k: 'mixdj', n: '100 % Mix DJ', c: '#F59C00', ink: '#141218', w: 'rgba(245,156,0,.55)', logo: 'wr-mixdj-rgb.png', ph: 'rm-dj.jpg', pos: '40% 50%', cover: 'rm-cover-mixdj.png', local: 'DJ sets non-stop', line: 'DJ sets non-stop', txt: 'Chaque jour, toute la team DJ de <b>Radio Monaco</b> avec des sets nu-disco, house, deep-house, future-soul et electro-pop.', st: 'https://mixdj.ice.infomaniak.ch/mixdj-128.aac', fixed: true, sec: 79602480, slug: '100-mix-dj-2', more: 'Ouvrir la radio' },
+  { k: 'nightmood', n: 'Night Mood', c: '#8A5AA1', ink: '#FFFFFF', w: 'rgba(138,90,161,.6)', logo: 'wr-nightmood-rgb.png', ph: 'rm-night.jpg', pos: '35% 50%', cover: 'rm-cover-nightmood.png', local: 'La playlist de Pampa', line: 'La playlist de Pampa', txt: 'La programmation musicale de nuit, 24 h/24 : house, pop, urban pop et chill-out, pour plonger dans une expérience nocturne.', st: 'https://nightmood.ice.infomaniak.ch/nightmood-128.aac', sec: 79602481, slug: 'night-mood-1', more: 'Ouvrir la radio' }
+];
+var $ = function (id) { return document.getElementById(id); };
+var byK = {};
+R.forEach(function (r) { r.meta = r.meta || r.st; r.t = r.line; r.a = 'En direct'; r.cv = SITE + r.cover; byK[r.k] = r; });
+
+// ——— Le son partagé avec le reste de l'application ———
+var H = window;
+try { if (window.parent && window.parent !== window && window.parent.document) H = window.parent; } catch (e) { H = window; }
+var au = H.__rmAudio;
+if (!au) { au = H.document.createElement('audio'); au.preload = 'none'; au.setAttribute('playsinline', ''); au.style.display = 'none'; H.document.body.appendChild(au); H.__rmAudio = au; }
+var waitK = '';
+function live() { return au.src && !au.paused && H.__rmRadio ? H.__rmRadio : ''; }
+
+// ——— Les cartes ———
+$('row').innerHTML = R.map(function (r) {
+  return '<div class="sl"><article class="ux" data-k="' + r.k + '" style="--c:' + r.c + ';--ink:' + r.ink + ';--w:' + r.w + '">' +
+    '<img class="uxp" src="' + SITE + r.ph + '" style="object-position:' + r.pos + '" alt="">' +
+    '<span class="uxs"></span><span class="uxbar"></span>' +
+    '<span class="uxb"><span class="uxh"><img class="uxl" src="' + SITE + r.logo + '" alt="Radio Monaco ' + r.n + '">' +
+    '<button class="uxpl" type="button" aria-label="Écouter Radio Monaco ' + r.n + '"></button></span>' +
+    '<span class="uxlv"><span class="dot"></span><span>En direct</span>' + (r.local ? '<i>' + r.local + '</i>' : '') + '</span>' +
+    '<span class="uxq"><span class="uxnow"><span class="uxc"><img alt="Pochette du titre en cours"><span class="eq"><s></s><s></s><s></s></span></span><b></b><i></i></span>' +
+    '<span class="uxqa">' + r.more + '</span></span></span></article><p class="tx">' + r.txt + '</p></div>';
+}).join('') + '<span class="end"></span>';
+$('dots').innerHTML = R.map(function () { return '<i></i>'; }).join('');
+var cards = {}; [].forEach.call(document.querySelectorAll('.ux'), function (c) { cards[c.dataset.k] = c; });
+
+function swap(img, src) {
+  if (img.getAttribute('src') === src) return;
+  if (!img.getAttribute('src')) { img.src = src; return; }
+  img.classList.add('out'); setTimeout(function () { img.onload = function () { img.classList.remove('out'); }; img.src = src; }, 200);
+}
+function paint(r) {
+  var c = cards[r.k];
+  swap(c.querySelector('.uxc img'), r.cv);
+  c.querySelector('.uxnow b').textContent = r.t; c.querySelector('.uxnow i').textContent = r.a;
+}
+function paintState() {
+  var on = live();
+  R.forEach(function (r) {
+    var c = cards[r.k], w = waitK === r.k;
+    c.classList.toggle('on', on === r.k || w); c.classList.toggle('wait', w);
+    c.querySelector('.uxpl').setAttribute('aria-label', (on === r.k ? 'Pause ' : 'Écouter ') + 'Radio Monaco ' + r.n);
+  });
+}
+function play(r) {
+  if (live() === r.k) { au.pause(); au.removeAttribute('src'); au.load(); H.__rmRadio = ''; waitK = ''; paintState(); return; }
+  H.__rmRadio = r.k; H.__rmSel = r.k; waitK = r.k; paintState();
+  au.src = r.st + '?r=' + Date.now();
+  au.play().catch(function () { setTimeout(function () { au.play().catch(function () { H.__rmRadio = ''; waitK = ''; paintState(); }); }, 500); });
+}
+function openR(r) {
+  try { var P = window.parent;
+    if (P && P !== window && P.history) {
+      var m = P.location.pathname.match(/^\/pview\/[^\/]+\//);
+      P.history.pushState({}, '', (m ? m[0] : '/') + r.slug);
+      P.dispatchEvent(new PopStateEvent('popstate', { state: {} })); return; }
+  } catch (err) {}
+  location.href = 'testnicolas://#!section=' + r.sec;   /* lien inter-sections de l'application */
+}
+// bouton rond : écouter ici ; reste de la carte : ouvrir la page de la radio
+$('row').addEventListener('click', function (e) {
+  if (e && e.isTrusted === false) return;   /* GoodBarber simule des clics : seul un vrai toucher compte */
+  var c = e.target.closest('.ux'); if (!c) return;
+  var r = byK[c.dataset.k];
+  if (e.target.closest('.uxpl')) play(r); else openR(r);
+});
+// points sous les cartes
+function dots() {
+  var row = $('row'), cs = row.querySelectorAll('.ux'), x = row.scrollLeft, best = 0, d = 1e9;
+  [].forEach.call(cs, function (c, i) { var v = Math.abs(c.parentNode.offsetLeft - 16 - x); if (v < d) { d = v; best = i; } });
+  [].forEach.call($('dots').children, function (el, i) { el.classList.toggle('on', i === best); });
+}
+$('row').addEventListener('scroll', dots, { passive: true }); dots();
+function onPlaying() { waitK = ''; paintState(); }
+function onStop() { waitK = ''; paintState(); }
+au.addEventListener('playing', onPlaying); au.addEventListener('pause', onStop); au.addEventListener('error', onStop);
+window.addEventListener('pagehide', function () { au.removeEventListener('playing', onPlaying); au.removeEventListener('pause', onStop); au.removeEventListener('error', onStop); });
+
+// ——— Titres et pochettes (mêmes sources que le site) ———
+var nice = function (s) { s = (s || '').replace(/\s+/g, ' ').trim(); var l = s.replace(/[^A-Za-zÀ-ÿ]/g, ''); var up = l.replace(/[^A-ZÀ-Þ]/g, '').length; if (l.length && up / l.length > 0.6) s = s.toLowerCase().replace(/(^|[\s(\-&/])([a-zà-ÿ])/g, function (m, a, b) { return a + b.toUpperCase(); }); return s; };
+function itunes(a, t) {
+  if (!a) return Promise.resolve('');
+  var q = encodeURIComponent((a.split(/ x | feat\. | & | vs |, /i)[0] + ' ' + t).replace(/\(.*?\)|\[.*?\]|feat\.?.*$/gi, ' ').replace(/\s+/g, ' ').trim());
+  return fetch('https://itunes.apple.com/search?media=music&entity=song&limit=1&country=fr&term=' + q).then(function (x) { return x.json(); })
+    .then(function (j) { var u = j.results && j.results[0] && j.results[0].artworkUrl100; return u ? u.replace('100x100bb', '600x600bb') : ''; }).catch(function () { return ''; });
+}
+function read(r) {
+  fetch(r.meta + '.xspf?r=' + Date.now(), { cache: 'no-store' }).then(function (x) { return x.ok ? x.text() : ''; }).then(function (txt) {
+    var n = txt && new DOMParser().parseFromString(txt, 'text/xml').querySelector('track > title');
+    var raw = ((n && n.textContent) || '').trim();
+    if (!raw || raw === r.raw || /^\s*radio monaco\b/i.test(raw)) return;   /* on garde le dernier vrai titre pendant les jingles */
+    r.raw = raw; var p = raw.split(' - ');
+    r.a = nice(p.length > 1 ? p[0] : ''); r.t = nice(p.length > 1 ? p.slice(1).join(' - ') : raw);
+    paint(r);
+    if (r.fixed) return;   /* Mix DJ : pas de pochettes, la vignette de la radio reste */
+    var hid = r.meta.replace(/^https?:\/\//, '').split('.')[0];
+    fetch('https://metadata.infomaniak.com/api/radio/' + hid + '/metadata-all-cover', { cache: 'no-store' }).then(function (x) { return x.json(); })
+      .then(function (j) { var hit = (j.data || []).filter(function (x) { return x.title && x.cover && x.title.trim().toLowerCase() === raw.toLowerCase(); })[0]; return hit ? hit.cover : itunes(r.a, r.t); })
+      .catch(function () { return itunes(r.a, r.t); })
+      .then(function (u) { if (u) { r.cv = u; paint(r); } });
+  }).catch(function () {});
+}
+R.forEach(paint); paintState();
+R.forEach(read); setInterval(function () { R.forEach(read); }, 20000); setInterval(paintState, 3000);
+</script>
+</body>
+</html>
