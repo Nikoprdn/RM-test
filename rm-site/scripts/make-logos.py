@@ -40,17 +40,30 @@ save(to_white('wr-mixdj-ink.png', (245, 156, 0)), 'wr-mixdj-rgb.png')
 save(Image.open(A + 'wr-nightmood-white.png').convert('RGBA'), 'wr-nightmood-rgb.png')
 
 # --- Paris -----------------------------------------------------------------
-base = np.array(mc).astype(int)
-red = (base[..., 0] > 170) & (base[..., 1] < 90) & (base[..., 3] > 0)
-zone = np.zeros(red.shape, bool)
-zone[360:, 455:] = True              # cartouche « MONTE CARLO » seul
-base[red & zone] = [0, 0, 0, 0]
-pa_base = Image.fromarray(base.astype('uint8'), 'RGBA')
+# Seule une version 392 px existait (et en noir, pas en anthracite) : on recompose
+# le logo sur Monte-Carlo HD et on compose « PARIS » comme la charte compose
+# « MONTE CARLO » : Barlow ExtraBold, capitales, même corps, même interlettrage.
+from PIL import ImageDraw, ImageFont
+F = A + 'Barlow-ExtraBold.ttf'
+TRACK, X0, TOP = 7.0, 468, 373          # relevés sur « MONTE CARLO » du fichier HD
 
-small = Image.open(A + 'wr-paris-white.png').convert('RGBA')
-k = pa_base.width / small.width
-tag = small.crop((150, 122, small.width, small.height))
-tag = tag.resize((round(tag.width * k), round(tag.height * k)), Image.LANCZOS)
-tag = tag.filter(ImageFilter.UnsharpMask(radius=2.2, percent=120, threshold=2))
-pa_base.alpha_composite(tag, (round(150 * k), round(122 * k)))
-save(pa_base, 'wr-paris-rgb.png')
+
+def paris(src, color, name):
+    a = np.array(Image.open(A + src).convert('RGBA')).astype(int)
+    a[360:, 455:] = 0                   # cartouche « MONTE CARLO » retiré
+    im = Image.fromarray(a.astype('uint8'), 'RGBA')
+    big = Image.new('RGBA', (im.width * 4, im.height * 4))
+    d, fb, f = ImageDraw.Draw(big), ImageFont.truetype(F, 276), ImageFont.truetype(F, 69)
+    x, top = 0.0, f.getbbox('M')[1]
+    for c in 'PARIS':
+        d.text(((X0 - f.getbbox('M')[0] + x) * 4, (TOP - top) * 4), c, font=fb, fill=color)
+        x += f.getlength(c) + TRACK
+    im.alpha_composite(big.resize(im.size, Image.LANCZOS))
+    save(im, name)
+    return im
+
+
+paris('wr-montecarlo-ink.png', (228, 3, 46, 255), 'wr-paris-ink.png')
+paris('wr-montecarlo-rgb.png', (228, 3, 46, 255), 'wr-paris-rgb.png')
+w = np.array(Image.open(OUT + 'wr-paris-ink.png').convert('RGBA')); w[..., :3] = 255
+save(Image.fromarray(w, 'RGBA'), 'wr-paris-allwhite.png')
