@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style type="text/css">
 /* « Podcasts » — reprise de la rubrique Podcasts du site (Podcasts.astro, version mobile), 20 novembre 2026.
-   Bandeau de la régie avec la recherche en verre, la pastille des nouveaux podcasts et les thématiques,
+   Bandeau de la régie avec la recherche en verre et les thématiques (pastille « nouveaux podcasts » retirée à la demande de Nicolas, 20/11),
    puis les rails : derniers épisodes, derniers mixs, Le Morning & les chroniques, 100 % Mix DJ.
    Une émission s'ouvre en fiche « le studio » par-dessus la page. Le son est partagé avec le reste de l'application.
    Données : app-podcasts.json, publié par le site (les flux Ausha ne sont pas lisibles depuis l'application). */
@@ -37,29 +37,8 @@ img{display:block}
 .q.has .q-x{display:grid}
 .q.has .q-s{display:none}
 
-/* pastille des nouveaux podcasts */
-.nw{display:flex;align-items:center;gap:10px;width:100%;margin:10px 0 0;padding:6px 14px 6px 6px;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);text-align:left;font-size:13.5px;color:rgba(255,255,255,.85);opacity:0;transition:opacity .5s}
-.nw.in{opacity:1}
-.nw-av{display:flex;flex:none}
-.nw-av img{width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid #2a2530}
-.nw-av img+img{margin-left:-9px}
-.nw-d{flex:none;width:7px;height:7px;border-radius:50%;background:#E4032E;box-shadow:0 0 0 0 rgba(228,3,46,.6);animation:pu 1.8s ease-in-out infinite}
-@keyframes pu{0%,100%{box-shadow:0 0 0 0 rgba(228,3,46,.55)}50%{box-shadow:0 0 0 6px rgba(228,3,46,0)}}
-.nw-t{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.nw-t b{color:#fff;font-weight:600}
-.nw-c{flex:none;font-size:15px;color:rgba(255,255,255,.7);transition:transform .3s}
-.nw.open .nw-c{transform:rotate(90deg)}
-.nl{display:none;margin:8px 0 0;max-height:300px;overflow-y:auto;border-radius:20px;background:rgba(20,18,24,.72);border:1px solid rgba(255,255,255,.16);-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);text-align:left;padding:6px}
-.nl.open{display:block}
-.nl button{display:flex;align-items:center;gap:12px;width:100%;padding:8px;border-radius:14px;text-align:left}
-.nl button:active{background:rgba(255,255,255,.08)}
-.nl img{width:46px;height:46px;border-radius:10px;object-fit:cover;flex:none}
-.nl span{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
-.nl em{font-style:normal;font-size:10.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--c)}
-.nl b{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
 /* thématiques */
-.th{display:flex;gap:8px;margin:14px -20px 0;padding:0 20px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.th{display:flex;gap:8px;margin:16px -20px 0;padding:0 20px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .th::-webkit-scrollbar{display:none}
 .th button{flex:none;height:36px;padding:0 15px;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.28);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);font-size:14px;font-weight:500;color:#fff;white-space:nowrap;transition:background .3s,color .3s}
 .th button.on{background:#fff;color:#141218;border-color:#fff}
@@ -144,8 +123,6 @@ svg{display:block}
       <span class="q-b q-s" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></span>
       <button class="q-b q-x" id="qx" type="button" aria-label="Effacer"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </form>
-    <button class="nw" id="nw" type="button" hidden><span class="nw-av" id="nwav"></span><span class="nw-d"></span><span class="nw-t" id="nwt"></span><span class="nw-c">›</span></button>
-    <div class="nl" id="nl"></div>
     <nav class="th" id="th"></nav>
   </div>
 </section>
@@ -224,19 +201,6 @@ function build(j) {
   /* thématiques : les émissions et chroniques (pas les mixs), qui filtrent la page */
   $('th').innerHTML = '<button type="button" class="on" data-th="">Tout</button>' + chro.map(function (s) { return '<button type="button" data-th="' + s.k + '">' + esc(s.name) + '</button>'; }).join('') + '<button type="button" data-th="mixdj">Mix DJ</button>';
 
-  /* pastille : les épisodes du jour, sinon ceux du dernier jour publié */
-  var today = day(new Date()), pick = all.filter(function (x) { return day(new Date(x.e.d + 'Z')) === today; }), quand = 'aujourd’hui';
-  if (!pick.length && all.length) {
-    var last = day(new Date(all[0].e.d + 'Z')); pick = all.filter(function (x) { return day(new Date(x.e.d + 'Z')) === last; });
-    var y = new Date(); y.setDate(y.getDate() - 1); quand = last === day(y) ? 'hier' : 'récemment';
-  }
-  if (pick.length) {
-    var n = pick.length;
-    $('nwt').innerHTML = (n > 1 ? '<b>' + n + ' nouveaux podcasts</b> ajoutés ' : '<b>1 nouveau podcast</b> ajouté ') + quand;
-    $('nwav').innerHTML = pick.slice(0, 3).map(function (x) { return '<img src="' + x.e.img + '" alt="">'; }).join('');
-    $('nl').innerHTML = pick.map(function (x) { return '<button type="button" data-ep="' + x.id + '" style="--c:' + x.s.color + '"><img src="' + x.e.img + '" alt=""><span><em>' + esc(x.s.name) + '</em><b>' + esc(x.e.t) + '</b></span></button>'; }).join('');
-    $('nw').hidden = false; requestAnimationFrame(function () { $('nw').classList.add('in'); });
-  }
   paint();
 }
 
@@ -303,16 +267,14 @@ document.addEventListener('click', function (ev) {
   if (t.closest('[data-close]')) { $('sh').classList.remove('open'); return; }
   if (t.closest('#npk')) { if (au.paused) au.play().catch(function () {}); else au.pause(); return; }
   if (t.closest('#np')) { var x = EP[cur()]; if (x) openShow(x.s.k); return; }
-  if (ep) { playEp(ep.getAttribute('data-ep')); if (ep.closest('#nl')) { $('nl').classList.remove('open'); $('nw').classList.remove('open'); } return; }
+  if (ep) { playEp(ep.getAttribute('data-ep')); return; }
   if (sh) { openShow(sh.getAttribute('data-show')); return; }
   if (th) {
     filter = th.getAttribute('data-th');
     [].forEach.call(document.querySelectorAll('[data-th]'), function (b) { b.classList.toggle('on', b === th); });
     apply(); return;
   }
-  if (t.closest('#nw')) { var o = !$('nl').classList.contains('open'); $('nl').classList.toggle('open', o); $('nw').classList.toggle('open', o); return; }
   if (t.closest('#qx')) { $('q').value = ''; q = ''; $('qf').classList.remove('has'); apply(); return; }
-  if (!t.closest('#nl') && $('nl').classList.contains('open')) { $('nl').classList.remove('open'); $('nw').classList.remove('open'); }
 });
 $('q').addEventListener('input', function () { q = this.value; $('qf').classList.toggle('has', !!q); apply(); });
 $('q').addEventListener('keydown', function (e) { if (e.key === 'Enter') this.blur(); });
