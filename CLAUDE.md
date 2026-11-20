@@ -55,6 +55,10 @@ Dépôt `Nikoprdn/RM-test`, site dans `rm-site/`, publié sur GitHub Pages :
 | Infomaniak Icecast `.xspf` + `metadata-all-cover` | titres en cours et historique des 4 webradios |
 | iTunes Search | pochettes manquantes |
 
+`src/pages/app-podcasts.json.js` publie `app-podcasts.json` (émissions et 12 derniers
+épisodes) pour la page Podcasts de l'application GoodBarber, qui ne peut pas lire les flux
+Ausha (pas de CORS). Sources des codes sur mesure de l'application : dossier `app/`.
+
 `src/lib/data.js` mémorise chaque réponse WordPress dans `.wp-cache/` : si
 WordPress tombe, la construction réutilise la dernière version connue au lieu
 d'échouer. `.github/workflows/patch-live.yml` permet de republier l'artefact en
