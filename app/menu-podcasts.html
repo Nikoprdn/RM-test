@@ -78,9 +78,9 @@ img{display:block}
 .rl{padding:28px 0 0}
 .rl[hidden]{display:none}
 .rl-h{display:flex;align-items:center;gap:9px;padding:0 20px;margin:0 0 14px}
-.rl-h h2{white-space:nowrap;font-size:20px;font-weight:600;letter-spacing:-.02em;line-height:1.1}
+.rl-h h2{white-space:nowrap;font-size:19px;font-weight:600;letter-spacing:-.02em;line-height:1.1}
 .rl-h i{font-style:normal;font-size:18px;color:#9B969F}
-.rl-h em{margin-left:auto;font-style:normal;font-size:11px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:#9B969F;white-space:nowrap}
+.rl-h em{margin-left:auto;font-style:normal;font-size:10.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:#9B969F;white-space:nowrap}
 .rr{display:flex;gap:12px;overflow-x:auto;padding:2px 20px 6px;scroll-snap-type:x mandatory;scroll-padding-left:20px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .rr::-webkit-scrollbar{display:none}
 .t{flex:0 0 150px;min-width:0;scroll-snap-align:start;text-align:left}
@@ -178,6 +178,14 @@ function depuis(iso) {
   if (j <= 0) return 'Aujourd’hui'; if (j === 1) return 'Hier'; if (j < 14) return 'Il y a ' + j + ' jours';
   if (j < 60) return 'Il y a ' + Math.round(j / 7) + ' semaines';
   var m = Math.round(j / 30.4); return m < 12 ? 'Il y a ' + m + ' mois' : 'Il y a plus d’un an';
+}
+/* description d'un épisode : sans pictogramme, sans l'en-tête en capitales ni la date d'émission */
+function desc(s, name) {
+  s = String(s || '').replace(/^[^A-Za-zÀ-ÿ0-9«“"]+/, '');
+  s = s.replace(/^(?:[A-ZÀ-Þ0-9'’&.—–-]+\s+){3,}/, '');
+  s = s.replace(/^Émission du \S+ \d{1,2} \S+ \d{4}\s*/i, '');
+  if (name && clean(s).indexOf(clean(name)) === 0) s = s.slice(name.length).replace(/^\s*[:—–-]\s*/, '');
+  return s.trim();
 }
 function dur(s) { var m = Math.round(s / 60); if (m < 60) return m + ' min'; var h = Math.floor(m / 60), r = m % 60; return h + ' h' + (r ? ' ' + (r < 10 ? '0' : '') + r : ''); }
 
@@ -283,7 +291,7 @@ function openShow(k) {
     '<div class="sh-top"><img class="sh-cv" src="' + e0.img + '" alt=""><div class="sh-tt"><em>' + esc(s.genre) + '</em><h2>' + esc(s.name) + '</h2><p>' + esc(s.sub) + '</p></div></div>' +
     '<div class="sh-m">' + [rythme, dur(moy) + ' en moyenne', 'Dernier : ' + depuis(e0.d).toLowerCase()].filter(Boolean).join(' · ') + '</div>' +
     '<button class="sh-go" type="button" data-ep="' + idx(0) + '"><i>' + IC_PLAY + '</i>Écouter le dernier épisode</button></div></div>' +
-    '<div class="sh-l">' + s.eps.map(function (e, i) { return '<button class="e" type="button" data-ep="' + idx(i) + '"><img src="' + e.img + '" alt="" loading="lazy"><span class="e-t"><b>' + esc(e.t) + '</b>' + (e.desc ? '<span>' + esc(e.desc) + '</span>' : '') + '<small>' + depuis(e.d) + ' · ' + dur(e.s) + '</small></span><span class="e-p">' + IC_PLAY + '</span></button>'; }).join('') + '</div>' +
+    '<div class="sh-l">' + s.eps.map(function (e, i) { return '<button class="e" type="button" data-ep="' + idx(i) + '"><img src="' + e.img + '" alt="" loading="lazy"><span class="e-t"><b>' + esc(e.t) + '</b>' + (desc(e.desc, s.name) ? '<span>' + esc(desc(e.desc, s.name)) + '</span>' : '') + '<small>' + depuis(e.d) + ' · ' + dur(e.s) + '</small></span><span class="e-p">' + IC_PLAY + '</span></button>'; }).join('') + '</div>' +
     (others.length ? '<div class="sh-o"><h3>' + (s.feed === 'mixdj' ? 'Les autres mixs' : 'Les autres chroniques') + '</h3><div>' + others.map(function (o) { return '<button type="button" data-show="' + o.k + '">' + esc(o.name) + '</button>'; }).join('') + '</div></div>' : '');
   $('sh').scrollTop = 0; $('sh').classList.add('open'); paint();
 }
