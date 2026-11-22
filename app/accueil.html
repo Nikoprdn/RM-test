@@ -9,7 +9,7 @@
 <style type="text/css">
 /* Accueil de l'application (widget « Custom Code » de la home), 22 novembre 2026.
    Choix de Nicolas : les 4 radios à leur place, puis le sommaire de la piste D (Podcasts, Actualités, Jeux, Favoris),
-   Thème clair (validé le 22 novembre) : fond crème, la pochette du titre en cours teinte doucement le haut de la page.
+   Thème clair (22 novembre), piste D : page crème unie ; la pochette du titre en cours n'apparaît, floutée, que dans la carte de la radio qui joue.
    Le son est partagé avec le reste de l'application (H.__rmAudio). */
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:#F6F3EE;font-family:Barlow,system-ui,sans-serif;color:#141218;-webkit-tap-highlight-color:transparent;overflow:hidden}
@@ -17,10 +17,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-a
 button:focus,button:focus-visible{outline:none}
 img{display:block}
 
-/* fond : la pochette floutée, très atténuée, qui s'efface vers le crème ; fondu d'une pochette à l'autre */
-.bg{position:fixed;inset:-90px;background-size:cover;background-position:center;filter:blur(70px) saturate(1.5);opacity:0;transition:opacity 1.2s ease}
-.bg.on{opacity:.75}
-.sc{position:fixed;inset:0;background:linear-gradient(180deg,rgba(246,243,238,.12) 0%,rgba(246,243,238,.4) 32%,rgba(246,243,238,.85) 62%,#F6F3EE 82%)}
+/* fond crème uni : l'en-tête de GoodBarber se fond dans la page (piste D, 22 novembre) */
 .pg{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;padding:6px 14px 0}
 
 /* les quatre radios */
@@ -42,6 +39,10 @@ img{display:block}
 @keyframes eq{0%,100%{height:4px}50%{height:11px}}
 .pl{flex:none;width:44px;height:44px;border-radius:50%;background:var(--c);display:grid;place-items:center;color:#fff;transition:background .45s,color .45s}
 .pl svg{display:block}
+.r{overflow:hidden}
+.r>*{position:relative;z-index:1}
+.r>.blr{position:absolute;z-index:0;inset:-30px;background-size:cover;background-position:center;filter:blur(26px) saturate(1.5) brightness(.6);opacity:0;transition:opacity .6s}
+.r.on>.blr{opacity:1}
 .r.on{background:#141218;color:#fff}
 .r.on .pl{background:#fff;color:var(--c)}
 .r.on .eq s{background:#fff}
@@ -59,7 +60,6 @@ img{display:block}
 </style>
 </head>
 <body>
-<div class="bg" id="bg0"></div><div class="bg" id="bg1"></div><div class="sc"></div>
 <div class="pg">
   <div class="ls" id="ls"></div>
   <nav class="ed" id="ed"></nav>
@@ -109,7 +109,7 @@ function go(slug, sec) {
 /* ——— les quatre lignes ——— */
 $('ls').innerHTML = R.map(function (r) {
   return '<div class="r" data-k="' + r.k + '" style="--c:' + r.c + '" role="button" tabindex="0">' +
-    '<img class="cv" alt="">' +
+    '<span class="blr"></span><img class="cv" alt="">' +
     '<span class="mid"><span class="lg"><img src="' + SITE + 'wr-' + r.k + '-ink.png" alt="Radio Monaco ' + r.n + '"></span>' +
     '<span class="tx"><em><span class="eq"><s></s><s></s><s></s></span>En direct – ' + r.lab + '</em><b></b><i></i></span></span>' +
     '<button class="pl" type="button" aria-label="Écouter"></button></div>';
@@ -121,16 +121,7 @@ $('ed').innerHTML = MENU.map(function (m, i) {
   return '<button type="button" data-i="' + i + '"><b>' + m.t + '</b><small><span id="ms' + i + '">' + m.s + '</span>' + IC_ARROW + '</small></button>';
 }).join('');
 
-/* ——— le fond suit la pochette de la radio en écoute (sinon la dernière choisie, sinon Monte-Carlo) ——— */
-var bgCur = '', bgI = 0;
-function paintBg() {
-  var k = live() || waitK || H.__rmSel || 'montecarlo', src = byK[k].cover;
-  if (src === bgCur) return; bgCur = src;
-  var img = new Image(); img.onload = function () {
-    var next = $('bg' + (1 - bgI)), cur = $('bg' + bgI);
-    next.style.backgroundImage = 'u' + 'rl("' + src + '")'; next.classList.add('on'); cur.classList.remove('on'); bgI = 1 - bgI;
-  }; img.src = src;
-}
+function paintBg() {}   /* plus de fond de page : la pochette floutée vit dans la carte (paintRow) */
 function swap(img, src) {
   if (img.getAttribute('src') === src) return;
   if (!img.getAttribute('src')) { img.src = src; return; }
@@ -139,6 +130,7 @@ function swap(img, src) {
 function paintRow(r) {
   var b = rows[r.k];
   swap(b.querySelector('.cv'), r.cover);
+  b.querySelector('.blr').style.backgroundImage = 'u' + 'rl("' + r.cover + '")';
   b.querySelector('b').textContent = r.t; b.querySelector('i').textContent = r.a;
 }
 function paintState() {

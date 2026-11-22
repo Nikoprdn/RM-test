@@ -2,7 +2,7 @@
 
 Sources des sections « Custom code » de l'application (copiées dans le back-office GoodBarber) :
 
-- `accueil.html` — widget de l'accueil (22 novembre) : les 4 radios, puis le sommaire Podcasts, Actualités, Jeux, Favoris ; fond = pochette floutée du titre en cours. Hauteur de la zone : 800 px. Navigation de l'appli : « Aucun menu », header général anthracite avec le logo blanc.
+- `accueil.html` — widget de l'accueil (22 novembre) : les 4 radios, puis le sommaire Podcasts, Actualités, Jeux, Favoris ; thème clair, page crème unie, la pochette floutée seulement dans la carte de la radio qui joue (piste D). Hauteur de la zone : 800 px. Navigation de l'appli : « Aucun menu », header général anthracite avec le logo blanc.
 - `jeux.html` — section « Jeux » (79620298), page d'attente
 - `widget-liste.html` — ancien widget de l'accueil (la liste aux pochettes), remplacé par `accueil.html`
 - `lecteur.html` — lecteur d'une radio (une section par radio, variable `RADIO`)
