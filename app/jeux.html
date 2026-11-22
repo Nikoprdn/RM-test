@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style type="text/css">
 /* Section « Jeux », piste H « la vitrine » choisie par Nicolas le 22 novembre 2026 :
-   le jeu en cours en grande carte photo, les prochains annoncés dessous, le formulaire monte en feuille.
+   les jeux en lignes comme les radios de l'accueil (en cours, puis « Bientôt »), le formulaire monte en feuille.
    Les jeux viennent d'app-une.json (liste JEUX de rm-site/src/pages/app-une.json.js). */
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{min-height:100%;background:#F6F3EE;font-family:Barlow,system-ui,sans-serif;color:#141218;-webkit-font-smoothing:antialiased}
@@ -16,45 +16,31 @@ button,input{font:inherit;color:inherit}
 .hd{padding:0 6px}.hd h1{font-size:34px;font-weight:700;letter-spacing:-.03em;line-height:1}
 .hd p{font-size:14px;color:#6A6570;margin-top:6px}
 
-/* la grande carte */
-.cv{position:relative;display:block;margin-top:18px;height:min(470px,62vh);min-height:380px;border-radius:26px;overflow:hidden;background:#2a2630;color:#fff;text-decoration:none;transform:translateZ(0)}
-.cv>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .9s cubic-bezier(.2,.8,.2,1)}
-.cv:active>img{transform:scale(1.03)}
-.cv:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.18) 0%,rgba(0,0,0,0) 26%,rgba(0,0,0,0) 42%,rgba(0,0,0,.84) 100%)}
-.bd{position:absolute;top:16px;left:16px;z-index:2;height:28px;padding:0 12px;border-radius:14px;background:#fff;color:#141218;font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;display:flex;align-items:center;gap:7px}
-.bd i{width:6px;height:6px;border-radius:50%;background:#E4032E;animation:pulse 2s infinite}
+/* les jeux en lignes, comme les quatre radios de l'accueil (demande de Nicolas, 22 novembre) */
+.ls{display:flex;flex-direction:column;gap:8px;margin-top:18px}
+.r{position:relative;display:flex;align-items:center;gap:14px;height:80px;padding:0 12px 0 9px;border-radius:22px;background:rgba(255,255,255,.88);box-shadow:0 1px 2px rgba(20,18,24,.05);color:inherit;text-decoration:none;overflow:hidden;-webkit-touch-callout:none;transition:color .3s .12s,transform .25s cubic-bezier(.2,.8,.2,1)}
+.r:active{transform:scale(.97)}
+.r>*{position:relative;z-index:1}
+.r .cv{width:62px;height:62px;flex:none;border-radius:15px;object-fit:cover;background:rgba(20,18,24,.06)}
+.r .cv.asm{background:linear-gradient(35deg,#D50B32 0 57%,#B9975B 57% 59%,#FFFFFF 59%);display:flex;align-items:flex-end;padding:0 0 7px 8px;color:#fff;font-size:12px;font-weight:800;letter-spacing:.02em}
+.mid{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center}
+.mid em{display:flex;align-items:center;gap:7px;font-style:normal;font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;white-space:nowrap;color:#6A6570;font-variant-numeric:tabular-nums}
+.mid em i{width:6px;height:6px;border-radius:50%;background:var(--c);animation:pulse 2s infinite}
 @keyframes pulse{50%{opacity:.35}}
-.tm{position:absolute;top:16px;right:16px;z-index:2;height:28px;padding:0 12px;border-radius:14px;background:rgba(0,0,0,.42);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);font-size:12.5px;font-weight:600;display:flex;align-items:center;font-variant-numeric:tabular-nums}
-.ex{position:absolute;top:52px;left:16px;z-index:2;height:22px;padding:0 9px;border-radius:11px;background:rgba(0,0,0,.42);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center}
-.cx{position:absolute;left:20px;right:20px;bottom:20px;z-index:2}
-.cx small{font-size:11px;letter-spacing:.2em;text-transform:uppercase;opacity:.75;font-weight:700}
-.cx h2{font-size:30px;font-weight:700;letter-spacing:-.03em;line-height:1.02;margin-top:6px}
-.rw{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px}
-.rw span{font-size:13px;opacity:.78}
-.rw b{flex:none;height:46px;padding:0 22px;border-radius:23px;background:#fff;color:#141218;display:flex;align-items:center;font-size:15px;font-weight:600}
-
-/* plusieurs jeux en cours : on les fait glisser, carte par carte */
-.rl{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;margin:18px -16px 0;padding:0 16px;scrollbar-width:none}
-.rl::-webkit-scrollbar{display:none}
-.rl .cv{flex:0 0 calc(100% - 26px);margin-top:0;scroll-snap-align:center}
-.dt{display:flex;justify-content:center;gap:6px;margin-top:12px}.dt i{width:6px;height:6px;border-radius:3px;background:rgba(20,18,24,.18);transition:width .3s,background .3s}.dt i.on{width:18px;background:#141218}
-/* carte aux couleurs de l'AS Monaco (charte du club, guide des logos 2026) : Daring Red #D50B32, Grace Gold #B9975B,
-   blanc ; la diagonale rouge et blanc des maillots. Pas d'écusson tant que le club n'a pas fourni ses fichiers officiels. */
-.asm{background:linear-gradient(35deg,#D50B32 0 57%,#B9975B 57% 57.5%,#FFFFFF 57.5%)}
-.asm:after{background:linear-gradient(180deg,rgba(0,0,0,0) 55%,rgba(110,4,24,.55))}
-.asm .bd{background:#D50B32;color:#fff}.asm .bd i{background:#fff}
-.asm .tm{background:rgba(20,18,24,.08);color:#D50B32}
-.asm .ws{position:absolute;top:66px;right:18px;z-index:2;text-align:right;color:#D50B32}
-.asm .ws b{display:block;font-size:30px;font-weight:800;letter-spacing:-.02em;line-height:.95}
-.asm .ws span{display:block;font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#B9975B;margin-top:6px}
-.ph.asm{background:linear-gradient(35deg,#D50B32 0 57%,#B9975B 57% 57.5%,#FFFFFF 57.5%)}
-.ph.asm .ws{position:absolute;top:22px;left:22px;right:auto;text-align:left;color:#fff;z-index:2}.ph.asm .ws b{font-size:24px;font-weight:800;letter-spacing:-.02em}
-
-/* les prochains */
-.nx{display:flex;align-items:center;gap:14px;margin-top:12px;height:80px;border-radius:20px;background:#fff;padding:0 16px 0 10px;text-decoration:none;color:inherit}
-.nx img{width:60px;height:60px;border-radius:14px;object-fit:cover;filter:grayscale(.3);flex:none}
-.nx div{flex:1;min-width:0}.nx small{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#6A6570;font-weight:700}
-.nx b{display:block;font-size:15.5px;font-weight:600;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mid b{margin-top:3px;font-size:17px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mid>span{font-size:13.5px;color:#6A6570;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pl{flex:none;width:44px;height:44px;border-radius:50%;background:var(--c);display:grid;place-items:center;color:#fff;transition:background .45s,color .45s}
+.r.nx .pl{background:none;box-shadow:inset 0 0 0 1.5px rgba(20,18,24,.18);color:#6A6570}
+.r.nx .cv{filter:grayscale(.3)}
+.ex{font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:2px 6px;border-radius:6px;background:rgba(20,18,24,.07);color:#6A6570}
+/* au toucher : la ligne s'encre depuis le bouton, comme une radio qu'on lance, puis la feuille monte */
+.r>.ink{position:absolute;z-index:0;inset:0;background:#141218;clip-path:circle(0 at calc(100% - 34px) 50%);transition:clip-path .6s cubic-bezier(.65,0,.25,1)}
+.r>.blr{position:absolute;z-index:0;inset:-30px;width:calc(100% + 60px);height:calc(100% + 60px);object-fit:cover;filter:blur(26px) saturate(1.5) brightness(.6);opacity:0;transition:opacity .5s}
+.r.on>.ink{clip-path:circle(150% at calc(100% - 34px) 50%)}
+.r.on>.blr{opacity:1;transition:opacity .7s .3s}
+.r.on{color:#fff}.r.on .mid em,.r.on .mid>span{color:rgba(255,255,255,.75)}.r.on .mid em i{background:#fff}
+.r.on .pl{background:#fff;color:var(--c)}
+.r.on .ex{background:rgba(255,255,255,.18);color:#fff}
 
 .vd{margin-top:18px;border-radius:26px;background:#fff;padding:44px 28px;text-align:center}
 .vd img{width:56px;height:56px;border-radius:14px;margin:0 auto 18px;display:block}
@@ -73,6 +59,8 @@ button,input{font:inherit;color:inherit}
 .ct{position:relative;margin-top:-26px;padding:0 22px}
 .ct h3{font-size:24px;font-weight:700;letter-spacing:-.02em;line-height:1.08}
 .ct .s{font-size:13px;color:#6A6570;margin-top:6px;line-height:1.4}
+.ph.asm{background:linear-gradient(35deg,#D50B32 0 57%,#B9975B 57% 57.5%,#FFFFFF 57.5%)}
+.ph.asm .ws{position:absolute;top:22px;left:22px;color:#fff;z-index:2}.ph.asm .ws b{font-size:24px;font-weight:800;letter-spacing:-.02em}
 .nt{margin-top:14px;font-size:12.5px;color:#6A6570;line-height:1.45;display:flex;gap:10px}.nt svg{flex:none;margin-top:1px}
 .mt{display:flex;margin-top:16px;border-top:1px solid rgba(20,18,24,.1);border-bottom:1px solid rgba(20,18,24,.1)}
 .mt div{flex:1;padding:10px 0;text-align:center}.mt div+div{border-left:1px solid rgba(20,18,24,.1)}
@@ -150,37 +138,29 @@ function render() {
   var enCours = JEUX.filter(function (j) { var d = dt(j.debut), f = dt(j.fin); return (!d || d <= now) && (!f || f > now); });
   var bientot = JEUX.filter(function (j) { var d = dt(j.debut); return d && d > now; })
     .sort(function (a, b) { return dt(a.debut) - dt(b.debut); });
-  var h = '', i = 1, cartes = '';
-  enCours.forEach(function (j) {
-    var f = dt(j.fin), asm = j.theme === 'asm';
-    cartes += '<a class="cv' + (asm ? ' asm' : '') + (enCours.length > 1 ? '' : ' rm-in') + '" style="--i:' + (i++) + '" href="#" data-id="' + esc(j.id) + '">' +
-      (asm ? '<div class="ws"><b>AS<br>MONACO</b><span>Avec le club</span></div>' : '<img src="' + esc(img(j.img)) + '" alt="">') +
-      '<span class="bd"><i></i>En cours</span>' + (f ? '<span class="tm" data-fin="' + f.toISOString() + '">' + reste(f) + '</span>' : '') +
-      (j.exemple ? '<span class="ex">Exemple</span>' : '') +
-      '<div class="cx"><small>' + (j.valeur ? 'À gagner · ' + esc(j.valeur) : 'À gagner') + '</small><h2>' + esc(j.t) + '</h2>' +
-      '<div class="rw"><span>' + gagnent(j) + '</span><b>Je m’inscris</b></div></div></a>';
-  });
-  if (enCours.length > 1) {
-    h += '<div class="rl rm-in" style="--i:1" id="rl">' + cartes + '</div><div class="dt rm-in" style="--i:2" id="dt">' + enCours.map(function (j, n) { return '<i' + (n ? '' : ' class="on"') + '></i>'; }).join('') + '</div>';
-  } else h += cartes;
-  bientot.forEach(function (j) {
-    var d = dt(j.debut);
-    h += '<a class="nx rm-in" style="--i:' + (i++) + '" href="#" data-id="' + esc(j.id) + '"><img src="' + esc(img(j.img)) + '" alt=""><div><small>Bientôt · ' + MOISL[d.getMonth()] + '</small><b>' + esc(j.t) + '</b></div>' +
-      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6A6570" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></a>';
-  });
+  var h = '', i = 1;
+  var plus = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>';
+  var chev = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>';
+  function ligne(j, avenir) {
+    var asm = j.theme === 'asm', f = dt(j.fin), d = dt(j.debut);
+    var em = avenir ? 'Bientôt · ' + jour(d, 1) : '<i></i>En cours' + (f ? ' · <span class="tm" data-fin="' + f.toISOString() + '">' + reste(f) + '</span>' : '');
+    return '<a class="r' + (avenir ? ' nx' : '') + ' rm-in" style="--i:' + (i++) + ';--c:' + (asm ? '#D50B32' : '#E4032E') + '" href="#" data-id="' + esc(j.id) + '">' +
+      '<span class="ink"></span>' + (asm ? '' : '<img class="blr" src="' + esc(img(j.img)) + '" alt="">') +
+      (asm ? '<span class="cv asm">ASM</span>' : '<img class="cv" src="' + esc(img(j.img)) + '" alt="">') +
+      '<span class="mid"><em>' + em + (j.exemple ? ' <span class="ex">Exemple</span>' : '') + '</em><b>' + esc(j.t) + '</b><span>' +
+      esc(avenir ? (j.sous || '') : (gagnent(j) || j.sous || '')) + '</span></span>' +
+      '<span class="pl">' + (avenir ? chev : plus) + '</span></a>';
+  }
+  enCours.forEach(function (j) { h += ligne(j, false); });
+  bientot.forEach(function (j) { h += ligne(j, true); });
   if (!enCours.length) {
     h = '<div class="vd rm-in" style="--i:1"><img src="' + BASE + 'assets/charte/sigle-montecarlo-invert@3x.png" alt=""><h2>Pas de jeu <b>en ce moment.</b></h2><p>' +
       (bientot.length ? 'Le prochain arrive très vite : rendez-vous ci-dessous.' : 'Restez à l’écoute : le prochain jeu sera annoncé à l’antenne.') + '</p></div>' + h;
   }
-  document.getElementById('ls').innerHTML = h;
-  var rl = document.getElementById('rl');
-  if (rl) rl.addEventListener('scroll', function () {
-    var n = Math.round(rl.scrollLeft / (rl.firstChild.offsetWidth + 10));
-    [].forEach.call(document.querySelectorAll('#dt i'), function (d, k) { d.classList.toggle('on', k === n); });
-  }, { passive: true });
+  var ls = document.getElementById('ls'); ls.className = 'ls'; ls.innerHTML = h;
 }
 function tick() {
-  [].forEach.call(document.querySelectorAll('.tm[data-fin]'), function (e) { e.textContent = reste(new Date(e.getAttribute('data-fin'))); });
+  [].forEach.call(document.querySelectorAll('[data-fin]'), function (e) { e.textContent = reste(new Date(e.getAttribute('data-fin'))); });
   if (cur && document.getElementById('cd')) document.getElementById('cd').textContent = reste(dt(cur.fin));
 }
 
@@ -224,7 +204,7 @@ function ouvrir(j) {
   document.documentElement.style.overflow = 'hidden';
 }
 function visuel(j) { return j.theme === 'asm' ? '<div class="ph asm"><div class="ws"><b>AS MONACO</b></div>' : '<div class="ph"><img src="' + esc(img(j.img)) + '" alt="">'; }
-function fermer() { document.getElementById('md').className = ''; document.documentElement.style.overflow = ''; cur = null; }
+function fermer() { setTimeout(function () { [].forEach.call(document.querySelectorAll('#ls .r.on'), function (r) { r.classList.remove('on'); }); }, 250); document.getElementById('md').className = ''; document.documentElement.style.overflow = ''; cur = null; }
 function valider() {
   var sh = document.getElementById('sh'), bad = [], v = {};
   ['prenom', 'nom', 'adresse', 'email', 'tel'].forEach(function (k) {
@@ -274,7 +254,11 @@ function merci(mode) {
 /* ---------- les touchers ---------- */
 document.addEventListener('click', function (e) {
   var a = e.target.closest('[data-id]');
-  if (a && a.closest('#ls')) { e.preventDefault(); var id = a.getAttribute('data-id'); ouvrir(JEUX.filter(function (j) { return j.id === id; })[0]); return; }
+  if (a && a.closest('#ls')) {
+    e.preventDefault(); var id = a.getAttribute('data-id'), j = JEUX.filter(function (x) { return x.id === id; })[0];
+    [].forEach.call(document.querySelectorAll('#ls .r.on'), function (r) { r.classList.remove('on'); });
+    a.classList.add('on'); setTimeout(function () { ouvrir(j); }, 420); return;
+  }
   if (e.target.closest('#x,#ferme,#dim')) { e.preventDefault(); fermer(); return; }
   if (e.target.closest('a#go')) { if (!valider()) e.preventDefault(); }
 });
