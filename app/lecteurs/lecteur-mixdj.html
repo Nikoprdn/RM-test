@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lecteur Radio Monaco</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style type="text/css">
+/* Lecteur de direct Radio Monaco — Custom Code (sans bouton d'achat). Une radio par section : voir RADIO plus bas. */
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:#F6F3EE}
+html,body{min-height:100%;font-family:Barlow,system-ui,sans-serif;color:#141218;-webkit-tap-highlight-color:transparent}
+/* fond clair (22 novembre) : la pochette du titre en cours, floutée et très atténuée, teinte le haut de la page puis s'efface vers le crème */
+.bgc{position:fixed;inset:-80px;z-index:0;background-size:cover;background-position:center;filter:blur(60px) saturate(1.5);transform:scale(1.2);opacity:.75;transition:opacity .8s}
+.bgc.out{opacity:0}
+.bgs{position:fixed;inset:0;z-index:0;background:linear-gradient(180deg,rgba(246,243,238,.12) 0%,rgba(246,243,238,.42) 34%,rgba(246,243,238,.86) 62%,#F6F3EE 82%)}
+button:focus,button:focus-visible{outline:none}
+body>*:not(.bgc):not(.bgs){position:relative;z-index:1}
+body{padding:18px 24px calc(28px + env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center}
+.logo{height:46px;width:auto;margin:34px 0 28px}
+.cv{position:relative;width:min(78vw,320px);aspect-ratio:1;border-radius:22px;overflow:hidden;background:rgba(20,18,24,.06);box-shadow:0 30px 60px -28px rgba(20,18,24,.55)}
+.cv img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .5s}
+.cv img.out{opacity:0}
+.lv{margin-top:24px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--c);display:flex;gap:8px;align-items:center}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 0 3px var(--h)}
+.on .dot{animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 6px transparent}}
+h1{margin-top:10px;font-size:24px;font-weight:700;line-height:1.15;text-align:center;letter-spacing:-.2px;max-width:100%}
+.ar{margin-top:4px;font-size:16px;color:#6A6570;text-align:center}
+.pl{margin-top:26px;width:76px;height:76px;border-radius:50%;border:0;background:var(--c);box-shadow:0 16px 30px -14px var(--c);display:grid;place-items:center;cursor:pointer;transition:transform .15s,background .2s}
+.pl:active{transform:scale(.94)}
+.pl i{display:block;border-left:22px solid #fff;border-top:13px solid transparent;border-bottom:13px solid transparent;margin-left:6px}
+.on .pl i{border:0;margin:0;width:24px;height:26px;border-left:8px solid #fff;border-right:8px solid #fff}
+.wait .pl i{border:3px solid rgba(255,255,255,.35);border-top-color:#fff;width:28px;height:28px;border-radius:50%;margin:0;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hs{width:100%;max-width:420px;margin-top:34px}
+.hs h2{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#6A6570;margin-bottom:10px}
+.hs li{list-style:none;display:flex;gap:12px;align-items:center;padding:10px 0;border-top:1px solid rgba(20,18,24,.1)}
+.hs li img{width:44px;height:44px;border-radius:6px;object-fit:cover;background:rgba(20,18,24,.06);flex:0 0 44px}
+.hs li span{min-width:0}
+.hs b{display:block;font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hs em{display:block;font-style:normal;font-size:13px;color:#6A6570;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hs:empty{display:none}
+</style>
+</head>
+<body>
+<div class="bgc" id="bgc"></div><div class="bgs"></div>
+<img class="logo" id="logo" alt="">
+<div class="cv"><img id="cover" alt="Pochette du titre en cours"></div>
+<div class="lv"><span class="dot"></span><span id="st">En direct</span></div>
+<h1 id="ti"></h1>
+<div class="ar" id="ar"></div>
+<button class="pl" id="pl" type="button" aria-label="Écouter"><i></i></button>
+<div class="hs" id="hs"></div>
+<script>
+// ——— Réglage de la radio de cette section ———
+var RADIO = 'mixdj';
+var SITE = 'https://nikoprdn.github.io/RM-test/assets/';
+var RADIOS = {
+  montecarlo: { n: 'Monte-Carlo', st: 'https://radiomonaco.ice.infomaniak.ch/radiomonaco-128.mp3', logo: 'wr-montecarlo-ink.png', lab: 'Monte Carlo', sig: 'charte/sigle-montecarlo-invert@3x.png', c: '#E4032E', h: 'rgba(228,3,46,.25)' },
+  paris: { n: 'Paris', st: 'https://radiomonacoparis.ice.infomaniak.ch/radiomonacoparis-320.aac', meta: 'https://radiomonaco.ice.infomaniak.ch/radiomonaco-128.mp3', logo: 'wr-paris-ink.png', lab: 'Paris', sig: 'charte/sigle-montecarlo-invert@3x.png', c: '#E4032E', h: 'rgba(228,3,46,.25)' },
+  mixdj: { n: '100 % Mix DJ', st: 'https://mixdj.ice.infomaniak.ch/mixdj-128.aac', logo: 'wr-mixdj-ink.png', lab: '100% Mix', sig: 'charte/sigle-mixdj-invert@3x.png', c: '#F59C00', h: 'rgba(245,156,0,.25)', fixed: true },
+  nightmood: { n: 'Night Mood', st: 'https://nightmood.ice.infomaniak.ch/nightmood-128.aac', logo: 'wr-nightmood-ink.png', lab: 'Night Mood', sig: 'charte/sigle-nightmood-invert@3x.png', c: '#8A5AA1', h: 'rgba(138,90,161,.25)' }
+};
+var R = RADIOS[RADIO], meta = R.meta || R.st, sig = SITE + R.sig;
+var $ = function (id) { return document.getElementById(id); };
+document.body.style.setProperty('--c', R.c); document.body.style.setProperty('--h', R.h);
+$('logo').src = SITE + R.logo; $('logo').alt = 'Radio Monaco ' + R.n;
+$('cover').src = sig; $('st').textContent = 'En direct – ' + R.lab; $('bgc').style.backgroundImage = 'url("' + sig + '")'; $('ti').textContent = 'Radio Monaco ' + R.n; $('ar').textContent = 'En direct';
+
+// ——— Lecture ———
+// Le son est posé dans la fenêtre de l'application (au-dessus des pages) :
+// il continue quand on change de section, et ce lecteur le retrouve au retour.
+var H = window;
+try { if (window.parent && window.parent !== window && window.parent.document) H = window.parent; } catch (e) { H = window; }
+var au = H.__rmAudio;
+if (!au) {
+  au = H.document.createElement('audio'); au.preload = 'none'; au.setAttribute('playsinline', '');
+  au.style.display = 'none'; H.document.body.appendChild(au); H.__rmAudio = au;
+}
+var playing = !!(au.src && !au.paused && H.__rmRadio === RADIO);
+function setState(s) { document.body.classList.toggle('on', s === 'on'); document.body.classList.toggle('wait', s === 'wait'); $('pl').setAttribute('aria-label', s === 'on' ? 'Pause' : 'Écouter'); $('st').textContent = 'En direct – ' + R.lab; }
+function stop() { au.pause(); au.removeAttribute('src'); au.load(); playing = false; H.__rmRadio = ''; setState('off'); }
+$('pl').addEventListener('click', function (e) {
+  if (e && e.isTrusted === false) return;   /* GoodBarber simule un clic à l'ouverture de la page : seul un vrai toucher compte */
+  if (playing) { stop(); return; }
+  playing = true; H.__rmRadio = RADIO; setState('wait');
+  au.src = R.st + '?r=' + Date.now();          // direct : on repart toujours du présent
+  au.play().catch(function () { playing = false; H.__rmRadio = ''; setState('off'); });
+});
+function onPlaying() { if (playing) setState('on'); }
+function onWaiting() { if (playing) setState('wait'); }
+function onError() { if (playing) { playing = false; H.__rmRadio = ''; setState('off'); } }
+au.addEventListener('playing', onPlaying); au.addEventListener('waiting', onWaiting); au.addEventListener('error', onError);
+// à la sortie de la page, on détache nos écouteurs (le son, lui, continue)
+window.addEventListener('pagehide', function () { au.removeEventListener('playing', onPlaying); au.removeEventListener('waiting', onWaiting); au.removeEventListener('error', onError); });
+if (playing) setState('on');
+
+// ——— Titre en cours, pochette, trois derniers titres (mêmes sources que le site) ———
+var nice = function (s) { s = (s || '').replace(/\s+/g, ' ').trim(); var l = s.replace(/[^A-Za-zÀ-ÿ]/g, ''); var up = l.replace(/[^A-ZÀ-Þ]/g, '').length; if (l.length && up / l.length > 0.6) s = s.toLowerCase().replace(/(^|[\s(\-&/])([a-zà-ÿ])/g, function (m, a, b) { return a + b.toUpperCase(); }); return s; };
+var split = function (raw) { var p = raw.split(' - '); return { a: nice(p.length > 1 ? p[0] : ''), t: nice(p.length > 1 ? p.slice(1).join(' - ') : raw) }; };
+var esc = function (s) { return String(s || '').replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+var hid = new URL(meta).hostname.split('.')[0], last = '', hist = [];
+function itunes(a, t) {
+  if (!a) return Promise.resolve('');
+  var q = encodeURIComponent((a.split(/ x | feat\. | & | vs |, /i)[0] + ' ' + t).replace(/\(.*?\)|\[.*?\]|feat\.?.*$/gi, ' ').replace(/\s+/g, ' ').trim());
+  return fetch('https://itunes.apple.com/search?media=music&entity=song&limit=1&country=fr&term=' + q).then(function (x) { return x.json(); })
+    .then(function (j) { var u = j.results && j.results[0] && j.results[0].artworkUrl100; return u ? u.replace('100x100bb', '600x600bb') : ''; }).catch(function () { return ''; });
+}
+function showCover(u) {
+  var img = $('cover'); if (img.getAttribute('src') === u) return;
+  img.classList.add('out'); $('bgc').classList.add('out'); setTimeout(function () { img.src = u; $('bgc').style.backgroundImage = 'url("' + u + '")'; img.onload = function () { img.classList.remove('out'); $('bgc').classList.remove('out'); }; }, 250);
+}
+function lockScreen(t, a, u) {
+  if (!('mediaSession' in navigator)) return;
+  try { navigator.mediaSession.metadata = new MediaMetadata({ title: t, artist: a || 'Radio Monaco ' + R.n, album: 'Radio Monaco ' + R.n, artwork: [{ src: u || sig, sizes: '600x600', type: 'image/' + (/\.png/.test(u || sig) ? 'png' : 'jpeg') }] }); } catch (e) {}
+}
+function history() {
+  return fetch('https://metadata.infomaniak.com/api/radio/' + hid + '/metadata-all-cover', { cache: 'no-store' }).then(function (x) { return x.json(); })
+    .then(function (j) { hist = (j.data || []).filter(function (x) { return x.title && !/^\s*radio monaco\b/i.test(x.title); }); /* sans les jingles de la station */ return hist; }).catch(function () { return hist; });
+}
+function renderHistory() {
+  var rows = hist.filter(function (x) { return x.title.trim().toLowerCase() !== last.toLowerCase(); }).slice(0, 3);
+  $('hs').innerHTML = rows.length ? '<h2>Déjà diffusés</h2><ul>' + rows.map(function (x) { var s = split(x.title.trim()); return '<li><img src="' + esc(R.fixed ? sig : (x.cover || sig)) + '" alt=""><span><b>' + esc(s.t) + '</b><em>' + esc(s.a) + '</em></span></li>'; }).join('') + '</ul>' : '';
+}
+function read() {
+  fetch(meta + '.xspf?r=' + Date.now(), { cache: 'no-store' }).then(function (x) { return x.ok ? x.text() : ''; }).then(function (txt) {
+    var n = txt && new DOMParser().parseFromString(txt, 'text/xml').querySelector('track > title');
+    var raw = ((n && n.textContent) || '').trim(); if (!raw || raw === last) return;
+    last = raw; var s = split(raw);
+    $('ti').textContent = s.t; $('ar').textContent = s.a || 'Radio Monaco ' + R.n;
+    history().then(function () {
+      renderHistory();
+      if (R.fixed) { showCover(sig); lockScreen(s.t, s.a, sig); return; }
+      var hit = hist.filter(function (x) { return x.title.trim().toLowerCase() === raw.toLowerCase() && x.cover; })[0];
+      (hit ? Promise.resolve(hit.cover) : itunes(s.a, s.t)).then(function (u) { showCover(u || sig); lockScreen(s.t, s.a, u); });
+    });
+  }).catch(function () {});
+}
+read(); setInterval(read, 15000);
+</script>
+</body>
+</html>

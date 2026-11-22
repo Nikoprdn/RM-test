@@ -9,24 +9,24 @@
 <style type="text/css">
 /* Accueil de l'application (widget « Custom Code » de la home), 22 novembre 2026.
    Choix de Nicolas : les 4 radios à leur place, puis le sommaire de la piste D (Podcasts, Actualités, Jeux, Favoris),
-   version sombre : toute la page épouse la pochette du titre en cours (pochette floutée, comme le lecteur).
+   Thème clair (validé le 22 novembre) : fond crème, la pochette du titre en cours teinte doucement le haut de la page.
    Le son est partagé avec le reste de l'application (H.__rmAudio). */
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;background:#141218;font-family:Barlow,system-ui,sans-serif;color:#fff;-webkit-tap-highlight-color:transparent;overflow:hidden}
+html,body{height:100%;background:#F6F3EE;font-family:Barlow,system-ui,sans-serif;color:#141218;-webkit-tap-highlight-color:transparent;overflow:hidden}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left}
 button:focus,button:focus-visible{outline:none}
 img{display:block}
 
-/* fond : la pochette floutée, en fondu d'une pochette à l'autre */
-.bg{position:fixed;inset:-90px;background-size:cover;background-position:center;filter:blur(70px) saturate(1.6) brightness(.78);opacity:0;transition:opacity 1.2s ease}
-.bg.on{opacity:1}
-.sc{position:fixed;inset:0;background:linear-gradient(180deg,rgba(20,18,24,.62) 0%,rgba(20,18,24,.3) 18%,rgba(20,18,24,.42) 52%,rgba(20,18,24,.86) 86%,#141218 100%)}
+/* fond : la pochette floutée, très atténuée, qui s'efface vers le crème ; fondu d'une pochette à l'autre */
+.bg{position:fixed;inset:-90px;background-size:cover;background-position:center;filter:blur(70px) saturate(1.5);opacity:0;transition:opacity 1.2s ease}
+.bg.on{opacity:.75}
+.sc{position:fixed;inset:0;background:linear-gradient(180deg,rgba(246,243,238,.12) 0%,rgba(246,243,238,.4) 32%,rgba(246,243,238,.85) 62%,#F6F3EE 82%)}
 .pg{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;padding:6px 14px 0}
 
 /* les quatre radios */
 .ls{display:flex;flex-direction:column;gap:8px}
-.r{position:relative;display:flex;align-items:center;gap:14px;width:100%;height:84px;padding:0 12px 0 9px;border-radius:22px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);transition:background .45s,border-color .45s,color .45s}
-.cv{width:66px;height:66px;flex:none;border-radius:15px;object-fit:cover;background:rgba(255,255,255,.08);transition:opacity .25s}
+.r{position:relative;display:flex;align-items:center;gap:14px;width:100%;height:84px;padding:0 12px 0 9px;border-radius:22px;background:rgba(255,255,255,.88);box-shadow:0 1px 2px rgba(20,18,24,.05);transition:background .45s,color .45s}
+.cv{width:66px;height:66px;flex:none;border-radius:15px;object-fit:cover;background:rgba(20,18,24,.06);transition:opacity .25s}
 .cv.out{opacity:0}
 .mid{flex:1;min-width:0;position:relative;height:100%}
 .lg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transition:opacity .35s}
@@ -42,17 +42,19 @@ img{display:block}
 @keyframes eq{0%,100%{height:4px}50%{height:11px}}
 .pl{flex:none;width:44px;height:44px;border-radius:50%;background:var(--c);display:grid;place-items:center;color:#fff;transition:background .45s,color .45s}
 .pl svg{display:block}
-.r.on{background:rgba(255,255,255,.95);border-color:transparent;color:#141218}
+.r.on{background:#141218;color:#fff}
+.r.on .pl{background:#fff;color:var(--c)}
+.r.on .eq s{background:#fff}
 .r.on .lg{opacity:0}.r.on .tx{opacity:1}
 .r.wait .pl{animation:bl 1s ease-in-out infinite}
 @keyframes bl{50%{opacity:.45}}
 
 /* le sommaire */
 .ed{margin:22px 8px 0;flex:1;display:flex;flex-direction:column;max-height:300px}
-.ed button{flex:1;display:flex;align-items:center;justify-content:space-between;width:100%;min-height:52px;border-bottom:1px solid rgba(255,255,255,.2)}
-.ed button:first-child{border-top:1px solid rgba(255,255,255,.2)}
+.ed button{flex:1;display:flex;align-items:center;justify-content:space-between;width:100%;min-height:52px;border-bottom:1px solid rgba(20,18,24,.12)}
+.ed button:first-child{border-top:1px solid rgba(20,18,24,.12)}
 .ed b{font-size:32px;font-weight:300;letter-spacing:-.03em;line-height:1}
-.ed small{display:flex;align-items:center;gap:9px;font-size:12.5px;opacity:.62;white-space:nowrap}
+.ed small{display:flex;align-items:center;gap:9px;font-size:12.5px;color:#9B969F;white-space:nowrap}
 .ed button:active b{opacity:.6}
 </style>
 </head>
@@ -108,7 +110,7 @@ function go(slug, sec) {
 $('ls').innerHTML = R.map(function (r) {
   return '<div class="r" data-k="' + r.k + '" style="--c:' + r.c + '" role="button" tabindex="0">' +
     '<img class="cv" alt="">' +
-    '<span class="mid"><span class="lg"><img src="' + SITE + 'wr-' + r.k + '-allwhite.png" alt="Radio Monaco ' + r.n + '"></span>' +
+    '<span class="mid"><span class="lg"><img src="' + SITE + 'wr-' + r.k + '-ink.png" alt="Radio Monaco ' + r.n + '"></span>' +
     '<span class="tx"><em><span class="eq"><s></s><s></s><s></s></span>En direct – ' + r.lab + '</em><b></b><i></i></span></span>' +
     '<button class="pl" type="button" aria-label="Écouter"></button></div>';
 }).join('');
