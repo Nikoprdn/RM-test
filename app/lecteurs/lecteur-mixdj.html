@@ -120,8 +120,8 @@ function showCover(u) {
   img.classList.add('out'); $('bgc').classList.add('out'); setTimeout(function () { img.src = u; $('bgc').style.backgroundImage = 'url("' + u + '")'; img.onload = function () { img.classList.remove('out'); $('bgc').classList.remove('out'); }; }, 250);
 }
 function lockScreen(t, a, u) {
-  if (!('mediaSession' in navigator)) return;
-  try { navigator.mediaSession.metadata = new MediaMetadata({ title: t, artist: a || 'Radio Monaco ' + R.n, album: 'Radio Monaco ' + R.n, artwork: [{ src: u || sig, sizes: '600x600', type: 'image/' + (/\.png/.test(u || sig) ? 'png' : 'jpeg') }] }); } catch (e) {}
+  var nav = H.navigator || navigator; if (!nav || !('mediaSession' in nav)) return;
+  try { nav.mediaSession.metadata = new (H.MediaMetadata || MediaMetadata)({ title: t, artist: a || 'Radio Monaco ' + R.n, album: 'Radio Monaco ' + R.n, artwork: [{ src: u || sig, sizes: '600x600', type: 'image/' + (/\.png/.test(u || sig) ? 'png' : 'jpeg') }] }); } catch (e) {}
 }
 function history() {
   return fetch('https://metadata.infomaniak.com/api/radio/' + hid + '/metadata-all-cover', { cache: 'no-store' }).then(function (x) { return x.json(); })

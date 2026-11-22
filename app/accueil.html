@@ -10,15 +10,17 @@
 /* Accueil de l'application (widget « Custom Code » de la home), 22 novembre 2026.
    Choix de Nicolas : les 4 radios à leur place, puis le sommaire de la piste D (Podcasts, Actualités, Jeux, Favoris),
    Thème clair (22 novembre), piste D : page crème unie ; la pochette du titre en cours n'apparaît, floutée, que dans la carte de la radio qui joue.
+   Barre du lecteur en bas et écran verrouillé (pochette, titre) depuis le 22 novembre.
    Le son est partagé avec le reste de l'application (H.__rmAudio). */
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;background:#F6F3EE;font-family:Barlow,system-ui,sans-serif;color:#141218;-webkit-tap-highlight-color:transparent;overflow:hidden}
+html,body{min-height:100%;background:#F6F3EE;font-family:Barlow,system-ui,sans-serif;color:#141218;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}body{overflow-y:auto;-webkit-overflow-scrolling:touch}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left}
 button:focus,button:focus-visible{outline:none}
 img{display:block}
 
 /* fond crème uni : l'en-tête de GoodBarber se fond dans la page (piste D, 22 novembre) */
-.pg{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;padding:6px 14px 0}
+.pg{position:relative;z-index:1;min-height:100%;display:flex;flex-direction:column;padding:6px 14px calc(96px + env(safe-area-inset-bottom))}
 
 /* les quatre radios */
 .ls{display:flex;flex-direction:column;gap:8px}
@@ -70,6 +72,20 @@ img{display:block}
 @keyframes rmIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 .rm-in{animation:rmIn .7s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0) * 70ms + 60ms)}
 @media (prefers-reduced-motion:reduce){.rm-in{animation:none}}
+
+/* la barre du lecteur, en bas (22 novembre) : ce qu'on écoute, pause / lecture, et le lecteur au toucher */
+.mb{position:fixed;z-index:5;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));height:66px;display:flex;align-items:center;gap:12px;padding:0 10px 0 9px;border-radius:22px;background:rgba(255,255,255,.84);-webkit-backdrop-filter:blur(24px) saturate(1.4);backdrop-filter:blur(24px) saturate(1.4);box-shadow:0 14px 34px -14px rgba(20,18,24,.4),0 0 0 1px rgba(20,18,24,.05);transform:translateY(160%);transition:transform .55s cubic-bezier(.2,.8,.2,1)}
+.mb.show{transform:none}
+.mb img{width:48px;height:48px;flex:none;border-radius:12px;object-fit:cover;background:rgba(20,18,24,.06)}
+.mbt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.mbt em{display:flex;align-items:center;font-style:normal;font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--c);white-space:nowrap}
+.mbt b{font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mbt i{font-style:normal;font-weight:400;color:#6A6570}
+.mb .eq s{background:var(--c)}
+.mb.on:not(.wait) .eq s{animation:eq 1s ease-in-out infinite}
+.mbp{flex:none;width:44px;height:44px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center}
+.mb.wait .mbp svg{display:none}
+.mb.wait .mbp:after{content:"";width:18px;height:18px;border-radius:50%;border:2.5px solid rgba(255,255,255,.35);border-top-color:#fff;animation:spin .8s linear infinite}
 </style>
 </head>
 <body>
@@ -77,6 +93,7 @@ img{display:block}
   <div class="ls" id="ls"></div>
   <nav class="ed" id="ed"></nav>
 </div>
+<div class="mb" id="mb" role="button" tabindex="0"><img id="mbc" alt=""><span class="mbt"><em><span class="eq"><s></s><s></s><s></s></span><span id="mbs"></span></em><b id="mbti"></b></span><button class="mbp" id="mbp" type="button" aria-label="Pause"></button></div>
 <script>
 var SITE = 'https://nikoprdn.github.io/RM-test/assets/';
 var R = [
@@ -135,6 +152,37 @@ $('ed').innerHTML = MENU.map(function (m, i) {
 }).join('');
 
 function paintBg() {}   /* plus de fond de page : la pochette floutée vit dans la carte (paintRow) */
+
+/* ——— la barre du bas et l'écran verrouillé suivent la radio en écoute ——— */
+var barK = '';
+function paintBar() {
+  var k = live() || waitK, mb = $('mb');
+  if (k) barK = k;
+  mb.classList.toggle('show', !!k || (!!barK && !!au.src));
+  if (!barK) return;
+  var r = byK[barK];
+  mb.style.setProperty('--c', r.c);
+  mb.classList.toggle('on', !!k); mb.classList.toggle('wait', waitK === barK);
+  if ($('mbc').getAttribute('src') !== r.cover) $('mbc').src = r.cover;
+  $('mbs').textContent = 'En direct – ' + r.lab;
+  $('mbti').innerHTML = esc(r.t) + (r.a && r.a !== 'En direct' ? ' <i>· ' + esc(r.a) + '</i>' : '');
+  $('mbp').innerHTML = k ? IC_PAUSE : IC_PLAY;
+  if (k === barK) lock(r);
+}
+function esc(s) { return String(s || '').replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+/* écran verrouillé : titre, artiste et pochette (Media Session), sur la page qui porte le son */
+var lockKey = '';
+function lock(r) {
+  var nav = H.navigator || navigator; if (!nav || !('mediaSession' in nav)) return;
+  var key = r.k + '|' + r.t + '|' + r.cover; if (key === lockKey) return; lockKey = key;
+  try {
+    var MM = H.MediaMetadata || MediaMetadata;
+    nav.mediaSession.metadata = new MM({ title: r.t, artist: r.a && r.a !== 'En direct' ? r.a : 'Radio Monaco ' + r.n, album: 'Radio Monaco ' + r.n,
+      artwork: [{ src: r.cover, sizes: '600x600', type: /\.png/i.test(r.cover) ? 'image/png' : 'image/jpeg' }] });
+    nav.mediaSession.setActionHandler('play', function () { au.play().catch(function () {}); });
+    nav.mediaSession.setActionHandler('pause', function () { au.pause(); });
+  } catch (e) {}
+}
 function swap(img, src) {
   if (img.getAttribute('src') === src) return;
   if (!img.getAttribute('src')) { img.src = src; return; }
@@ -144,6 +192,7 @@ function paintRow(r) {
   var b = rows[r.k];
   swap(b.querySelector('.cv'), r.cover);
   b.querySelector('.blr').style.backgroundImage = 'u' + 'rl("' + r.cover + '")';
+  if (r.k === barK) paintBar();
   b.querySelector('b').textContent = r.t; b.querySelector('i').textContent = r.a;
 }
 function paintState() {
@@ -154,7 +203,7 @@ function paintState() {
     var p = b.querySelector('.pl'); p.innerHTML = act ? IC_PAUSE : IC_PLAY;
     p.setAttribute('aria-label', (act ? 'Pause ' : 'Écouter ') + 'Radio Monaco ' + r.n);
   });
-  paintBg();
+  paintBg(); paintBar();
 }
 
 /* ——— écouter, mettre en pause, ouvrir la page de la radio ——— */
@@ -167,6 +216,8 @@ function play(r) {
 }
 document.addEventListener('click', function (e) {
   if (e && e.isTrusted === false) return;   /* GoodBarber simule des clics : seul un vrai toucher compte */
+  if (e.target.closest('#mbp')) { if (barK) { if (live()) { au.pause(); } else play(byK[barK]); } return; }
+  if (e.target.closest('#mb')) { if (barK) go(byK[barK].slug, byK[barK].sec); return; }
   var m = e.target.closest('[data-i]');
   if (m) { var it = MENU[+m.getAttribute('data-i')]; go(it.slug, it.sec); return; }
   var row = e.target.closest('.r'); if (!row) return;
