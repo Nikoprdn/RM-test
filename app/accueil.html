@@ -61,7 +61,7 @@ img{display:block}
 @keyframes pop{0%{transform:scale(.97)}55%{transform:scale(1.015)}100%{transform:none}}
 
 /* le sommaire */
-.ed{margin:16px 8px 0;flex:1;display:flex;flex-direction:column;max-height:280px}
+.ed{margin:14px 8px 0;flex:1;display:flex;flex-direction:column;max-height:280px}
 .ed a{color:inherit;text-decoration:none;-webkit-touch-callout:none}
 .ed a{flex:1;display:flex;align-items:center;justify-content:space-between;width:100%;min-height:48px;border-bottom:1px solid rgba(20,18,24,.12)}
 .ed a:first-child{border-top:1px solid rgba(20,18,24,.12)}
@@ -92,23 +92,27 @@ a.mb{color:inherit;text-decoration:none;-webkit-touch-callout:none}
 .mb.wait .mbp svg{display:none}
 .mb.wait .mbp:after{content:"";width:18px;height:18px;border-radius:50%;border:2.5px solid rgba(255,255,255,.35);border-top-color:#fff;animation:spin .8s linear infinite}
 
-/* le fil d'informations (22 novembre) : dernier podcast, dernières actualités, jeux ; défile doucement, s'arrête au toucher */
-.tk{position:relative;margin:14px -14px 0;height:40px;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 22px,#000 calc(100% - 22px),transparent);mask-image:linear-gradient(90deg,transparent,#000 22px,#000 calc(100% - 22px),transparent)}
-.tk-t{position:absolute;left:0;top:0;height:100%;display:flex;align-items:center;white-space:nowrap;will-change:transform;animation:tk var(--dur,60s) linear infinite}
-.tk.hold .tk-t{animation-play-state:paused}
-@keyframes tk{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.ti{display:inline-flex;align-items:center;gap:9px;height:40px;padding:0 4px 0 22px;color:#141218;text-decoration:none;-webkit-touch-callout:none}
-.ti img{width:28px;height:28px;flex:none;border-radius:8px;object-fit:cover;background:rgba(20,18,24,.06)}
-.ti em{font-style:normal;font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--c,#141218)}
-.ti b{font-size:14px;font-weight:500;letter-spacing:-.005em}
-.ti s{text-decoration:none;color:#B9B4BC;margin-left:14px}
-@media (prefers-reduced-motion:reduce){.tk{overflow-x:auto}.tk-t{position:static;animation:none}}
+/* le fil d'informations (piste D, 22 novembre) : une information à la fois, dans une carte, toutes les 4 secondes */
+a.tk{position:relative;display:flex;align-items:center;gap:12px;height:66px;margin:14px 0 0;padding:0 14px 0 9px;border-radius:20px;background:rgba(255,255,255,.88);box-shadow:0 1px 2px rgba(20,18,24,.05);color:#141218;text-decoration:none;-webkit-touch-callout:none;overflow:hidden;transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+a.tk:active{transform:scale(.98)}
+.tk-s{position:relative;flex:1;min-width:0;height:100%}
+.ts{position:absolute;inset:0;display:flex;align-items:center;gap:12px;opacity:0;transform:translateY(60%);transition:opacity .45s,transform .6s cubic-bezier(.2,.8,.2,1)}
+.ts.on{opacity:1;transform:none}
+.ts.out{opacity:0;transform:translateY(-60%)}
+.ts img,.ts .ph{width:48px;height:48px;flex:none;border-radius:12px;object-fit:cover;background:rgba(20,18,24,.06)}
+.ts .ph{background:#E4032E;display:grid;place-items:center}.ts .ph img{width:28px;height:28px;background:none;border-radius:0}
+.ts span{min-width:0;display:flex;flex-direction:column;gap:3px}
+.ts em{font-style:normal;font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--c,#141218);white-space:nowrap}
+.ts b{font-size:15px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tk-d{flex:none;display:flex;flex-direction:column;gap:4px}
+.tk-d i{width:4px;height:4px;border-radius:2px;background:#D6D1CB;transition:height .4s,background .4s}
+.tk-d i.on{height:12px;background:#141218}
 </style>
 </head>
 <body>
 <div class="pg">
   <div class="ls" id="ls"></div>
-  <div class="tk rm-in" id="tkw" style="--i:4"><div class="tk-t" id="tk"></div></div>
+  <a class="tk rm-in" id="tkw" href="#" style="--i:4;display:none"><span class="tk-s" id="tk"></span><span class="tk-d" id="tkd"></span></a>
   <nav class="ed" id="ed"></nav>
 </div>
 <a class="mb" id="mb" href="#"><img id="mbc" alt=""><span class="mbt"><em><span class="eq"><s></s><s></s><s></s></span><span id="mbs"></span></em><b id="mbti"></b></span><button class="mbp" id="mbp" type="button" aria-label="Pause"></button></a>
@@ -287,27 +291,42 @@ fetch('https://nikoprdn.github.io/RM-test/app-podcasts.json', { cache: 'no-cache
   $('ms0').textContent = n ? (n > 1 ? n + ' nouveaux' : '1 nouveau') : 'Le Morning & les mixs';
 }).catch(function () { $('ms0').textContent = 'Le Morning & les mixs'; });
 
-/* ——— le fil d'informations ——— */
+/* ——— le fil d'informations : une information à la fois ——— */
 var SEC = { pod: [79503683, 'podcasts-2'], news: [79601016, 'actualites'], jeu: [79620298, 'jeux'] };
-function tkItem(kind, c, img, label, t) {
-  var s = SEC[kind];
-  return '<a class="ti" href="' + link(s[0]) + '" data-slug="' + s[1] + '" style="--c:' + c + '">' + (img ? '<img src="' + esc(img) + '" alt="" loading="lazy">' : '') +
-    '<em>' + label + '</em><b>' + esc(t) + '</b><s>•</s></a>';
+function ago(iso) {
+  if (!iso) return '';
+  var d = new Date(/Z|[+-]\d\d:?\d\d$/.test(iso) ? iso : iso + 'Z'), t = new Date(), h = Math.round((t - d) / 36e5);
+  if (h < 1) return 'À l’instant'; if (h < 24) return 'Il y a ' + h + ' h';
+  var j = Math.round((new Date(t.getFullYear(), t.getMonth(), t.getDate()) - new Date(d.getFullYear(), d.getMonth(), d.getDate())) / 864e5);
+  return j <= 1 ? 'Hier' : j < 14 ? 'Il y a ' + j + ' jours' : 'Il y a ' + Math.round(j / 7) + ' semaines';
 }
+var TK = [], tkI = 0, tkHold = false;
 fetch('https://nikoprdn.github.io/RM-test/app-une.json', { cache: 'no-cache' }).then(function (x) { return x.json(); }).then(function (j) {
-  var pods = j.pods || [], news = j.news || [], jeux = j.jeux || [], out = [];
-  var P = pods.map(function (e) { return tkItem('pod', e.mix ? '#F59C00' : '#E4032E', e.img, e.mix ? 'Mix' : 'Podcast', e.show + ' · ' + e.t); });
-  var N = news.map(function (n) { return tkItem('news', '#141218', n.img, n.cat || 'Actualité', n.t); });
-  var J = jeux.length ? jeux.map(function (g) { return tkItem('jeu', '#E4032E', '', 'Jeu', g.t); }) : [tkItem('jeu', '#E4032E', '', 'Jeux', 'Bientôt à l’antenne : tentez votre chance en direct')];
-  /* ordre : podcast, actualité, jeu, puis on alterne */
-  for (var i = 0; i < 6; i++) { if (P[i]) out.push(P[i]); if (N[i]) out.push(N[i]); if (i === 0) out = out.concat(J); }
-  if (!out.length) return;
-  var html = out.join(''); $('tk').innerHTML = html + html;   /* deux fois : la boucle est sans couture */
-  requestAnimationFrame(function () { var w = $('tk').scrollWidth / 2; $('tk').style.setProperty('--dur', Math.round(w / 32) + 's'); });   /* ≈ 32 px/s */
-}).catch(function () { $('tkw').style.display = 'none'; });
-var tkT = 0;
-['touchstart', 'mousedown'].forEach(function (ev) { $('tkw').addEventListener(ev, function () { clearTimeout(tkT); $('tkw').classList.add('hold'); }, { passive: true }); });
-['touchend', 'touchcancel', 'mouseup', 'mouseleave'].forEach(function (ev) { $('tkw').addEventListener(ev, function () { clearTimeout(tkT); tkT = setTimeout(function () { $('tkw').classList.remove('hold'); }, 2500); }, { passive: true }); });
+  var P = (j.pods || []).slice(0, 3).map(function (e) { return { k: 'pod', c: e.mix ? '#F59C00' : '#E4032E', img: e.img, lab: e.mix ? 'Mix' : 'Podcast', t: e.show + ' · ' + e.t, d: e.d }; });
+  var N = (j.news || []).slice(0, 4).map(function (n) { return { k: 'news', c: '#141218', img: n.img, lab: n.cat || 'Actualité', t: n.t, d: n.d }; });
+  var J = (j.jeux || []).length ? j.jeux.map(function (g) { return { k: 'jeu', c: '#E4032E', img: '', lab: 'Jeu', t: g.t }; }) : [{ k: 'jeu', c: '#E4032E', img: '', lab: 'Jeux', t: 'Bientôt à l’antenne' }];
+  for (var i = 0; i < 4; i++) { if (P[i]) TK.push(P[i]); if (N[i]) TK.push(N[i]); if (i === 0) TK = TK.concat(J); }
+  if (!TK.length) return;
+  $('tk').innerHTML = TK.map(function (x, n) {
+    var pic = x.img ? '<img src="' + esc(x.img) + '" alt="" loading="lazy">' : '<i class="ph"><img src="' + SITE + 'charte/sigle-montecarlo-invert@3x.png" alt=""></i>';
+    var when = ago(x.d);
+    return '<span class="ts' + (n ? '' : ' on') + '" style="--c:' + x.c + '">' + pic + '<span><em>' + esc(x.lab) + (when ? ' · ' + when : '') + '</em><b>' + esc(x.t) + '</b></span></span>';
+  }).join('');
+  $('tkd').innerHTML = TK.slice(0, 6).map(function (x, n) { return '<i' + (n ? '' : ' class="on"') + '></i>'; }).join('');
+  $('tkw').style.display = ''; tkLink(); setInterval(tkNext, 4000);
+}).catch(function () {});
+function tkLink() { var s = SEC[TK[tkI].k]; $('tkw').setAttribute('href', link(s[0])); $('tkw').setAttribute('data-slug', s[1]); }
+function tkNext() {
+  if (tkHold || document.hidden || TK.length < 2) return;
+  var sl = $('tk').children, cur = sl[tkI], n = (tkI + 1) % TK.length, nx = sl[n];
+  cur.classList.remove('on'); cur.classList.add('out');
+  nx.classList.remove('out'); nx.style.transition = 'none'; nx.classList.remove('on'); void nx.offsetWidth; nx.style.transition = ''; nx.classList.add('on');
+  setTimeout(function () { cur.classList.remove('out'); }, 650);
+  tkI = n; tkLink();
+  var d = $('tkd').children; for (var k = 0; k < d.length; k++) d[k].classList.toggle('on', k === tkI % d.length);
+}
+['touchstart', 'mousedown'].forEach(function (ev) { $('tkw').addEventListener(ev, function () { tkHold = true; }, { passive: true }); });
+['touchend', 'touchcancel', 'mouseup', 'mouseleave'].forEach(function (ev) { $('tkw').addEventListener(ev, function () { setTimeout(function () { tkHold = false; }, 2000); }, { passive: true }); });
 
 R.forEach(paintRow); paintState();
 R.forEach(read); setInterval(function () { R.forEach(read); }, 20000); setInterval(paintState, 3000);
