@@ -24,9 +24,9 @@ img{display:block}
 
 /* les quatre radios */
 .ls{display:flex;flex-direction:column;gap:8px}
-.r{position:relative;display:flex;align-items:center;gap:14px;width:100%;height:84px;padding:0 12px 0 9px;border-radius:22px;background:rgba(255,255,255,.88);box-shadow:0 1px 2px rgba(20,18,24,.05);transition:color .3s .12s,transform .25s cubic-bezier(.2,.8,.2,1)}
+.r{position:relative;display:flex;align-items:center;gap:14px;width:100%;height:80px;padding:0 12px 0 9px;border-radius:22px;background:rgba(255,255,255,.88);box-shadow:0 1px 2px rgba(20,18,24,.05);transition:color .3s .12s,transform .25s cubic-bezier(.2,.8,.2,1)}
 .r:active{transform:scale(.97)}
-.cv{width:66px;height:66px;flex:none;border-radius:15px;object-fit:cover;background:rgba(20,18,24,.06);transition:opacity .25s}
+.cv{width:62px;height:62px;flex:none;border-radius:15px;object-fit:cover;background:rgba(20,18,24,.06);transition:opacity .25s}
 .cv.out{opacity:0}
 .mid{flex:1;min-width:0;position:relative;height:100%}
 .lg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transition:opacity .25s,transform .4s cubic-bezier(.2,.8,.2,1)}
@@ -61,11 +61,11 @@ img{display:block}
 @keyframes pop{0%{transform:scale(.97)}55%{transform:scale(1.015)}100%{transform:none}}
 
 /* le sommaire */
-.ed{margin:22px 8px 0;flex:1;display:flex;flex-direction:column;max-height:300px}
+.ed{margin:16px 8px 0;flex:1;display:flex;flex-direction:column;max-height:280px}
 .ed a{color:inherit;text-decoration:none;-webkit-touch-callout:none}
-.ed a{flex:1;display:flex;align-items:center;justify-content:space-between;width:100%;min-height:52px;border-bottom:1px solid rgba(20,18,24,.12)}
+.ed a{flex:1;display:flex;align-items:center;justify-content:space-between;width:100%;min-height:48px;border-bottom:1px solid rgba(20,18,24,.12)}
 .ed a:first-child{border-top:1px solid rgba(20,18,24,.12)}
-.ed b{font-size:32px;font-weight:300;letter-spacing:-.03em;line-height:1}
+.ed b{font-size:30px;font-weight:300;letter-spacing:-.03em;line-height:1}
 .ed small{display:flex;align-items:center;gap:9px;font-size:12.5px;color:#9B969F;white-space:nowrap}
 .ed a:active b{opacity:.6}
 /* lien vers le lecteur, actif seulement sur la radio en écoute */
@@ -91,11 +91,24 @@ a.mb{color:inherit;text-decoration:none;-webkit-touch-callout:none}
 .mbp{flex:none;width:44px;height:44px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center}
 .mb.wait .mbp svg{display:none}
 .mb.wait .mbp:after{content:"";width:18px;height:18px;border-radius:50%;border:2.5px solid rgba(255,255,255,.35);border-top-color:#fff;animation:spin .8s linear infinite}
+
+/* le fil d'informations (22 novembre) : dernier podcast, dernières actualités, jeux ; défile doucement, s'arrête au toucher */
+.tk{position:relative;margin:14px -14px 0;height:40px;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 22px,#000 calc(100% - 22px),transparent);mask-image:linear-gradient(90deg,transparent,#000 22px,#000 calc(100% - 22px),transparent)}
+.tk-t{position:absolute;left:0;top:0;height:100%;display:flex;align-items:center;white-space:nowrap;will-change:transform;animation:tk var(--dur,60s) linear infinite}
+.tk.hold .tk-t{animation-play-state:paused}
+@keyframes tk{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ti{display:inline-flex;align-items:center;gap:9px;height:40px;padding:0 4px 0 22px;color:#141218;text-decoration:none;-webkit-touch-callout:none}
+.ti img{width:28px;height:28px;flex:none;border-radius:8px;object-fit:cover;background:rgba(20,18,24,.06)}
+.ti em{font-style:normal;font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--c,#141218)}
+.ti b{font-size:14px;font-weight:500;letter-spacing:-.005em}
+.ti s{text-decoration:none;color:#B9B4BC;margin-left:14px}
+@media (prefers-reduced-motion:reduce){.tk{overflow-x:auto}.tk-t{position:static;animation:none}}
 </style>
 </head>
 <body>
 <div class="pg">
   <div class="ls" id="ls"></div>
+  <div class="tk rm-in" id="tkw" style="--i:4"><div class="tk-t" id="tk"></div></div>
   <nav class="ed" id="ed"></nav>
 </div>
 <a class="mb" id="mb" href="#"><img id="mbc" alt=""><span class="mbt"><em><span class="eq"><s></s><s></s><s></s></span><span id="mbs"></span></em><b id="mbti"></b></span><button class="mbp" id="mbp" type="button" aria-label="Pause"></button></a>
@@ -159,7 +172,7 @@ var rows = {}; [].forEach.call($('ls').children, function (b) { rows[b.getAttrib
 
 /* ——— le sommaire ——— */
 $('ed').innerHTML = MENU.map(function (m, i) {
-  return '<a class="rm-in" style="--i:' + (i + 4) + '" href="' + link(m.sec) + '" data-slug="' + m.slug + '" data-i="' + i + '"><b>' + m.t + '</b><small><span id="ms' + i + '">' + m.s + '</span>' + IC_ARROW + '</small></a>';
+  return '<a class="rm-in" style="--i:' + (i + 5) + '" href="' + link(m.sec) + '" data-slug="' + m.slug + '" data-i="' + i + '"><b>' + m.t + '</b><small><span id="ms' + i + '">' + m.s + '</span>' + IC_ARROW + '</small></a>';
 }).join('');
 
 function paintBg() {}   /* plus de fond de page : la pochette floutée vit dans la carte (paintRow) */
@@ -273,6 +286,28 @@ fetch('https://nikoprdn.github.io/RM-test/app-podcasts.json', { cache: 'no-cache
   (j.shows || []).forEach(function (s) { s.eps.forEach(function (e) { var d = new Date(e.d + 'Z'); if (d.toDateString() === t.toDateString()) n++; }); });
   $('ms0').textContent = n ? (n > 1 ? n + ' nouveaux' : '1 nouveau') : 'Le Morning & les mixs';
 }).catch(function () { $('ms0').textContent = 'Le Morning & les mixs'; });
+
+/* ——— le fil d'informations ——— */
+var SEC = { pod: [79503683, 'podcasts-2'], news: [79601016, 'actualites'], jeu: [79620298, 'jeux'] };
+function tkItem(kind, c, img, label, t) {
+  var s = SEC[kind];
+  return '<a class="ti" href="' + link(s[0]) + '" data-slug="' + s[1] + '" style="--c:' + c + '">' + (img ? '<img src="' + esc(img) + '" alt="" loading="lazy">' : '') +
+    '<em>' + label + '</em><b>' + esc(t) + '</b><s>•</s></a>';
+}
+fetch('https://nikoprdn.github.io/RM-test/app-une.json', { cache: 'no-cache' }).then(function (x) { return x.json(); }).then(function (j) {
+  var pods = j.pods || [], news = j.news || [], jeux = j.jeux || [], out = [];
+  var P = pods.map(function (e) { return tkItem('pod', e.mix ? '#F59C00' : '#E4032E', e.img, e.mix ? 'Mix' : 'Podcast', e.show + ' · ' + e.t); });
+  var N = news.map(function (n) { return tkItem('news', '#141218', n.img, n.cat || 'Actualité', n.t); });
+  var J = jeux.length ? jeux.map(function (g) { return tkItem('jeu', '#E4032E', '', 'Jeu', g.t); }) : [tkItem('jeu', '#E4032E', '', 'Jeux', 'Bientôt à l’antenne : tentez votre chance en direct')];
+  /* ordre : podcast, actualité, jeu, puis on alterne */
+  for (var i = 0; i < 6; i++) { if (P[i]) out.push(P[i]); if (N[i]) out.push(N[i]); if (i === 0) out = out.concat(J); }
+  if (!out.length) return;
+  var html = out.join(''); $('tk').innerHTML = html + html;   /* deux fois : la boucle est sans couture */
+  requestAnimationFrame(function () { var w = $('tk').scrollWidth / 2; $('tk').style.setProperty('--dur', Math.round(w / 32) + 's'); });   /* ≈ 32 px/s */
+}).catch(function () { $('tkw').style.display = 'none'; });
+var tkT = 0;
+['touchstart', 'mousedown'].forEach(function (ev) { $('tkw').addEventListener(ev, function () { clearTimeout(tkT); $('tkw').classList.add('hold'); }, { passive: true }); });
+['touchend', 'touchcancel', 'mouseup', 'mouseleave'].forEach(function (ev) { $('tkw').addEventListener(ev, function () { clearTimeout(tkT); tkT = setTimeout(function () { $('tkw').classList.remove('hold'); }, 2500); }, { passive: true }); });
 
 R.forEach(paintRow); paintState();
 R.forEach(read); setInterval(function () { R.forEach(read); }, 20000); setInterval(paintState, 3000);
