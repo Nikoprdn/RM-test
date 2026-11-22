@@ -304,8 +304,13 @@ var TK = [], tkI = 0, tkHold = false;
 fetch('https://nikoprdn.github.io/RM-test/app-une.json', { cache: 'no-cache' }).then(function (x) { return x.json(); }).then(function (j) {
   /* quatre informations seulement (consigne du 22 novembre) : le jeu d'abord, deux fois plus longtemps,
      puis la dernière émission, le dernier mix, la dernière actualité */
-  var g = (j.jeux || [])[0], e = j.pod, m = j.mix, n = (j.news || [])[0];
-  TK.push(g ? { k: 'jeu', c: '#E4032E', img: '', lab: 'Jeu', t: g.t, ms: 8000 } : { k: 'jeu', c: '#E4032E', img: '', lab: 'Jeux', t: 'Bientôt à l’antenne', ms: 8000 });
+  var now = Date.now(), js = j.jeux || [];
+  var g = js.filter(function (x) { return !x.debut || new Date(x.debut) <= now; })[0], nx0 = g ? null : js[0];
+  var e = j.pod, m = j.mix, n = (j.news || [])[0];
+  function jimg(x) { var s = x.img || (x.logos && x.logos[0]) || ''; return s && !/^https?:/.test(s) ? 'https://nikoprdn.github.io/RM-test/' + s : s; }
+  TK.push(g ? { k: 'jeu', c: '#E4032E', img: jimg(g), lab: 'Jeu · ' + (g.valeur ? g.valeur + ' à gagner' : 'en cours'), t: g.t, ms: 8000 }
+    : nx0 ? { k: 'jeu', c: '#E4032E', img: jimg(nx0), lab: 'Jeu · bientôt', t: nx0.t, ms: 8000 }
+    : { k: 'jeu', c: '#E4032E', img: '', lab: 'Jeux', t: 'Bientôt à l’antenne', ms: 8000 });
   if (e) TK.push({ k: 'pod', c: '#E4032E', img: e.img, lab: 'Podcast', t: e.show + ' · ' + e.t, d: e.d, ms: 4000 });
   if (m) TK.push({ k: 'pod', c: '#F59C00', img: m.img, lab: 'Mix', t: m.show + ' · ' + m.t, d: m.d, ms: 4000 });
   if (n) TK.push({ k: 'news', c: '#141218', img: n.img, lab: n.cat || 'Actualité', t: n.t, d: n.d, ms: 4000 });

@@ -42,10 +42,9 @@ button,input{font:inherit;color:inherit}
 .r.on .pl{background:#fff;color:var(--c)}
 .r.on .ex{background:rgba(255,255,255,.18);color:#fff}
 
-.vd{margin-top:18px;border-radius:26px;background:#fff;padding:44px 28px;text-align:center}
-.vd img{width:56px;height:56px;border-radius:14px;margin:0 auto 18px;display:block}
-.vd h2{font-size:24px;font-weight:300;letter-spacing:-.02em;line-height:1.1}.vd h2 b{display:block;font-weight:600}
-.vd p{font-size:14px;color:#6A6570;margin-top:10px;line-height:1.45}
+.vd{margin-top:18px;display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:22px;background:rgba(20,18,24,.04)}
+.vd img{width:40px;height:40px;border-radius:11px;flex:none}
+.vd h2{font-size:16px;font-weight:600;letter-spacing:-.01em}.vd p{font-size:13px;color:#6A6570;margin-top:2px;line-height:1.35}
 .rg{display:block;text-align:center;margin-top:22px;font-size:12px;color:#6A6570}
 
 /* la feuille du formulaire */
@@ -61,6 +60,11 @@ button,input{font:inherit;color:inherit}
 .ct .s{font-size:13px;color:#6A6570;margin-top:6px;line-height:1.4}
 .ph.asm{background:linear-gradient(35deg,#D50B32 0 57%,#B9975B 57% 57.5%,#FFFFFF 57.5%)}
 .ph.asm .ws{position:absolute;top:22px;left:22px;color:#fff;z-index:2}.ph.asm .ws b{font-size:24px;font-weight:800;letter-spacing:-.02em}
+.r .cv.mt2{background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(20,18,24,.06)}.r .cv.mt2 img{height:48px;width:auto;max-width:none}
+.ph.match{background:#fff;display:flex;align-items:center;justify-content:center;gap:26px;padding-bottom:22px}
+.ph.match img{height:92px;width:auto}.ph.match:after{background:linear-gradient(180deg,rgba(246,243,238,0) 72%,#F6F3EE)}
+.ph.match span{font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6A6570;text-align:center;line-height:1.5}
+.ph.match span b{display:block;font-size:22px;letter-spacing:-.01em;text-transform:none;color:#141218}
 .nt{margin-top:14px;font-size:12.5px;color:#6A6570;line-height:1.45;display:flex;gap:10px}.nt svg{flex:none;margin-top:1px}
 .mt{display:flex;margin-top:16px;border-top:1px solid rgba(20,18,24,.1);border-bottom:1px solid rgba(20,18,24,.1)}
 .mt div{flex:1;padding:10px 0;text-align:center}.mt div+div{border-left:1px solid rgba(20,18,24,.1)}
@@ -121,7 +125,7 @@ var JEUX = [], cur = null, timer = 0;
 
 function plusJours(j, h) { var d = new Date(Date.now() + j * 864e5 + h * 36e5); return d.toISOString(); }
 function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
-function dt(s) { if (!s) return null; var d = new Date(s.length === 10 ? s + 'T23:59:59' : s); return isNaN(d) ? null : d; }
+function dt(s, matin) { if (!s) return null; var d = new Date(s.length === 10 ? s + (matin ? 'T00:00:00' : 'T23:59:59') : s); return isNaN(d) ? null : d; }
 var MOIS = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
 var MOISL = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
 function jour(d, long) { var n = d.getDate(); return (n === 1 ? '1er' : n) + ' ' + (long ? MOISL : MOIS)[d.getMonth()]; }
@@ -129,24 +133,24 @@ function reste(d) {
   var s = Math.max(0, d - Date.now()) / 1000, j = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60);
   return j ? j + ' j ' + h + ' h' : h ? h + ' h ' + (m < 10 ? '0' : '') + m : m + ' min';
 }
-function gagnent(j) { var n = +j.gagnants || 0; return n > 1 ? 'Les ' + n + ' premiers inscrits gagnent' : n === 1 ? 'Le premier inscrit gagne' : ''; }
+function gagnent(j) { if (j.gagne) return j.gagne; var n = +j.gagnants || 0; return n > 1 ? 'Les ' + n + ' premiers inscrits gagnent' : n === 1 ? 'Le premier inscrit gagne' : ''; }
 function img(s) { return s && !/^https?:/.test(s) ? BASE + s.replace(/^\//, '') : s; }
 
 /* ---------- la page ---------- */
 function render() {
   var now = Date.now();
-  var enCours = JEUX.filter(function (j) { var d = dt(j.debut), f = dt(j.fin); return (!d || d <= now) && (!f || f > now); });
-  var bientot = JEUX.filter(function (j) { var d = dt(j.debut); return d && d > now; })
-    .sort(function (a, b) { return dt(a.debut) - dt(b.debut); });
+  var enCours = JEUX.filter(function (j) { var d = dt(j.debut, 1), f = dt(j.fin); return (!d || d <= now) && (!f || f > now); });
+  var bientot = JEUX.filter(function (j) { var d = dt(j.debut, 1); return d && d > now; })
+    .sort(function (a, b) { return dt(a.debut, 1) - dt(b.debut, 1); });
   var h = '', i = 1;
   var plus = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>';
   var chev = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>';
   function ligne(j, avenir) {
-    var asm = j.theme === 'asm', f = dt(j.fin), d = dt(j.debut);
+    var asm = j.theme === 'asm' || j.theme === 'match', f = dt(j.fin), d = dt(j.debut, 1);
     var em = avenir ? 'Bientôt · ' + jour(d, 1) : '<i></i>En cours' + (f ? ' · <span class="tm" data-fin="' + f.toISOString() + '">' + reste(f) + '</span>' : '');
     return '<a class="r' + (avenir ? ' nx' : '') + ' rm-in" style="--i:' + (i++) + ';--c:' + (asm ? '#D50B32' : '#E4032E') + '" href="#" data-id="' + esc(j.id) + '">' +
-      '<span class="ink"></span>' + (asm ? '' : '<img class="blr" src="' + esc(img(j.img)) + '" alt="">') +
-      (asm ? '<span class="cv asm">ASM</span>' : '<img class="cv" src="' + esc(img(j.img)) + '" alt="">') +
+      '<span class="ink"></span>' + (j.img ? '<img class="blr" src="' + esc(img(j.img)) + '" alt="">' : '') +
+      (j.theme === 'match' && j.logos ? '<span class="cv mt2"><img src="' + esc(img(j.logos[0])) + '" alt=""></span>' : asm ? '<span class="cv asm">ASM</span>' : '<img class="cv" src="' + esc(img(j.img)) + '" alt="">') +
       '<span class="mid"><em>' + em + (j.exemple ? ' <span class="ex">Exemple</span>' : '') + '</em><b>' + esc(j.t) + '</b><span>' +
       esc(avenir ? (j.sous || '') : (gagnent(j) || j.sous || '')) + '</span></span>' +
       '<span class="pl">' + (avenir ? chev : plus) + '</span></a>';
@@ -154,8 +158,9 @@ function render() {
   enCours.forEach(function (j) { h += ligne(j, false); });
   bientot.forEach(function (j) { h += ligne(j, true); });
   if (!enCours.length) {
-    h = '<div class="vd rm-in" style="--i:1"><img src="' + BASE + 'assets/charte/sigle-montecarlo-invert@3x.png" alt=""><h2>Pas de jeu <b>en ce moment.</b></h2><p>' +
-      (bientot.length ? 'Le prochain arrive très vite : rendez-vous ci-dessous.' : 'Restez à l’écoute : le prochain jeu sera annoncé à l’antenne.') + '</p></div>' + h;
+    var p1 = bientot[0] && dt(bientot[0].debut, 1);
+    h = '<div class="vd rm-in" style="--i:1"><img src="' + BASE + 'assets/charte/sigle-montecarlo-invert@3x.png" alt=""><div><h2>Pas de jeu en ce moment</h2><p>' +
+      (p1 ? 'Prochaines inscriptions le ' + ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'][p1.getDay()] + ' ' + jour(p1, 1) + '.' : 'Le prochain jeu sera annoncé à l’antenne.') + '</p></div></div>' + h;
   }
   var ls = document.getElementById('ls'); ls.className = 'ls'; ls.innerHTML = h;
 }
@@ -172,16 +177,19 @@ function champ(k, lab, type, ac) {
 }
 function ouvrir(j) {
   cur = j;
-  var now = Date.now(), d = dt(j.debut), f = dt(j.fin), tr = dt(j.tirage), avenir = d && d > now;
+  var now = Date.now(), d = dt(j.debut, 1), f = dt(j.fin), tr = dt(j.tirage), avenir = d && d > now;
   var top = visuel(j) + '<button class="x" id="x" aria-label="Fermer"><svg width="14" height="14" viewBox="0 0 24 24" stroke="#141218" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>';
   var h = '<div class="sc">' + top + '<div class="ct"><h3>' + esc(j.t) + '</h3>' + (j.sous ? '<div class="s">' + esc(j.sous) + '</div>' : '');
   var foot;
   if (avenir) {
-    h += '<div class="mt"><div><small>Ouverture</small><b>' + jour(d, 1) + '</b></div>' + (j.valeur ? '<div><small>Valeur</small><b>' + esc(j.valeur) + '</b></div>' : '') + '</div>' +
-      '<p class="s" style="margin-top:16px">Le jeu ouvrira ici même. Écoutez Radio Monaco pour ne pas le manquer.</p></div></div>';
+    var q2 = dt(j.quand, 1);
+    h += '<div class="mt"><div><small>Inscriptions</small><b>' + jour(d) + '</b></div>' + (j.valeur ? '<div><small>À gagner</small><b>' + esc(j.valeur) + '</b></div>' : '') + (q2 ? '<div><small>Le</small><b>' + jour(q2) + '</b></div>' : '') + '</div>' +
+      '<p class="s" style="margin-top:16px">Les inscriptions ouvriront ici même. Écoutez Radio Monaco pour ne pas les manquer.</p></div></div>';
     foot = '<div class="ft"><button class="go" id="ferme" style="background:#141218">J’ai compris</button></div>';
   } else {
+    var q = dt(j.quand, 1);
     h += '<div class="mt">' + (j.valeur ? '<div><small>À gagner</small><b>' + esc(j.valeur) + '</b></div>' : '') +
+      (q ? '<div><small>Le</small><b>' + jour(q) + '</b></div>' : '') +
       (j.gagnants ? '<div><small>Gagnants</small><b>' + esc(j.gagnants) + '</b></div>' : '') +
       (f ? '<div><small>Clôture</small><b id="cd">' + reste(f) + '</b></div>' : '') + '</div>';
     if (j.form && !j.envoi) {
@@ -194,7 +202,8 @@ function ouvrir(j) {
         champ('adresse', 'Adresse', 'text', 'street-address') + champ('email', 'E-mail', 'email', 'email') + champ('tel', 'Téléphone', 'tel', 'tel') +
         '<label class="ck" id="ck"><input type="checkbox" id="ok"><span>J’ai plus de 18 ans et j’accepte le <a href="' + esc(j.reglement || REGLEMENT) + '" target="_blank" rel="noopener">règlement des jeux</a>. Une inscription par foyer.</span></label>' +
         '<div class="nt"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6A6570" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg><span>' +
-        (gagnent(j) ? gagnent(j) + '. ' : '') + 'Les gagnants sont annoncés à l’antenne et prévenus par e-mail. Lot à retirer à Radio Monaco, 7 rue du Gabian, sur présentation d’une pièce d’identité, au plus tard 48 h avant l’événement.</span></div></div></div>';
+        (gagnent(j) ? gagnent(j) + '. ' : '') + 'Les gagnants sont annoncés à l’antenne et prévenus par e-mail. ' +
+        esc(j.retrait || 'Lot à retirer à Radio Monaco, 7 rue du Gabian, sur présentation d’une pièce d’identité, au plus tard 48 h avant l’événement.') + '</span></div></div></div>';
       foot = '<div class="ft"><div class="er" id="er"></div><a class="go" id="go" href="mailto:' + MAIL + '">Je m’inscris</a></div>';
     }
   }
@@ -203,7 +212,10 @@ function ouvrir(j) {
   document.getElementById('md').className = 'op';
   document.documentElement.style.overflow = 'hidden';
 }
-function visuel(j) { return j.theme === 'asm' ? '<div class="ph asm"><div class="ws"><b>AS MONACO</b></div>' : '<div class="ph"><img src="' + esc(img(j.img)) + '" alt="">'; }
+function visuel(j) {
+  if (j.theme === 'match' && j.logos) { var q = dt(j.quand, 1);
+    return '<div class="ph match"><img src="' + esc(img(j.logos[0])) + '" alt=""><span>' + (q ? jour(q) + '<b>' + (j.heure || 'vs') + '</b>' : '<b>vs</b>') + '</span><img src="' + esc(img(j.logos[1])) + '" alt="">'; }
+  return j.theme === 'asm' ? '<div class="ph asm"><div class="ws"><b>AS MONACO</b></div>' : '<div class="ph"><img src="' + esc(img(j.img)) + '" alt="">'; }
 function fermer() { setTimeout(function () { [].forEach.call(document.querySelectorAll('#ls .r.on'), function (r) { r.classList.remove('on'); }); }, 250); document.getElementById('md').className = ''; document.documentElement.style.overflow = ''; cur = null; }
 function valider() {
   var sh = document.getElementById('sh'), bad = [], v = {};
