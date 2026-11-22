@@ -13,6 +13,7 @@ import { getPosts, getPodcasts, ausImg } from '../lib/data.js';
 //   sous: 'Deux places en tribune présidentielle…',   // une phrase sur le lot
 //   img: 'assets/jeux/louis-ii.jpg',                  // photo du lot (chemin du site ou adresse complète)
 //   theme: 'match', logos: ['assets/jeux/asmonaco.png', '…'],   // affiche d'un match : les deux écussons officiels
+//   programme: [{ i: 'expo'|'jeu'|'vr'|'atelier'|'film'|'match', t: '…', d: '…' }],   // ce qu'on vit avec le lot
 //   quand: '2026-12-05',                              // date de l'événement ; gagne: '1 gagnant chaque jour' ; retrait: '…'
 //   valeur: '2 places', gagnants: 5,                  // « Les 5 premiers inscrits gagnent » (règlement, article 3)
 //   debut: '2026-11-22', fin: '2026-11-30T23:59',
@@ -22,7 +23,15 @@ import { getPosts, getPodcasts, ausImg } from '../lib/data.js';
 // }
 const JEUX = [
   { id: 'oceano-mediterranee-2026', t: 'Le Musée océanographique', img: 'assets/jeux/oceano-salle.jpg',
-    sous: 'Journée internationale pour la Méditerranée : exposition immersive, Minecraft, réalité virtuelle, ateliers ludiques et documentaire.',
+    sous: 'Radio Monaco et le Musée océanographique mettent la Méditerranée à l’honneur et invitent petits et grands à explorer la Grande Bleue autrement.',
+    lieu: 'Journée internationale pour la Méditerranée',
+    programme: [
+      { i: 'expo', t: 'Exposition immersive', d: '« Méditerranée 2050 », un voyage pour découvrir, comprendre et imaginer l’avenir de la Méditerranée' },
+      { i: 'jeu', t: 'Expérience gaming sur Minecraft', d: 'Explorer la Grande Bleue en jouant' },
+      { i: 'vr', t: 'Réalité virtuelle', d: 'Les richesses de la Méditerranée, casque sur les yeux' },
+      { i: 'atelier', t: 'Ateliers ludiques', d: 'Pour petits et grands' },
+      { i: 'film', t: 'Projection d’un documentaire', d: 'Pour découvrir les richesses de la Méditerranée' }
+    ],
     valeur: '2 places', gagnants: '1 par jour', gagne: '1 gagnant chaque jour', quand: '2026-11-28',
     debut: '2026-11-22T00:00:00+01:00', fin: '2026-11-27T23:59:00+01:00',
     retrait: 'Les 2 places sont envoyées chaque jour au gagnant.' },
