@@ -24,7 +24,7 @@ const JEUX = [
   { id: 'oceano-mediterranee-2026', t: 'Le Musée océanographique', img: 'assets/jeux/oceano-salle.jpg',
     sous: 'Journée internationale pour la Méditerranée : exposition immersive, Minecraft, réalité virtuelle, ateliers ludiques et documentaire.',
     valeur: '2 places', gagnants: '1 par jour', gagne: '1 gagnant chaque jour', quand: '2026-11-28',
-    debut: '2026-11-23T00:00:00+01:00', fin: '2026-11-27T23:59:00+01:00',
+    debut: '2026-11-22T00:00:00+01:00', fin: '2026-11-27T23:59:00+01:00',
     retrait: 'Les 2 places sont envoyées chaque jour au gagnant.' },
   { id: 'asm-angers-2026', theme: 'match', t: 'AS Monaco – Angers SCO', logos: ['assets/jeux/asmonaco.png', 'assets/jeux/angers-sco.png'],
     sous: 'Vos places pour le match au Stade Louis-II, Ligue 1.', valeur: '2 places', quand: '2026-12-05',
