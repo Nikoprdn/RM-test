@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Accueil</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style type="text/css">
+/* Accueil de l'application (widget « Custom Code » de la home), 22 novembre 2026.
+   Choix de Nicolas : les 4 radios à leur place, puis le sommaire de la piste D (Podcasts, Actualités, Jeux, Favoris),
+   version sombre : toute la page épouse la pochette du titre en cours (pochette floutée, comme le lecteur).
+   Le son est partagé avec le reste de l'application (H.__rmAudio). */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#141218;font-family:Barlow,system-ui,sans-serif;color:#fff;-webkit-tap-highlight-color:transparent;overflow:hidden}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left}
+button:focus,button:focus-visible{outline:none}
+img{display:block}
+
+/* fond : la pochette floutée, en fondu d'une pochette à l'autre */
+.bg{position:fixed;inset:-90px;background-size:cover;background-position:center;filter:blur(70px) saturate(1.6) brightness(.78);opacity:0;transition:opacity 1.2s ease}
+.bg.on{opacity:1}
+.sc{position:fixed;inset:0;background:linear-gradient(180deg,rgba(20,18,24,.62) 0%,rgba(20,18,24,.3) 18%,rgba(20,18,24,.42) 52%,rgba(20,18,24,.86) 86%,#141218 100%)}
+.pg{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;padding:6px 14px 0}
+
+/* les quatre radios */
+.ls{display:flex;flex-direction:column;gap:8px}
+.r{position:relative;display:flex;align-items:center;gap:14px;width:100%;height:84px;padding:0 12px 0 9px;border-radius:22px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);transition:background .45s,border-color .45s,color .45s}
+.cv{width:66px;height:66px;flex:none;border-radius:15px;object-fit:cover;background:rgba(255,255,255,.08);transition:opacity .25s}
+.cv.out{opacity:0}
+.mid{flex:1;min-width:0;position:relative;height:100%}
+.lg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transition:opacity .35s}
+.lg img{height:46px;width:auto}
+.tx{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;opacity:0;transition:opacity .35s}
+.tx em{display:flex;align-items:center;font-style:normal;font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;opacity:.8;white-space:nowrap}
+.tx b{margin-top:3px;font-size:17px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tx i{font-style:normal;font-size:13.5px;opacity:.62;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.eq{display:inline-flex;gap:2px;align-items:flex-end;height:11px;margin-right:7px}
+.eq s{width:3px;border-radius:1px;background:var(--c);height:4px}
+.r.on:not(.wait) .eq s{animation:eq 1s ease-in-out infinite}
+.eq s:nth-child(2){animation-delay:-.4s!important}.eq s:nth-child(3){animation-delay:-.7s!important}
+@keyframes eq{0%,100%{height:4px}50%{height:11px}}
+.pl{flex:none;width:44px;height:44px;border-radius:50%;background:var(--c);display:grid;place-items:center;color:#fff;transition:background .45s,color .45s}
+.pl svg{display:block}
+.r.on{background:rgba(255,255,255,.95);border-color:transparent;color:#141218}
+.r.on .lg{opacity:0}.r.on .tx{opacity:1}
+.r.wait .pl{animation:bl 1s ease-in-out infinite}
+@keyframes bl{50%{opacity:.45}}
+
+/* le sommaire */
+.ed{margin:22px 8px 0;flex:1;display:flex;flex-direction:column;max-height:300px}
+.ed button{flex:1;display:flex;align-items:center;justify-content:space-between;width:100%;min-height:52px;border-bottom:1px solid rgba(255,255,255,.2)}
+.ed button:first-child{border-top:1px solid rgba(255,255,255,.2)}
+.ed b{font-size:32px;font-weight:300;letter-spacing:-.03em;line-height:1}
+.ed small{display:flex;align-items:center;gap:9px;font-size:12.5px;opacity:.62;white-space:nowrap}
+.ed button:active b{opacity:.6}
+</style>
+</head>
+<body>
+<div class="bg" id="bg0"></div><div class="bg" id="bg1"></div><div class="sc"></div>
+<div class="pg">
+  <div class="ls" id="ls"></div>
+  <nav class="ed" id="ed"></nav>
+</div>
+<script>
+var SITE = 'https://nikoprdn.github.io/RM-test/assets/';
+var R = [
+  { k: 'montecarlo', n: 'Monte-Carlo', lab: 'Monte Carlo', c: '#E4032E', sg: 'charte/sigle-montecarlo-invert@3x.png', st: 'https://radiomonaco.ice.infomaniak.ch/radiomonaco-128.mp3', sec: 79602094, slug: 'monte-carlo-lecteur-sur-mesure' },
+  { k: 'paris', n: 'Paris', lab: 'Paris', c: '#E4032E', sg: 'charte/sigle-montecarlo-invert@3x.png', st: 'https://radiomonacoparis.ice.infomaniak.ch/radiomonacoparis-320.aac', meta: 'https://radiomonaco.ice.infomaniak.ch/radiomonaco-128.mp3', sec: 79602477, slug: 'paris-1' },
+  { k: 'mixdj', n: '100 % Mix DJ', lab: '100% Mix', c: '#F59C00', sg: 'charte/sigle-mixdj-invert@3x.png', st: 'https://mixdj.ice.infomaniak.ch/mixdj-128.aac', fixed: true, sec: 79602480, slug: '100-mix-dj-2' },
+  { k: 'nightmood', n: 'Night Mood', lab: 'Night Mood', c: '#8A5AA1', sg: 'charte/sigle-nightmood-invert@3x.png', st: 'https://nightmood.ice.infomaniak.ch/nightmood-128.aac', sec: 79602481, slug: 'night-mood-1' }
+];
+/* le sommaire : sections de l'application */
+var MENU = [
+  { t: 'Podcasts', s: '', sec: 79503683, slug: 'podcasts-2', k: 'pod' },
+  { t: 'Actualités', s: 'Monaco & Riviera', sec: 79601016, slug: 'actualites' },
+  { t: 'Jeux', s: 'À l’antenne', sec: 79620298, slug: 'jeux' },
+  { t: 'Favoris', s: '', sec: 79503689, slug: 'favoris' }
+];
+var IC_PLAY = '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg>';
+var IC_PAUSE = '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4.5" width="4" height="15" rx="1"/><rect x="14" y="4.5" width="4" height="15" rx="1"/></svg>';
+var IC_ARROW = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+var $ = function (id) { return document.getElementById(id); };
+var byK = {};
+R.forEach(function (r) { r.meta = r.meta || r.st; r.t = 'Radio Monaco ' + r.n; r.a = 'En direct'; r.cover = SITE + r.sg; byK[r.k] = r; });
+
+/* ——— le son partagé avec les pages radio ——— */
+var H = window;
+try { if (window.parent && window.parent !== window && window.parent.document) H = window.parent; } catch (e) { H = window; }
+var au = H.__rmAudio;
+if (!au) { au = H.document.createElement('audio'); au.preload = 'none'; au.setAttribute('playsinline', ''); au.style.display = 'none'; H.document.body.appendChild(au); H.__rmAudio = au; }
+var waitK = '';
+function live() { return au.src && !au.paused && H.__rmRadio ? H.__rmRadio : ''; }
+
+/* ——— navigation vers une section ——— */
+function go(slug, sec) {
+  if (!sec) return;
+  try { var P = window.parent;
+    if (P && P !== window && P.history) {
+      var m = P.location.pathname.match(/^\/pview\/[^\/]+\//);
+      P.history.pushState({}, '', (m ? m[0] : '/') + slug);
+      P.dispatchEvent(new PopStateEvent('popstate', { state: {} })); return; }
+  } catch (err) {}
+  location.href = 'testnicolas://#!section=' + sec;   /* lien inter-sections de l'application */
+}
+
+/* ——— les quatre lignes ——— */
+$('ls').innerHTML = R.map(function (r) {
+  return '<div class="r" data-k="' + r.k + '" style="--c:' + r.c + '" role="button" tabindex="0">' +
+    '<img class="cv" alt="">' +
+    '<span class="mid"><span class="lg"><img src="' + SITE + 'wr-' + r.k + '-allwhite.png" alt="Radio Monaco ' + r.n + '"></span>' +
+    '<span class="tx"><em><span class="eq"><s></s><s></s><s></s></span>En direct – ' + r.lab + '</em><b></b><i></i></span></span>' +
+    '<button class="pl" type="button" aria-label="Écouter"></button></div>';
+}).join('');
+var rows = {}; [].forEach.call($('ls').children, function (b) { rows[b.getAttribute('data-k')] = b; });
+
+/* ——— le sommaire ——— */
+$('ed').innerHTML = MENU.map(function (m, i) {
+  return '<button type="button" data-i="' + i + '"><b>' + m.t + '</b><small><span id="ms' + i + '">' + m.s + '</span>' + IC_ARROW + '</small></button>';
+}).join('');
+
+/* ——— le fond suit la pochette de la radio en écoute (sinon la dernière choisie, sinon Monte-Carlo) ——— */
+var bgCur = '', bgI = 0;
+function paintBg() {
+  var k = live() || waitK || H.__rmSel || 'montecarlo', src = byK[k].cover;
+  if (src === bgCur) return; bgCur = src;
+  var img = new Image(); img.onload = function () {
+    var next = $('bg' + (1 - bgI)), cur = $('bg' + bgI);
+    next.style.backgroundImage = 'u' + 'rl("' + src + '")'; next.classList.add('on'); cur.classList.remove('on'); bgI = 1 - bgI;
+  }; img.src = src;
+}
+function swap(img, src) {
+  if (img.getAttribute('src') === src) return;
+  if (!img.getAttribute('src')) { img.src = src; return; }
+  img.classList.add('out'); setTimeout(function () { img.onload = function () { img.classList.remove('out'); }; img.src = src; }, 200);
+}
+function paintRow(r) {
+  var b = rows[r.k];
+  swap(b.querySelector('.cv'), r.cover);
+  b.querySelector('b').textContent = r.t; b.querySelector('i').textContent = r.a;
+}
+function paintState() {
+  var on = live();
+  R.forEach(function (r) {
+    var b = rows[r.k], w = waitK === r.k, act = on === r.k || w;
+    b.classList.toggle('on', act); b.classList.toggle('wait', w);
+    var p = b.querySelector('.pl'); p.innerHTML = act ? IC_PAUSE : IC_PLAY;
+    p.setAttribute('aria-label', (act ? 'Pause ' : 'Écouter ') + 'Radio Monaco ' + r.n);
+  });
+  paintBg();
+}
+
+/* ——— écouter, mettre en pause, ouvrir la page de la radio ——— */
+function play(r) {
+  if (live() === r.k || waitK === r.k) { au.pause(); au.removeAttribute('src'); au.load(); H.__rmRadio = ''; waitK = ''; paintState(); return; }
+  H.__rmRadio = r.k; H.__rmSel = r.k; waitK = r.k; paintState();
+  au.src = r.st + '?r=' + Date.now();
+  au.play().catch(function () { setTimeout(function () { au.play().catch(function () { H.__rmRadio = ''; waitK = ''; paintState(); }); }, 500); });
+}
+document.addEventListener('click', function (e) {
+  if (e && e.isTrusted === false) return;   /* GoodBarber simule des clics : seul un vrai toucher compte */
+  var m = e.target.closest('[data-i]');
+  if (m) { var it = MENU[+m.getAttribute('data-i')]; go(it.slug, it.sec); return; }
+  var row = e.target.closest('.r'); if (!row) return;
+  var r = byK[row.getAttribute('data-k')];
+  /* le bouton rond, ou une radio qui ne joue pas : écouter / pause ; la radio en écoute : ouvrir son lecteur */
+  if (e.target.closest('.pl') || !row.classList.contains('on')) play(r); else go(r.slug, r.sec);
+});
+function onPlaying() { waitK = ''; paintState(); }
+function onStop() { waitK = ''; paintState(); }
+au.addEventListener('playing', onPlaying); au.addEventListener('pause', onStop); au.addEventListener('error', onStop);
+window.addEventListener('pagehide', function () { au.removeEventListener('playing', onPlaying); au.removeEventListener('pause', onStop); au.removeEventListener('error', onStop); });
+
+/* ——— titres et pochettes (mêmes sources que le site) ——— */
+var nice = function (s) { s = (s || '').replace(/\s+/g, ' ').trim(); var l = s.replace(/[^A-Za-zÀ-ÿ]/g, ''); var up = l.replace(/[^A-ZÀ-Þ]/g, '').length; if (l.length && up / l.length > 0.6) s = s.toLowerCase().replace(/(^|[\s(\-&/])([a-zà-ÿ])/g, function (m, a, b) { return a + b.toUpperCase(); }); return s; };
+function itunes(a, t) {
+  if (!a) return Promise.resolve('');
+  var q = encodeURIComponent((a.split(/ x | feat\. | & | vs |, /i)[0] + ' ' + t).replace(/\(.*?\)|\[.*?\]|feat\.?.*$/gi, ' ').replace(/\s+/g, ' ').trim());
+  return fetch('https://itunes.apple.com/search?media=music&entity=song&limit=1&country=fr&term=' + q).then(function (x) { return x.json(); })
+    .then(function (j) { var u = j.results && j.results[0] && j.results[0].artworkUrl100; return u ? u.replace('100x100bb', '600x600bb') : ''; }).catch(function () { return ''; });
+}
+function read(r) {
+  fetch(r.meta + '.xspf?r=' + Date.now(), { cache: 'no-store' }).then(function (x) { return x.ok ? x.text() : ''; }).then(function (txt) {
+    var n = txt && new DOMParser().parseFromString(txt, 'text/xml').querySelector('track > title');
+    var raw = ((n && n.textContent) || '').trim();
+    if (!raw || raw === r.raw || /^\s*radio monaco\b/i.test(raw)) return;   /* on garde le dernier vrai titre pendant les jingles */
+    r.raw = raw; var p = raw.split(' - ');
+    r.a = nice(p.length > 1 ? p[0] : ''); r.t = nice(p.length > 1 ? p.slice(1).join(' - ') : raw);
+    paintRow(r);
+    if (r.fixed) return;
+    var hid = r.meta.replace(/^https?:\/\//, '').split('.')[0];
+    fetch('https://metadata.infomaniak.com/api/radio/' + hid + '/metadata-all-cover', { cache: 'no-store' }).then(function (x) { return x.json(); })
+      .then(function (j) { var hit = (j.data || []).filter(function (x) { return x.title && x.cover && x.title.trim().toLowerCase() === raw.toLowerCase(); })[0]; return hit ? hit.cover : itunes(r.a, r.t); })
+      .catch(function () { return itunes(r.a, r.t); })
+      .then(function (u) { r.cover = u || SITE + r.sg; paintRow(r); paintBg(); });
+  }).catch(function () {});
+}
+
+/* ——— repère des podcasts : les épisodes publiés aujourd'hui ——— */
+fetch('https://nikoprdn.github.io/RM-test/app-podcasts.json', { cache: 'no-cache' }).then(function (x) { return x.json(); }).then(function (j) {
+  var t = new Date(), n = 0;
+  (j.shows || []).forEach(function (s) { s.eps.forEach(function (e) { var d = new Date(e.d + 'Z'); if (d.toDateString() === t.toDateString()) n++; }); });
+  $('ms0').textContent = n ? (n > 1 ? n + ' nouveaux' : '1 nouveau') : 'Le Morning & les mixs';
+}).catch(function () { $('ms0').textContent = 'Le Morning & les mixs'; });
+
+R.forEach(paintRow); paintState();
+R.forEach(read); setInterval(function () { R.forEach(read); }, 20000); setInterval(paintState, 3000);
+</script>
+</body>
+</html>
