@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style type="text/css">
 /* Section « Jeux », piste H « la vitrine » choisie par Nicolas le 22 novembre 2026 :
-   les jeux en lignes comme les radios de l'accueil (en cours, puis « Bientôt »), le formulaire monte en feuille.
+   les jeux en lignes comme les radios de l'accueil (en cours, puis « Bientôt ») ; la fiche du jeu en « studio » sombre, puis l'inscription.
    Les jeux viennent d'app-une.json (liste JEUX de rm-site/src/pages/app-une.json.js). */
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{min-height:100%;background:#F6F3EE;font-family:Barlow,system-ui,sans-serif;color:#141218;-webkit-font-smoothing:antialiased}
@@ -33,6 +33,7 @@ button,input{font:inherit;color:inherit}
 .r.nx .pl{background:none;box-shadow:inset 0 0 0 1.5px rgba(20,18,24,.18);color:#6A6570}
 .r.nx .cv{filter:grayscale(.3)}
 .ex{font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:2px 6px;border-radius:6px;background:rgba(20,18,24,.07);color:#6A6570}
+.r .cv.mt2{background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(20,18,24,.06)}.r .cv.mt2 img{height:48px;width:auto;max-width:none}
 /* au toucher : la ligne s'encre depuis le bouton, comme une radio qu'on lance, puis la feuille monte */
 .r>.ink{position:absolute;z-index:0;inset:0;background:#141218;clip-path:circle(0 at calc(100% - 34px) 50%);transition:clip-path .6s cubic-bezier(.65,0,.25,1)}
 .r>.blr{position:absolute;z-index:0;inset:-30px;width:calc(100% + 60px);height:calc(100% + 60px);object-fit:cover;filter:blur(26px) saturate(1.5) brightness(.6);opacity:0;transition:opacity .5s}
@@ -47,51 +48,59 @@ button,input{font:inherit;color:inherit}
 .vd h2{font-size:16px;font-weight:600;letter-spacing:-.01em}.vd p{font-size:13px;color:#6A6570;margin-top:2px;line-height:1.35}
 .rg{display:block;text-align:center;margin-top:22px;font-size:12px;color:#6A6570}
 
-/* la feuille du formulaire */
+/* la fiche du jeu, piste 3 « le studio » (choisie le 22 novembre) : la mise en scène du lecteur plein écran,
+   sombre, la photo floutée en fond, la photo nette au centre comme une pochette ; puis l'inscription sur le même fond. */
 .dim{position:fixed;inset:0;z-index:20;background:rgba(20,18,24,.5);opacity:0;pointer-events:none;transition:opacity .35s}
-.sh{position:fixed;left:0;right:0;bottom:0;z-index:21;top:max(48px,env(safe-area-inset-top));background:#F6F3EE;border-radius:28px 28px 0 0;transform:translateY(105%);transition:transform .5s cubic-bezier(.2,.85,.2,1);display:flex;flex-direction:column;overflow:hidden}
+.sh{position:fixed;left:0;right:0;bottom:0;top:6px;z-index:21;background:#121015;color:#fff;border-radius:26px 26px 0 0;transform:translateY(105%);transition:transform .55s cubic-bezier(.2,.85,.2,1);display:flex;flex-direction:column;overflow:hidden}
 .op .dim{opacity:1;pointer-events:auto}.op .sh{transform:none}
-.sc{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:20px}
-.ph{position:relative;height:170px;flex:none}.ph img{width:100%;height:100%;object-fit:cover}
-.ph:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(246,243,238,0) 40%,#F6F3EE)}
-.x{position:absolute;top:14px;right:14px;z-index:2;width:34px;height:34px;border-radius:50%;border:0;background:rgba(255,255,255,.92);display:grid;place-items:center}
-.ct{position:relative;margin-top:-26px;padding:0 22px}
-.ct h3{font-size:24px;font-weight:700;letter-spacing:-.02em;line-height:1.08}
-.ct .s{font-size:13px;color:#6A6570;margin-top:6px;line-height:1.4}
-.ph.asm{background:linear-gradient(35deg,#D50B32 0 57%,#B9975B 57% 57.5%,#FFFFFF 57.5%)}
-.ph.asm .ws{position:absolute;top:22px;left:22px;color:#fff;z-index:2}.ph.asm .ws b{font-size:24px;font-weight:800;letter-spacing:-.02em}
-.r .cv.mt2{background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(20,18,24,.06)}.r .cv.mt2 img{height:48px;width:auto;max-width:none}
-.ph.match{background:#fff;display:flex;align-items:center;justify-content:center;gap:26px;padding-bottom:22px}
-.ph.match img{height:92px;width:auto}.ph.match:after{background:linear-gradient(180deg,rgba(246,243,238,0) 72%,#F6F3EE)}
-.ph.match span{font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6A6570;text-align:center;line-height:1.5}
-.ph.match span b{display:block;font-size:22px;letter-spacing:-.01em;text-transform:none;color:#141218}
-.nt{margin-top:14px;font-size:12.5px;color:#6A6570;line-height:1.45;display:flex;gap:10px}.nt svg{flex:none;margin-top:1px}
-.mt{display:flex;margin-top:16px;border-top:1px solid rgba(20,18,24,.1);border-bottom:1px solid rgba(20,18,24,.1)}
-.mt div{flex:1;padding:10px 0;text-align:center}.mt div+div{border-left:1px solid rgba(20,18,24,.1)}
-.mt small{display:block;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:#6A6570;font-weight:600}.mt b{display:block;font-size:14.5px;font-weight:600;margin-top:2px}
-.qq{margin-top:20px;font-size:14px;font-weight:600}
-.f{display:flex;align-items:center;margin-top:10px;height:52px;border-radius:26px;background:#fff;padding:0 20px;border:1.5px solid transparent;transition:border-color .2s}
-.f span{width:84px;flex:none;font-size:12px;color:#6A6570}
-.f input{flex:1;min-width:0;border:0;outline:0;background:none;font-size:16px}
-.f:focus-within{border-color:#141218}
-.f.ko{border-color:#E4032E;box-shadow:0 0 0 1.5px #E4032E inset}
-.ck{display:flex;gap:12px;align-items:flex-start;margin-top:16px;font-size:12.5px;color:#6A6570;line-height:1.4}
-.ck input{appearance:none;-webkit-appearance:none;flex:none;width:20px;height:20px;border-radius:6px;border:1.5px solid rgba(20,18,24,.3);background:#fff;margin-top:1px;display:grid;place-items:center}
-.ck input:checked{background:#141218;border-color:#141218}
-.ck input:checked:after{content:"";width:6px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)}
-.ck.ko input{border-color:#E4032E}
-.ck a{color:#141218}
-.ft{flex:none;padding:12px 22px calc(14px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(246,243,238,0),#F6F3EE 30%)}
-.go{display:flex;width:100%;height:56px;border-radius:28px;border:0;background:#E4032E;color:#fff;align-items:center;justify-content:center;font-size:16px;font-weight:700;text-decoration:none;transition:transform .15s}
+.sh .bgc{position:absolute;inset:-80px;object-fit:cover;width:calc(100% + 160px);height:calc(100% + 160px);filter:blur(60px) saturate(1.4) brightness(.6);opacity:.95}
+.sh .bgc.rouge{background:radial-gradient(60% 45% at 30% 25%,#D50B32,transparent),radial-gradient(50% 40% at 80% 30%,#7a0a22,transparent)}
+.sh .bgs{position:absolute;inset:0;background:linear-gradient(180deg,rgba(18,16,21,.1) 0%,rgba(18,16,21,.45) 50%,#121015 92%)}
+.sh>*{position:relative}
+.tp{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 0;flex:none}
+.tp span{font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;opacity:.75}
+.x{width:36px;height:36px;border-radius:50%;border:0;background:rgba(255,255,255,.14);display:grid;place-items:center;color:#fff}
+.sc{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 24px 20px;display:flex;flex-direction:column}
+.cvg{width:min(290px,72vw,34vh);aspect-ratio:1;margin:min(22px,3vh) auto 0;border-radius:22px;overflow:hidden;box-shadow:0 40px 80px -30px rgba(0,0,0,.85);flex:none}
+.cvg img{width:100%;height:100%;object-fit:cover}
+.cvg.match{background:#fff;display:flex;align-items:center;justify-content:center;gap:8%;padding:0 8%}
+.cvg.match img{width:auto;height:46%;object-fit:contain}.cvg.match span{white-space:nowrap;font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#6A6570;text-align:center;line-height:1.4}
+.cvg.match span b{display:block;font-size:20px;color:#141218;letter-spacing:0;text-transform:none}
+.inf{text-align:center;margin-top:min(24px,3vh)}
+.inf small{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;display:inline-flex;align-items:center;gap:8px;opacity:.85}
+.inf small i{width:7px;height:7px;border-radius:50%;background:#E4032E;box-shadow:0 0 10px #E4032E}
+.inf h3{font-size:27px;font-weight:700;letter-spacing:-.02em;line-height:1.08;margin-top:8px}.inf p{font-size:14px;opacity:.65;margin-top:5px}
+.ln{display:flex;margin-top:min(20px,2.6vh);border-top:1px solid rgba(255,255,255,.14);border-bottom:1px solid rgba(255,255,255,.14)}
+.ln div{flex:1;text-align:center;padding:11px 0}.ln div+div{border-left:1px solid rgba(255,255,255,.14)}
+.ln small{display:block;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;opacity:.55;font-weight:700}.ln b{display:block;font-size:16px;font-weight:600;margin-top:3px;font-variant-numeric:tabular-nums}
+.ds{text-align:center;color:rgba(255,255,255,.6);font-size:13px;line-height:1.45;margin-top:16px}
+/* l'inscription */
+.fm h3{font-size:27px;font-weight:300;letter-spacing:-.02em;margin-top:10px}.fm h3 b{font-weight:700}
+.fm .s{font-size:13px;opacity:.55;margin-top:4px}
+.mini{display:flex;align-items:center;gap:12px;margin-top:14px}
+.mini .im{width:52px;height:52px;border-radius:12px;overflow:hidden;flex:none;background:#fff;display:flex;align-items:center;justify-content:center}.mini .im img{width:100%;height:100%;object-fit:cover}.mini .im.match img{width:auto;height:70%;object-fit:contain}
+.mini b{font-size:16px;font-weight:600}.mini small{display:block;font-size:12px;opacity:.55;margin-top:2px}
+.f{display:flex;align-items:center;margin-top:10px;height:52px;border-radius:16px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.1);padding:0 18px;transition:border-color .2s,background .2s}
+.f span{width:84px;flex:none;font-size:12px;opacity:.5}
+.f input{flex:1;min-width:0;border:0;outline:0;background:none;font-size:16px;color:#fff}
+.f:focus-within{border-color:rgba(255,255,255,.55);background:rgba(255,255,255,.11)}
+.f.ko{border-color:#E4032E;box-shadow:0 0 0 3px rgba(228,3,46,.2)}
+.ck{display:flex;gap:12px;align-items:flex-start;margin-top:16px;font-size:12.5px;color:rgba(255,255,255,.6);line-height:1.4}
+.ck input{appearance:none;-webkit-appearance:none;flex:none;width:20px;height:20px;border-radius:6px;border:1.5px solid rgba(255,255,255,.35);background:none;margin-top:1px;display:grid;place-items:center}
+.ck input:checked{background:#fff;border-color:#fff}
+.ck input:checked:after{content:"";width:6px;height:10px;border:solid #121015;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.ck.ko input{border-color:#E4032E}.ck a{color:#fff}
+.nt{margin-top:14px;font-size:12px;color:rgba(255,255,255,.5);line-height:1.45}
+.ft{flex:none;padding:12px 22px calc(16px + env(safe-area-inset-bottom))}
+.go{display:flex;width:100%;height:56px;border-radius:28px;border:0;background:#fff;color:#121015;align-items:center;justify-content:center;font-size:16px;font-weight:700;text-decoration:none;transition:transform .15s}
 .go:active{transform:scale(.98)}
-.go[disabled]{opacity:.6}
-.er{font-size:12.5px;color:#E4032E;text-align:center;margin-bottom:8px;min-height:0}
-/* confirmation */
-.ok{padding:30px 26px 0;text-align:center}
-.ok i{width:64px;height:64px;border-radius:50%;background:#141218;display:grid;place-items:center;margin:6px auto 18px;animation:pop .5s cubic-bezier(.2,1.4,.4,1) both}
+.er{font-size:12.5px;color:#ff5d76;text-align:center;margin-bottom:8px}
+.ok{text-align:center;margin:auto 0;padding:20px 0}
+.ok i{width:68px;height:68px;border-radius:50%;background:#fff;display:grid;place-items:center;margin:0 auto 20px;animation:pop .5s cubic-bezier(.2,1.4,.4,1) both}
 @keyframes pop{from{transform:scale(.4);opacity:0}}
-.ok h3{font-size:26px;font-weight:300;letter-spacing:-.02em}.ok h3 b{display:block;font-weight:700}
-.ok p{font-size:14px;color:#6A6570;margin-top:10px;line-height:1.45}
+.ok h3{font-size:28px;font-weight:300;letter-spacing:-.02em}.ok h3 b{display:block;font-weight:700}
+.ok p{font-size:14px;color:rgba(255,255,255,.65);margin-top:12px;line-height:1.5}
+.vu{animation:vu .45s cubic-bezier(.2,.8,.2,1) both}@keyframes vu{from{opacity:0;transform:translateY(14px)}}
 
 @keyframes rmIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 .rm-in{animation:rmIn .7s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0) * 70ms + 60ms)}
@@ -169,53 +178,54 @@ function tick() {
   if (cur && document.getElementById('cd')) document.getElementById('cd').textContent = reste(dt(cur.fin));
 }
 
-/* ---------- la feuille ---------- */
+/* ---------- la fiche (studio) et l'inscription ---------- */
 var memo = {};
 try { memo = JSON.parse(localStorage.getItem('rmJeuxCoord') || '{}'); } catch (e) {}
+var XI = '<svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+var BKI = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg>';
 function champ(k, lab, type, ac) {
   return '<label class="f" data-k="' + k + '"><span>' + lab + '</span><input name="' + k + '" type="' + type + '" autocomplete="' + ac + '" value="' + esc(memo[k] || '') + '"' + (k === 'tel' ? ' inputmode="tel"' : '') + '></label>';
 }
+function fond(j) { return (j.img ? '<img class="bgc" src="' + esc(img(j.img)) + '" alt="">' : '<div class="bgc rouge"></div>') + '<div class="bgs"></div>'; }
+function pochette(j) {
+  if (j.theme === 'match' && j.logos) { var q = dt(j.quand, 1);
+    return '<div class="cvg match"><img src="' + esc(img(j.logos[0])) + '" alt=""><span>' + (q ? jour(q) : '') + '<b>vs</b></span><img src="' + esc(img(j.logos[1])) + '" alt=""></div>'; }
+  return '<div class="cvg"><img src="' + esc(img(j.img)) + '" alt=""></div>';
+}
+function vignette(j) {
+  return j.theme === 'match' && j.logos ? '<span class="im match"><img src="' + esc(img(j.logos[0])) + '" alt=""></span>' : '<span class="im"><img src="' + esc(img(j.img)) + '" alt=""></span>';
+}
+function ecran(j, haut, corps, pied) {
+  var sh = document.getElementById('sh');
+  sh.innerHTML = fond(j) + '<div class="tp">' + haut + '</div><div class="sc vu">' + corps + '</div>' + pied;
+}
 function ouvrir(j) {
   cur = j;
-  var now = Date.now(), d = dt(j.debut, 1), f = dt(j.fin), tr = dt(j.tirage), avenir = d && d > now;
-  var top = visuel(j) + '<button class="x" id="x" aria-label="Fermer"><svg width="14" height="14" viewBox="0 0 24 24" stroke="#141218" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>';
-  var h = '<div class="sc">' + top + '<div class="ct"><h3>' + esc(j.t) + '</h3>' + (j.sous ? '<div class="s">' + esc(j.sous) + '</div>' : '');
-  var foot;
-  if (avenir) {
-    var q2 = dt(j.quand, 1);
-    h += '<div class="mt"><div><small>Inscriptions</small><b>' + jour(d) + '</b></div>' + (j.valeur ? '<div><small>À gagner</small><b>' + esc(j.valeur) + '</b></div>' : '') + (q2 ? '<div><small>Le</small><b>' + jour(q2) + '</b></div>' : '') + '</div>' +
-      '<p class="s" style="margin-top:16px">Les inscriptions ouvriront ici même. Écoutez Radio Monaco pour ne pas les manquer.</p></div></div>';
-    foot = '<div class="ft"><button class="go" id="ferme" style="background:#141218">J’ai compris</button></div>';
-  } else {
-    var q = dt(j.quand, 1);
-    h += '<div class="mt">' + (j.valeur ? '<div><small>À gagner</small><b>' + esc(j.valeur) + '</b></div>' : '') +
-      (q ? '<div><small>Le</small><b>' + jour(q) + '</b></div>' : '') +
-      (j.gagnants ? '<div><small>Gagnants</small><b>' + esc(j.gagnants) + '</b></div>' : '') +
-      (f ? '<div><small>Clôture</small><b id="cd">' + reste(f) + '</b></div>' : '') + '</div>';
-    if (j.form && !j.envoi) {
-      /* formulaire tenu ailleurs (Jotform, Google Forms…) : on y envoie l'auditeur par un vrai lien */
-      h += '<p class="s" style="margin-top:16px">La participation se fait sur le formulaire officiel du jeu.</p></div></div>';
-      foot = '<div class="ft"><a class="go" href="' + esc(j.form) + '" target="_blank" rel="noopener">Ouvrir le formulaire</a></div>';
-    } else {
-      /* inscription seule : les coordonnées que demande le règlement des jeux (article 2) */
-      h += '<div class="qq">Votre inscription</div>' + champ('prenom', 'Prénom', 'text', 'given-name') + champ('nom', 'Nom', 'text', 'family-name') +
-        champ('adresse', 'Adresse', 'text', 'street-address') + champ('email', 'E-mail', 'email', 'email') + champ('tel', 'Téléphone', 'tel', 'tel') +
-        '<label class="ck" id="ck"><input type="checkbox" id="ok"><span>J’ai plus de 18 ans et j’accepte le <a href="' + esc(j.reglement || REGLEMENT) + '" target="_blank" rel="noopener">règlement des jeux</a>. Une inscription par foyer.</span></label>' +
-        '<div class="nt"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6A6570" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg><span>' +
-        (gagnent(j) ? gagnent(j) + '. ' : '') + 'Les gagnants sont annoncés à l’antenne et prévenus par e-mail. ' +
-        esc(j.retrait || 'Lot à retirer à Radio Monaco, 7 rue du Gabian, sur présentation d’une pièce d’identité, au plus tard 48 h avant l’événement.') + '</span></div></div></div>';
-      foot = '<div class="ft"><div class="er" id="er"></div><a class="go" id="go" href="mailto:' + MAIL + '">Je m’inscris</a></div>';
-    }
-  }
-  var sh = document.getElementById('sh');
-  sh.innerHTML = h + foot; sh.scrollTop = 0;
+  var now = Date.now(), d = dt(j.debut, 1), f = dt(j.fin), q = dt(j.quand, 1), avenir = d && d > now;
+  var etat = avenir ? 'Inscriptions le ' + jour(d, 1) : '<i></i>En cours' + (f ? ' · <span id="cd">' + reste(f) + '</span>' : '');
+  var corps = pochette(j) + '<div class="inf"><small>' + etat + '</small><h3>' + esc(j.t) + '</h3>' +
+    (q ? '<p>' + ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'][q.getDay()] + ' ' + jour(q, 1) + (j.lieu ? ' · ' + esc(j.lieu) : '') + '</p>' : '') + '</div>' +
+    '<div class="ln">' + (j.valeur ? '<div><small>À gagner</small><b>' + esc(j.valeur) + '</b></div>' : '') +
+    (j.gagnants ? '<div><small>Gagnants</small><b>' + esc(j.gagnants) + '</b></div>' : '') +
+    (q ? '<div><small>Le</small><b>' + jour(q) + '</b></div>' : '') + '</div>' +
+    '<div class="ds">' + esc(j.sous || '') + (j.retrait && !avenir ? ' ' + esc(j.retrait) : '') + (avenir ? '<br><br>Les inscriptions ouvriront ici même : écoutez Radio Monaco pour ne pas les manquer.' : '') + '</div>';
+  var pied = avenir ? '<div class="ft"><button class="go" id="ferme">J’ai compris</button></div>'
+    : j.form && !j.envoi ? '<div class="ft"><a class="go" href="' + esc(j.form) + '" target="_blank" rel="noopener">Je m’inscris</a></div>'
+    : '<div class="ft"><button class="go" id="ins">Je m’inscris</button></div>';
+  ecran(j, '<span style="width:36px"></span><span>' + (avenir ? 'Bientôt' : 'Jeu du moment') + '</span><button class="x" id="x" aria-label="Fermer">' + XI + '</button>', corps, pied);
   document.getElementById('md').className = 'op';
   document.documentElement.style.overflow = 'hidden';
 }
-function visuel(j) {
-  if (j.theme === 'match' && j.logos) { var q = dt(j.quand, 1);
-    return '<div class="ph match"><img src="' + esc(img(j.logos[0])) + '" alt=""><span>' + (q ? jour(q) + '<b>' + (j.heure || 'vs') + '</b>' : '<b>vs</b>') + '</span><img src="' + esc(img(j.logos[1])) + '" alt="">'; }
-  return j.theme === 'asm' ? '<div class="ph asm"><div class="ws"><b>AS MONACO</b></div>' : '<div class="ph"><img src="' + esc(img(j.img)) + '" alt="">'; }
+function inscription(j) {
+  var f = dt(j.fin);
+  var corps = '<div class="fm"><h3>Votre <b>inscription</b></h3><div class="mini">' + vignette(j) + '<div><b>' + esc(j.t) + '</b><small>' + esc(gagnent(j) || '') + (f ? ' · jusqu’au ' + jour(f, 1) : '') + '</small></div></div>' +
+    champ('prenom', 'Prénom', 'text', 'given-name') + champ('nom', 'Nom', 'text', 'family-name') + champ('adresse', 'Adresse', 'text', 'street-address') +
+    champ('email', 'E-mail', 'email', 'email') + champ('tel', 'Téléphone', 'tel', 'tel') +
+    '<label class="ck" id="ck"><input type="checkbox" id="ok"><span>J’ai plus de 18 ans et j’accepte le <a href="' + esc(j.reglement || REGLEMENT) + '" target="_blank" rel="noopener">règlement des jeux</a>. Une inscription par foyer.</span></label>' +
+    '<div class="nt">Les gagnants sont annoncés à l’antenne et prévenus par e-mail. ' + esc(j.retrait || 'Lot à retirer à Radio Monaco, 7 rue du Gabian, sur présentation d’une pièce d’identité, au plus tard 48 h avant l’événement.') + '</div></div>';
+  ecran(j, '<button class="x" id="ret" aria-label="Retour">' + BKI + '</button><span>Inscription</span><button class="x" id="x" aria-label="Fermer">' + XI + '</button>', corps,
+    '<div class="ft"><div class="er" id="er"></div><a class="go" id="go" href="mailto:' + MAIL + '">Valider mon inscription</a></div>');
+}
 function fermer() { setTimeout(function () { [].forEach.call(document.querySelectorAll('#ls .r.on'), function (r) { r.classList.remove('on'); }); }, 250); document.getElementById('md').className = ''; document.documentElement.style.overflow = ''; cur = null; }
 function valider() {
   var sh = document.getElementById('sh'), bad = [], v = {};
@@ -245,22 +255,20 @@ function valider() {
     return true;
   }
   go.textContent = 'Envoi…'; go.style.pointerEvents = 'none';
-  if (cur.envoi) {
-    var fd = new FormData(); Object.keys(v).forEach(function (k) { fd.append(k, v[k]); });
-    fetch(cur.envoi, { method: 'POST', body: fd, mode: 'no-cors' }).then(function () { merci('ok'); }, function () {
-      go.style.pointerEvents = ''; go.textContent = 'Je m’inscris'; er.textContent = 'L’envoi a échoué. Vérifiez votre connexion et réessayez.';
-    });
-  }
+  var fd = new FormData(); Object.keys(v).forEach(function (k) { fd.append(k, v[k]); });
+  fetch(cur.envoi, { method: 'POST', body: fd, mode: 'no-cors' }).then(function () { merci('ok'); }, function () {
+    go.style.pointerEvents = ''; go.textContent = 'Valider mon inscription'; er.textContent = 'L’envoi a échoué. Vérifiez votre connexion et réessayez.';
+  });
   return false;
 }
 function merci(mode) {
-  var sh = document.getElementById('sh');
-  sh.innerHTML = '<div class="sc">' + visuel(cur) + '<button class="x" id="x" aria-label="Fermer"><svg width="14" height="14" viewBox="0 0 24 24" stroke="#141218" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>' +
-    '<div class="ok"><i><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i>' +
+  ecran(cur, '<span style="width:36px"></span><span>' + esc(cur.t) + '</span><button class="x" id="x" aria-label="Fermer">' + XI + '</button>',
+    '<div class="ok"><i><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#121015" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i>' +
     (mode === 'mail'
-      ? '<h3>Plus qu’un geste, <b>' + esc(memo.prenom || '') + '.</b></h3><p>Votre e-mail d’inscription à « ' + esc(cur.t) + ' » est prêt : envoyez-le depuis Mail pour valider votre participation.'
-      : '<h3>C’est noté, <b>' + esc(memo.prenom || '') + '.</b></h3><p>Votre inscription à « ' + esc(cur.t) + ' » est enregistrée. Si vous gagnez, nous vous prévenons par e-mail et à l’antenne.') +
-    (mode === 'exemple' ? '<br><br><em>Jeu d’exemple : rien n’a été envoyé.</em>' : '') + '</p></div></div><div class="ft"><button class="go" id="ferme" style="background:#141218">Fermer</button></div>';
+      ? '<h3>Plus qu’un geste, <b>' + esc(memo.prenom || '') + '.</b></h3><p>Votre e-mail d’inscription est prêt : envoyez-le depuis Mail pour valider votre participation.'
+      : '<h3>C’est noté, <b>' + esc(memo.prenom || '') + '.</b></h3><p>Votre inscription est enregistrée. Si vous gagnez, nous vous prévenons par e-mail et à l’antenne.') +
+    (mode === 'exemple' ? '<br><br><em>Jeu d’exemple : rien n’a été envoyé.</em>' : '') + '</p></div>',
+    '<div class="ft"><button class="go" id="ferme">Fermer</button></div>');
 }
 
 /* ---------- les touchers ---------- */
@@ -272,6 +280,8 @@ document.addEventListener('click', function (e) {
     a.classList.add('on'); setTimeout(function () { ouvrir(j); }, 420); return;
   }
   if (e.target.closest('#x,#ferme,#dim')) { e.preventDefault(); fermer(); return; }
+  if (e.target.closest('#ins')) { e.preventDefault(); inscription(cur); return; }
+  if (e.target.closest('#ret')) { e.preventDefault(); ouvrir(cur); return; }
   if (e.target.closest('a#go')) { if (!valider()) e.preventDefault(); }
 });
 document.addEventListener('input', function (e) { var f = e.target.closest('.f'); if (f) f.classList.remove('ko'); });
