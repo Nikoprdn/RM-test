@@ -20,7 +20,7 @@ button:focus,button:focus-visible{outline:none}
 img{display:block}
 
 /* fond crème uni : l'en-tête de GoodBarber se fond dans la page (piste D, 22 novembre) */
-.pg{position:relative;z-index:1;min-height:100%;display:flex;flex-direction:column;padding:6px 14px calc(96px + env(safe-area-inset-bottom))}
+.pg{position:relative;z-index:1;min-height:100%;display:flex;flex-direction:column;padding:6px 14px calc(112px + env(safe-area-inset-bottom))}
 
 /* les quatre radios */
 .ls{display:flex;flex-direction:column;gap:8px}
@@ -74,7 +74,7 @@ img{display:block}
 @media (prefers-reduced-motion:reduce){.rm-in{animation:none}}
 
 /* la barre du lecteur, en bas (22 novembre) : ce qu'on écoute, pause / lecture, et le lecteur au toucher */
-.mb{position:fixed;z-index:5;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));height:66px;display:flex;align-items:center;gap:12px;padding:0 10px 0 9px;border-radius:22px;background:rgba(255,255,255,.84);-webkit-backdrop-filter:blur(24px) saturate(1.4);backdrop-filter:blur(24px) saturate(1.4);box-shadow:0 14px 34px -14px rgba(20,18,24,.4),0 0 0 1px rgba(20,18,24,.05);transform:translateY(160%);transition:transform .55s cubic-bezier(.2,.8,.2,1)}
+.mb{position:fixed;z-index:5;left:14px;right:14px;bottom:calc(28px + env(safe-area-inset-bottom));height:66px;display:flex;align-items:center;gap:12px;padding:0 10px 0 9px;border-radius:22px;background:rgba(255,255,255,.84);-webkit-backdrop-filter:blur(24px) saturate(1.4);backdrop-filter:blur(24px) saturate(1.4);box-shadow:0 14px 34px -14px rgba(20,18,24,.4),0 0 0 1px rgba(20,18,24,.05);transform:translateY(160%);transition:transform .55s cubic-bezier(.2,.8,.2,1)}
 .mb.show{transform:none}
 .mb img{width:48px;height:48px;flex:none;border-radius:12px;object-fit:cover;background:rgba(20,18,24,.06)}
 .mbt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
