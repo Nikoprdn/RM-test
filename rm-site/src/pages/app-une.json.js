@@ -5,15 +5,18 @@ import { getPosts, getPodcasts, ausImg } from '../lib/data.js';
 // Jeux à l'antenne : à tenir à jour à la main tant qu'aucune source ne les publie (WordPress n'a pas de rubrique jeux).
 // Lus par la ligne défilante de l'accueil et par la page Jeux de l'application (app/jeux.html, piste H « la vitrine »).
 // Un jeu dont « debut » est à venir s'affiche en « Bientôt » ; il passe « En cours » à cette date, et disparaît après « fin ».
+// Plusieurs jeux en cours : ils se suivent en cartes à faire glisser.
+// Jeux d'inscription seule (pas de question) ; le formulaire demande ce qu'exige le règlement des jeux (article 2) :
+// prénom, nom, adresse postale, e-mail, téléphone, plus de 18 ans, une inscription par foyer.
 // {
-//   t: 'Deux nuits à Monte-Carlo',                  // titre (obligatoire)
-//   sous: 'Suite vue mer, dîner étoilé…',            // une phrase sur le lot
-//   img: 'assets/jeux/monte-carlo.jpg',              // photo du lot (chemin du site ou adresse complète)
-//   valeur: '2 400 €', gagnants: 1,
-//   debut: '2026-11-22', fin: '2026-11-30T23:59', tirage: '2026-12-01',
-//   question: 'Quelle émission vous réveille chaque matin ?', choix: ['Le Morning', 'L’Écho du Rocher', 'Switch On'],
-//   envoi: 'https://…',   // adresse qui reçoit les participations (POST) : Formspree, Jotform, Make…
-//   form: 'https://…',    // sinon : lien vers un formulaire externe, ouvert tel quel
+//   t: 'Vos places pour le Stade Louis-II',          // titre (obligatoire)
+//   sous: 'Deux places en tribune présidentielle…',   // une phrase sur le lot
+//   img: 'assets/jeux/louis-ii.jpg',                  // photo du lot (chemin du site ou adresse complète)
+//   theme: 'asm',                                     // carte aux couleurs de l'AS Monaco (sans photo)
+//   valeur: '2 places', gagnants: 5,                  // « Les 5 premiers inscrits gagnent » (règlement, article 3)
+//   debut: '2026-11-22', fin: '2026-11-30T23:59',
+//   envoi: 'https://…',   // adresse qui reçoit les inscriptions (POST : Formspree, Make…) ; sinon, e-mail prêt pour jeu@radio-monaco.com
+//   form: 'https://…',    // ou : lien vers un formulaire externe, ouvert tel quel
 //   reglement: 'https://radio-monaco.com/reglement-jeux-concours/'
 // }
 const JEUX = [];

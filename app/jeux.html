@@ -33,6 +33,23 @@ button,input{font:inherit;color:inherit}
 .rw span{font-size:13px;opacity:.78}
 .rw b{flex:none;height:46px;padding:0 22px;border-radius:23px;background:#fff;color:#141218;display:flex;align-items:center;font-size:15px;font-weight:600}
 
+/* plusieurs jeux en cours : on les fait glisser, carte par carte */
+.rl{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;margin:18px -16px 0;padding:0 16px;scrollbar-width:none}
+.rl::-webkit-scrollbar{display:none}
+.rl .cv{flex:0 0 calc(100% - 26px);margin-top:0;scroll-snap-align:center}
+.dt{display:flex;justify-content:center;gap:6px;margin-top:12px}.dt i{width:6px;height:6px;border-radius:3px;background:rgba(20,18,24,.18);transition:width .3s,background .3s}.dt i.on{width:18px;background:#141218}
+/* carte aux couleurs de l'AS Monaco (charte du club, guide des logos 2026) : Daring Red #D50B32, Grace Gold #B9975B,
+   blanc ; la diagonale rouge et blanc des maillots. Pas d'écusson tant que le club n'a pas fourni ses fichiers officiels. */
+.asm{background:linear-gradient(35deg,#D50B32 0 57%,#B9975B 57% 57.5%,#FFFFFF 57.5%)}
+.asm:after{background:linear-gradient(180deg,rgba(0,0,0,0) 55%,rgba(110,4,24,.55))}
+.asm .bd{background:#D50B32;color:#fff}.asm .bd i{background:#fff}
+.asm .tm{background:rgba(20,18,24,.08);color:#D50B32}
+.asm .ws{position:absolute;top:66px;right:18px;z-index:2;text-align:right;color:#D50B32}
+.asm .ws b{display:block;font-size:30px;font-weight:800;letter-spacing:-.02em;line-height:.95}
+.asm .ws span{display:block;font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#B9975B;margin-top:6px}
+.ph.asm{background:linear-gradient(35deg,#D50B32 0 57%,#B9975B 57% 57.5%,#FFFFFF 57.5%)}
+.ph.asm .ws{position:absolute;top:22px;left:22px;right:auto;text-align:left;color:#fff;z-index:2}.ph.asm .ws b{font-size:24px;font-weight:800;letter-spacing:-.02em}
+
 /* les prochains */
 .nx{display:flex;align-items:center;gap:14px;margin-top:12px;height:80px;border-radius:20px;background:#fff;padding:0 16px 0 10px;text-decoration:none;color:inherit}
 .nx img{width:60px;height:60px;border-radius:14px;object-fit:cover;filter:grayscale(.3);flex:none}
@@ -56,18 +73,16 @@ button,input{font:inherit;color:inherit}
 .ct{position:relative;margin-top:-26px;padding:0 22px}
 .ct h3{font-size:24px;font-weight:700;letter-spacing:-.02em;line-height:1.08}
 .ct .s{font-size:13px;color:#6A6570;margin-top:6px;line-height:1.4}
+.nt{margin-top:14px;font-size:12.5px;color:#6A6570;line-height:1.45;display:flex;gap:10px}.nt svg{flex:none;margin-top:1px}
 .mt{display:flex;margin-top:16px;border-top:1px solid rgba(20,18,24,.1);border-bottom:1px solid rgba(20,18,24,.1)}
 .mt div{flex:1;padding:10px 0;text-align:center}.mt div+div{border-left:1px solid rgba(20,18,24,.1)}
 .mt small{display:block;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:#6A6570;font-weight:600}.mt b{display:block;font-size:14.5px;font-weight:600;margin-top:2px}
 .qq{margin-top:20px;font-size:14px;font-weight:600}
-.seg{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.seg button{flex:1 1 auto;min-height:42px;padding:0 14px;border-radius:21px;border:0;background:#fff;font-size:13.5px;transition:background .2s,color .2s}
-.seg button.on{background:#141218;color:#fff}
 .f{display:flex;align-items:center;margin-top:10px;height:52px;border-radius:26px;background:#fff;padding:0 20px;border:1.5px solid transparent;transition:border-color .2s}
 .f span{width:84px;flex:none;font-size:12px;color:#6A6570}
 .f input{flex:1;min-width:0;border:0;outline:0;background:none;font-size:16px}
 .f:focus-within{border-color:#141218}
-.f.ko,.seg.ko button{border-color:#E4032E;box-shadow:0 0 0 1.5px #E4032E inset}
+.f.ko{border-color:#E4032E;box-shadow:0 0 0 1.5px #E4032E inset}
 .ck{display:flex;gap:12px;align-items:flex-start;margin-top:16px;font-size:12.5px;color:#6A6570;line-height:1.4}
 .ck input{appearance:none;-webkit-appearance:none;flex:none;width:20px;height:20px;border-radius:6px;border:1.5px solid rgba(20,18,24,.3);background:#fff;margin-top:1px;display:grid;place-items:center}
 .ck input:checked{background:#141218;border-color:#141218}
@@ -103,15 +118,18 @@ button,input{font:inherit;color:inherit}
 (function () {
 var BASE = 'https://nikoprdn.github.io/RM-test/';
 var REGLEMENT = 'https://radio-monaco.com/reglement-jeux-concours/';
+/* Le règlement prévoit l'inscription par e-mail à cette adresse : sans service d'envoi (« envoi »), le bouton prépare ce message. */
+var MAIL = 'jeu@radio-monaco.com';
 /* Montré tant qu'aucun jeu n'est saisi dans JEUX (app-une.json.js) : la page garde son allure, marquée « Exemple ». */
 var EXEMPLE = [
   { id: 'exemple', t: 'Deux nuits à Monte-Carlo', sous: 'Suite vue mer, dîner étoilé pour deux et accès au spa.',
-    img: BASE + 'assets/rm-casino.jpg', valeur: '2 400 €', gagnants: 1, fin: plusJours(8, 14), tirage: plusJours(9, 0),
-    question: 'Quelle émission vous réveille chaque matin ?', choix: ['Le Morning', 'L’Écho du Rocher', 'Switch On'], exemple: true },
+    img: BASE + 'assets/rm-casino.jpg', valeur: '2 400 €', gagnants: 1, fin: plusJours(8, 14), exemple: true },
+  { id: 'exemple-asm', theme: 'asm', t: 'Vos places pour le Stade Louis-II', sous: 'Deux places en tribune présidentielle pour le prochain match de l’AS Monaco à domicile.',
+    valeur: '2 places', gagnants: 5, fin: plusJours(3, 6), evenement: 'Match à domicile', exemple: true },
   { id: 'exemple-2', t: 'Une soirée au studio', sous: 'Vivez une émission en direct, aux côtés de l’équipe.',
     img: BASE + 'assets/rm-studio-2.jpg', debut: plusJours(12, 0), exemple: true }
 ];
-var JEUX = [], cur = null, rep = null, timer = 0;
+var JEUX = [], cur = null, timer = 0;
 
 function plusJours(j, h) { var d = new Date(Date.now() + j * 864e5 + h * 36e5); return d.toISOString(); }
 function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
@@ -123,6 +141,7 @@ function reste(d) {
   var s = Math.max(0, d - Date.now()) / 1000, j = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60);
   return j ? j + ' j ' + h + ' h' : h ? h + ' h ' + (m < 10 ? '0' : '') + m : m + ' min';
 }
+function gagnent(j) { var n = +j.gagnants || 0; return n > 1 ? 'Les ' + n + ' premiers inscrits gagnent' : n === 1 ? 'Le premier inscrit gagne' : ''; }
 function img(s) { return s && !/^https?:/.test(s) ? BASE + s.replace(/^\//, '') : s; }
 
 /* ---------- la page ---------- */
@@ -131,15 +150,19 @@ function render() {
   var enCours = JEUX.filter(function (j) { var d = dt(j.debut), f = dt(j.fin); return (!d || d <= now) && (!f || f > now); });
   var bientot = JEUX.filter(function (j) { var d = dt(j.debut); return d && d > now; })
     .sort(function (a, b) { return dt(a.debut) - dt(b.debut); });
-  var h = '', i = 1;
+  var h = '', i = 1, cartes = '';
   enCours.forEach(function (j) {
-    var f = dt(j.fin), tr = dt(j.tirage);
-    h += '<a class="cv rm-in" style="--i:' + (i++) + '" href="#" data-id="' + esc(j.id) + '"><img src="' + esc(img(j.img)) + '" alt="">' +
+    var f = dt(j.fin), asm = j.theme === 'asm';
+    cartes += '<a class="cv' + (asm ? ' asm' : '') + (enCours.length > 1 ? '' : ' rm-in') + '" style="--i:' + (i++) + '" href="#" data-id="' + esc(j.id) + '">' +
+      (asm ? '<div class="ws"><b>AS<br>MONACO</b><span>Avec le club</span></div>' : '<img src="' + esc(img(j.img)) + '" alt="">') +
       '<span class="bd"><i></i>En cours</span>' + (f ? '<span class="tm" data-fin="' + f.toISOString() + '">' + reste(f) + '</span>' : '') +
       (j.exemple ? '<span class="ex">Exemple</span>' : '') +
-      '<div class="cx">' + (j.valeur ? '<small>Valeur ' + esc(j.valeur) + '</small>' : '<small>À gagner</small>') + '<h2>' + esc(j.t) + '</h2>' +
-      '<div class="rw"><span>' + (tr ? 'Tirage le ' + jour(tr, 1) : f ? 'Jusqu’au ' + jour(f, 1) : '') + '</span><b>Participer</b></div></div></a>';
+      '<div class="cx"><small>' + (j.valeur ? 'À gagner · ' + esc(j.valeur) : 'À gagner') + '</small><h2>' + esc(j.t) + '</h2>' +
+      '<div class="rw"><span>' + gagnent(j) + '</span><b>Je m’inscris</b></div></div></a>';
   });
+  if (enCours.length > 1) {
+    h += '<div class="rl rm-in" style="--i:1" id="rl">' + cartes + '</div><div class="dt rm-in" style="--i:2" id="dt">' + enCours.map(function (j, n) { return '<i' + (n ? '' : ' class="on"') + '></i>'; }).join('') + '</div>';
+  } else h += cartes;
   bientot.forEach(function (j) {
     var d = dt(j.debut);
     h += '<a class="nx rm-in" style="--i:' + (i++) + '" href="#" data-id="' + esc(j.id) + '"><img src="' + esc(img(j.img)) + '" alt=""><div><small>Bientôt · ' + MOISL[d.getMonth()] + '</small><b>' + esc(j.t) + '</b></div>' +
@@ -150,6 +173,11 @@ function render() {
       (bientot.length ? 'Le prochain arrive très vite : rendez-vous ci-dessous.' : 'Restez à l’écoute : le prochain jeu sera annoncé à l’antenne.') + '</p></div>' + h;
   }
   document.getElementById('ls').innerHTML = h;
+  var rl = document.getElementById('rl');
+  if (rl) rl.addEventListener('scroll', function () {
+    var n = Math.round(rl.scrollLeft / (rl.firstChild.offsetWidth + 10));
+    [].forEach.call(document.querySelectorAll('#dt i'), function (d, k) { d.classList.toggle('on', k === n); });
+  }, { passive: true });
 }
 function tick() {
   [].forEach.call(document.querySelectorAll('.tm[data-fin]'), function (e) { e.textContent = reste(new Date(e.getAttribute('data-fin'))); });
@@ -163,9 +191,9 @@ function champ(k, lab, type, ac) {
   return '<label class="f" data-k="' + k + '"><span>' + lab + '</span><input name="' + k + '" type="' + type + '" autocomplete="' + ac + '" value="' + esc(memo[k] || '') + '"' + (k === 'tel' ? ' inputmode="tel"' : '') + '></label>';
 }
 function ouvrir(j) {
-  cur = j; rep = null;
+  cur = j;
   var now = Date.now(), d = dt(j.debut), f = dt(j.fin), tr = dt(j.tirage), avenir = d && d > now;
-  var top = '<div class="ph"><img src="' + esc(img(j.img)) + '" alt=""><button class="x" id="x" aria-label="Fermer"><svg width="14" height="14" viewBox="0 0 24 24" stroke="#141218" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>';
+  var top = visuel(j) + '<button class="x" id="x" aria-label="Fermer"><svg width="14" height="14" viewBox="0 0 24 24" stroke="#141218" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>';
   var h = '<div class="sc">' + top + '<div class="ct"><h3>' + esc(j.t) + '</h3>' + (j.sous ? '<div class="s">' + esc(j.sous) + '</div>' : '');
   var foot;
   if (avenir) {
@@ -173,21 +201,21 @@ function ouvrir(j) {
       '<p class="s" style="margin-top:16px">Le jeu ouvrira ici même. Écoutez Radio Monaco pour ne pas le manquer.</p></div></div>';
     foot = '<div class="ft"><button class="go" id="ferme" style="background:#141218">J’ai compris</button></div>';
   } else {
-    h += '<div class="mt">' + (j.valeur ? '<div><small>Valeur</small><b>' + esc(j.valeur) + '</b></div>' : '') +
-      (f ? '<div><small>Clôture</small><b id="cd">' + reste(f) + '</b></div>' : '') + (tr ? '<div><small>Tirage</small><b>' + jour(tr) + '</b></div>' : '') + '</div>';
+    h += '<div class="mt">' + (j.valeur ? '<div><small>À gagner</small><b>' + esc(j.valeur) + '</b></div>' : '') +
+      (j.gagnants ? '<div><small>Gagnants</small><b>' + esc(j.gagnants) + '</b></div>' : '') +
+      (f ? '<div><small>Clôture</small><b id="cd">' + reste(f) + '</b></div>' : '') + '</div>';
     if (j.form && !j.envoi) {
       /* formulaire tenu ailleurs (Jotform, Google Forms…) : on y envoie l'auditeur par un vrai lien */
       h += '<p class="s" style="margin-top:16px">La participation se fait sur le formulaire officiel du jeu.</p></div></div>';
       foot = '<div class="ft"><a class="go" href="' + esc(j.form) + '" target="_blank" rel="noopener">Ouvrir le formulaire</a></div>';
     } else {
-      if (j.question) {
-        h += '<div class="qq">' + esc(j.question) + '</div><div class="seg" id="seg">' +
-          (j.choix || []).map(function (c, n) { return '<button type="button" data-n="' + n + '">' + esc(c) + '</button>'; }).join('') + '</div>';
-      }
-      h += '<div class="qq">Vos coordonnées</div>' + champ('prenom', 'Prénom', 'text', 'given-name') + champ('nom', 'Nom', 'text', 'family-name') +
-        champ('email', 'E-mail', 'email', 'email') + champ('tel', 'Téléphone', 'tel', 'tel') +
-        '<label class="ck" id="ck"><input type="checkbox" id="ok"><span>J’accepte le <a href="' + esc(j.reglement || REGLEMENT) + '" target="_blank" rel="noopener">règlement du jeu</a> et d’être contacté par Radio Monaco si je gagne.</span></label></div></div>';
-      foot = '<div class="ft"><div class="er" id="er"></div><button class="go" id="go">Participer</button></div>';
+      /* inscription seule : les coordonnées que demande le règlement des jeux (article 2) */
+      h += '<div class="qq">Votre inscription</div>' + champ('prenom', 'Prénom', 'text', 'given-name') + champ('nom', 'Nom', 'text', 'family-name') +
+        champ('adresse', 'Adresse', 'text', 'street-address') + champ('email', 'E-mail', 'email', 'email') + champ('tel', 'Téléphone', 'tel', 'tel') +
+        '<label class="ck" id="ck"><input type="checkbox" id="ok"><span>J’ai plus de 18 ans et j’accepte le <a href="' + esc(j.reglement || REGLEMENT) + '" target="_blank" rel="noopener">règlement des jeux</a>. Une inscription par foyer.</span></label>' +
+        '<div class="nt"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6A6570" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg><span>' +
+        (gagnent(j) ? gagnent(j) + '. ' : '') + 'Les gagnants sont annoncés à l’antenne et prévenus par e-mail. Lot à retirer à Radio Monaco, 7 rue du Gabian, sur présentation d’une pièce d’identité, au plus tard 48 h avant l’événement.</span></div></div></div>';
+      foot = '<div class="ft"><div class="er" id="er"></div><a class="go" id="go" href="mailto:' + MAIL + '">Je m’inscris</a></div>';
     }
   }
   var sh = document.getElementById('sh');
@@ -195,40 +223,52 @@ function ouvrir(j) {
   document.getElementById('md').className = 'op';
   document.documentElement.style.overflow = 'hidden';
 }
+function visuel(j) { return j.theme === 'asm' ? '<div class="ph asm"><div class="ws"><b>AS MONACO</b></div>' : '<div class="ph"><img src="' + esc(img(j.img)) + '" alt="">'; }
 function fermer() { document.getElementById('md').className = ''; document.documentElement.style.overflow = ''; cur = null; }
 function valider() {
   var sh = document.getElementById('sh'), bad = [], v = {};
-  ['prenom', 'nom', 'email', 'tel'].forEach(function (k) {
+  ['prenom', 'nom', 'adresse', 'email', 'tel'].forEach(function (k) {
     var inp = sh.querySelector('input[name="' + k + '"]'), s = inp.value.trim(); v[k] = s;
-    var ko = !s || (k === 'email' && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(s)) || (k === 'tel' && s.replace(/\D/g, '').length < 8);
+    var ko = !s || (k === 'adresse' && s.length < 8) || (k === 'email' && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(s)) || (k === 'tel' && s.replace(/\D/g, '').length < 8);
     inp.parentNode.classList.toggle('ko', ko); if (ko) bad.push(inp);
   });
-  var seg = document.getElementById('seg');
-  if (seg) { seg.classList.toggle('ko', rep === null); if (rep === null) bad.unshift(seg); }
   var ok = document.getElementById('ok'); document.getElementById('ck').classList.toggle('ko', !ok.checked);
   var er = document.getElementById('er');
   if (bad.length || !ok.checked) {
-    er.textContent = bad.length ? 'Merci de compléter les champs en rouge.' : 'Merci d’accepter le règlement du jeu.';
+    er.textContent = bad.length ? 'Merci de compléter les champs en rouge.' : 'Merci de confirmer votre âge et le règlement.';
     (bad[0] || ok).scrollIntoView({ block: 'center', behavior: 'smooth' });
-    return;
+    return false;
   }
   er.textContent = '';
   try { localStorage.setItem('rmJeuxCoord', JSON.stringify(v)); memo = v; } catch (e) {}
-  v.jeu = cur.t; v.id = cur.id; if (seg) v.reponse = cur.choix[rep]; v.date = new Date().toISOString();
-  var go = document.getElementById('go'); go.disabled = true; go.textContent = 'Envoi…';
+  v.jeu = cur.t; v.id = cur.id; v.date = new Date().toISOString();
+  var go = document.getElementById('go');
+  if (cur.exemple) { go.textContent = 'Envoi…'; setTimeout(function () { merci('exemple'); }, 500); return false; }
+  if (!cur.envoi) {
+    /* message tout prêt pour jeu@radio-monaco.com : le vrai toucher sur le lien ouvre l'application Mail */
+    go.href = 'mailto:' + MAIL + '?subject=' + encodeURIComponent('Inscription au jeu : ' + cur.t) + '&body=' + encodeURIComponent(
+      'Bonjour,\n\nJe souhaite participer au jeu « ' + cur.t + ' ».\n\nPrénom : ' + v.prenom + '\nNom : ' + v.nom + '\nAdresse : ' + v.adresse +
+      '\nE-mail : ' + v.email + '\nTéléphone : ' + v.tel + '\n\nJ’ai plus de 18 ans et j’accepte le règlement des jeux.\n\nEnvoyé depuis l’application Radio Monaco');
+    setTimeout(function () { merci('mail'); }, 900);
+    return true;
+  }
+  go.textContent = 'Envoi…'; go.style.pointerEvents = 'none';
   if (cur.envoi) {
     var fd = new FormData(); Object.keys(v).forEach(function (k) { fd.append(k, v[k]); });
-    fetch(cur.envoi, { method: 'POST', body: fd, mode: 'no-cors' }).then(function () { merci(false); }, function () {
-      go.disabled = false; go.textContent = 'Participer'; er.textContent = 'L’envoi a échoué. Vérifiez votre connexion et réessayez.';
+    fetch(cur.envoi, { method: 'POST', body: fd, mode: 'no-cors' }).then(function () { merci('ok'); }, function () {
+      go.style.pointerEvents = ''; go.textContent = 'Je m’inscris'; er.textContent = 'L’envoi a échoué. Vérifiez votre connexion et réessayez.';
     });
-  } else setTimeout(function () { merci(true); }, 500);
+  }
+  return false;
 }
-function merci(exemple) {
-  var sh = document.getElementById('sh'), tr = dt(cur.tirage);
-  sh.innerHTML = '<div class="sc"><div class="ph"><img src="' + esc(img(cur.img)) + '" alt=""><button class="x" id="x" aria-label="Fermer"><svg width="14" height="14" viewBox="0 0 24 24" stroke="#141218" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>' +
+function merci(mode) {
+  var sh = document.getElementById('sh');
+  sh.innerHTML = '<div class="sc">' + visuel(cur) + '<button class="x" id="x" aria-label="Fermer"><svg width="14" height="14" viewBox="0 0 24 24" stroke="#141218" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>' +
     '<div class="ok"><i><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i>' +
-    '<h3>C’est noté, <b>' + esc(memo.prenom || '') + '.</b></h3><p>Votre participation à « ' + esc(cur.t) + ' » est enregistrée.' + (tr ? ' Tirage au sort le ' + jour(tr, 1) + ' : nous vous prévenons par e-mail si vous gagnez.' : '') +
-    (exemple ? '<br><br><em>Jeu d’exemple : rien n’a été envoyé.</em>' : '') + '</p></div></div><div class="ft"><button class="go" id="ferme" style="background:#141218">Fermer</button></div>';
+    (mode === 'mail'
+      ? '<h3>Plus qu’un geste, <b>' + esc(memo.prenom || '') + '.</b></h3><p>Votre e-mail d’inscription à « ' + esc(cur.t) + ' » est prêt : envoyez-le depuis Mail pour valider votre participation.'
+      : '<h3>C’est noté, <b>' + esc(memo.prenom || '') + '.</b></h3><p>Votre inscription à « ' + esc(cur.t) + ' » est enregistrée. Si vous gagnez, nous vous prévenons par e-mail et à l’antenne.') +
+    (mode === 'exemple' ? '<br><br><em>Jeu d’exemple : rien n’a été envoyé.</em>' : '') + '</p></div></div><div class="ft"><button class="go" id="ferme" style="background:#141218">Fermer</button></div>';
 }
 
 /* ---------- les touchers ---------- */
@@ -236,9 +276,7 @@ document.addEventListener('click', function (e) {
   var a = e.target.closest('[data-id]');
   if (a && a.closest('#ls')) { e.preventDefault(); var id = a.getAttribute('data-id'); ouvrir(JEUX.filter(function (j) { return j.id === id; })[0]); return; }
   if (e.target.closest('#x,#ferme,#dim')) { e.preventDefault(); fermer(); return; }
-  var b = e.target.closest('#seg button');
-  if (b) { rep = +b.getAttribute('data-n'); [].forEach.call(b.parentNode.children, function (c) { c.classList.toggle('on', c === b); }); b.parentNode.classList.remove('ko'); return; }
-  if (e.target.closest('#go')) { e.preventDefault(); valider(); }
+  if (e.target.closest('a#go')) { if (!valider()) e.preventDefault(); }
 });
 document.addEventListener('input', function (e) { var f = e.target.closest('.f'); if (f) f.classList.remove('ko'); });
 document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && cur) fermer(); });
