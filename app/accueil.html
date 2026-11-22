@@ -62,11 +62,16 @@ img{display:block}
 
 /* le sommaire */
 .ed{margin:22px 8px 0;flex:1;display:flex;flex-direction:column;max-height:300px}
-.ed button{flex:1;display:flex;align-items:center;justify-content:space-between;width:100%;min-height:52px;border-bottom:1px solid rgba(20,18,24,.12)}
-.ed button:first-child{border-top:1px solid rgba(20,18,24,.12)}
+.ed a{color:inherit;text-decoration:none;-webkit-touch-callout:none}
+.ed a{flex:1;display:flex;align-items:center;justify-content:space-between;width:100%;min-height:52px;border-bottom:1px solid rgba(20,18,24,.12)}
+.ed a:first-child{border-top:1px solid rgba(20,18,24,.12)}
 .ed b{font-size:32px;font-weight:300;letter-spacing:-.03em;line-height:1}
 .ed small{display:flex;align-items:center;gap:9px;font-size:12.5px;color:#9B969F;white-space:nowrap}
-.ed button:active b{opacity:.6}
+.ed a:active b{opacity:.6}
+/* lien vers le lecteur, actif seulement sur la radio en écoute */
+.ro{position:absolute;z-index:2;left:0;right:64px;top:0;bottom:0;pointer-events:none}
+.r.on .ro{pointer-events:auto}
+a.mb{color:inherit;text-decoration:none;-webkit-touch-callout:none}
 
 /* apparition de la page (22 novembre) : les blocs montent en fondu, l'un après l'autre */
 @keyframes rmIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
@@ -93,7 +98,7 @@ img{display:block}
   <div class="ls" id="ls"></div>
   <nav class="ed" id="ed"></nav>
 </div>
-<div class="mb" id="mb" role="button" tabindex="0"><img id="mbc" alt=""><span class="mbt"><em><span class="eq"><s></s><s></s><s></s></span><span id="mbs"></span></em><b id="mbti"></b></span><button class="mbp" id="mbp" type="button" aria-label="Pause"></button></div>
+<a class="mb" id="mb" href="#"><img id="mbc" alt=""><span class="mbt"><em><span class="eq"><s></s><s></s><s></s></span><span id="mbs"></span></em><b id="mbti"></b></span><button class="mbp" id="mbp" type="button" aria-label="Pause"></button></a>
 <script>
 var SITE = 'https://nikoprdn.github.io/RM-test/assets/';
 var R = [
@@ -125,6 +130,11 @@ var waitK = '';
 function live() { return au.src && !au.paused && H.__rmRadio ? H.__rmRadio : ''; }
 
 /* ——— navigation vers une section ——— */
+/* Les liens sont de vrais liens <a href="testnicolas://#!section=ID"> : dans l'application, c'est le toucher
+   d'un lien qui ouvre la section (une navigation lancée par le script ne marche pas sur le téléphone).
+   Dans le banc d'essai (aperçu web), on intercepte le lien et on navigue par l'historique de l'aperçu. */
+function link(sec) { return 'testnicolas://#!section=' + sec; }
+function preview() { try { return window.parent && window.parent !== window && !!window.parent.history && /^\/pview\//.test(window.parent.location.pathname); } catch (e) { return false; } }
 function go(slug, sec) {
   if (!sec) return;
   try { var P = window.parent;
@@ -140,6 +150,7 @@ function go(slug, sec) {
 $('ls').innerHTML = R.map(function (r, i) {
   return '<div class="r rm-in" data-k="' + r.k + '" style="--c:' + r.c + ';--i:' + i + '" role="button" tabindex="0">' +
     '<span class="ink"></span><span class="blr"></span><img class="cv" alt="">' +
+    '<a class="ro" href="' + link(r.sec) + '" data-slug="' + r.slug + '" aria-label="Ouvrir le lecteur Radio Monaco ' + r.n + '"></a>' +
     '<span class="mid"><span class="lg"><img src="' + SITE + 'wr-' + r.k + '-ink.png" alt="Radio Monaco ' + r.n + '"></span>' +
     '<span class="tx"><em><span class="eq"><s></s><s></s><s></s></span>En direct – ' + r.lab + '</em><b></b><i></i></span></span>' +
     '<button class="pl" type="button" aria-label="Écouter"></button></div>';
@@ -148,7 +159,7 @@ var rows = {}; [].forEach.call($('ls').children, function (b) { rows[b.getAttrib
 
 /* ——— le sommaire ——— */
 $('ed').innerHTML = MENU.map(function (m, i) {
-  return '<button type="button" class="rm-in" style="--i:' + (i + 4) + '" data-i="' + i + '"><b>' + m.t + '</b><small><span id="ms' + i + '">' + m.s + '</span>' + IC_ARROW + '</small></button>';
+  return '<a class="rm-in" style="--i:' + (i + 4) + '" href="' + link(m.sec) + '" data-slug="' + m.slug + '" data-i="' + i + '"><b>' + m.t + '</b><small><span id="ms' + i + '">' + m.s + '</span>' + IC_ARROW + '</small></a>';
 }).join('');
 
 function paintBg() {}   /* plus de fond de page : la pochette floutée vit dans la carte (paintRow) */
@@ -167,6 +178,7 @@ function paintBar() {
   $('mbs').textContent = 'En direct – ' + r.lab;
   $('mbti').innerHTML = esc(r.t) + (r.a && r.a !== 'En direct' ? ' <i>· ' + esc(r.a) + '</i>' : '');
   $('mbp').innerHTML = k ? IC_PAUSE : IC_PLAY;
+  if (r.sec) { $('mb').setAttribute('href', link(r.sec)); $('mb').setAttribute('data-slug', r.slug); }
   if (k === barK) lock(r);
 }
 function esc(s) { return String(s || '').replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
@@ -216,10 +228,10 @@ function play(r) {
 }
 document.addEventListener('click', function (e) {
   if (e && e.isTrusted === false) return;   /* GoodBarber simule des clics : seul un vrai toucher compte */
-  if (e.target.closest('#mbp')) { if (barK) { if (live()) { au.pause(); } else play(byK[barK]); } return; }
-  if (e.target.closest('#mb')) { if (barK) go(byK[barK].slug, byK[barK].sec); return; }
-  var m = e.target.closest('[data-i]');
-  if (m) { var it = MENU[+m.getAttribute('data-i')]; go(it.slug, it.sec); return; }
+  if (e.target.closest('#mbp')) { e.preventDefault(); e.stopPropagation(); if (barK) { if (live()) { au.pause(); } else play(byK[barK]); } return; }
+  /* un lien vers une section : dans l'appli, on laisse faire le lien ; dans l'aperçu, on navigue nous-mêmes */
+  var a = e.target.closest('a[href^="testnicolas:"]');
+  if (a) { if (preview()) { e.preventDefault(); go(a.getAttribute('data-slug'), 1); } return; }
   var row = e.target.closest('.r'); if (!row) return;
   var r = byK[row.getAttribute('data-k')];
   /* le bouton rond, ou une radio qui ne joue pas : écouter / pause ; la radio en écoute : ouvrir son lecteur */
