@@ -302,20 +302,24 @@ function ago(iso) {
 }
 var TK = [], tkI = 0, tkHold = false;
 fetch('https://nikoprdn.github.io/RM-test/app-une.json', { cache: 'no-cache' }).then(function (x) { return x.json(); }).then(function (j) {
-  var P = (j.pods || []).slice(0, 3).map(function (e) { return { k: 'pod', c: e.mix ? '#F59C00' : '#E4032E', img: e.img, lab: e.mix ? 'Mix' : 'Podcast', t: e.show + ' · ' + e.t, d: e.d }; });
-  var N = (j.news || []).slice(0, 4).map(function (n) { return { k: 'news', c: '#141218', img: n.img, lab: n.cat || 'Actualité', t: n.t, d: n.d }; });
-  var J = (j.jeux || []).length ? j.jeux.map(function (g) { return { k: 'jeu', c: '#E4032E', img: '', lab: 'Jeu', t: g.t }; }) : [{ k: 'jeu', c: '#E4032E', img: '', lab: 'Jeux', t: 'Bientôt à l’antenne' }];
-  for (var i = 0; i < 4; i++) { if (P[i]) TK.push(P[i]); if (N[i]) TK.push(N[i]); if (i === 0) TK = TK.concat(J); }
+  /* quatre informations seulement (consigne du 22 novembre) : le jeu d'abord, deux fois plus longtemps,
+     puis la dernière émission, le dernier mix, la dernière actualité */
+  var g = (j.jeux || [])[0], e = j.pod, m = j.mix, n = (j.news || [])[0];
+  TK.push(g ? { k: 'jeu', c: '#E4032E', img: '', lab: 'Jeu', t: g.t, ms: 8000 } : { k: 'jeu', c: '#E4032E', img: '', lab: 'Jeux', t: 'Bientôt à l’antenne', ms: 8000 });
+  if (e) TK.push({ k: 'pod', c: '#E4032E', img: e.img, lab: 'Podcast', t: e.show + ' · ' + e.t, d: e.d, ms: 4000 });
+  if (m) TK.push({ k: 'pod', c: '#F59C00', img: m.img, lab: 'Mix', t: m.show + ' · ' + m.t, d: m.d, ms: 4000 });
+  if (n) TK.push({ k: 'news', c: '#141218', img: n.img, lab: n.cat || 'Actualité', t: n.t, d: n.d, ms: 4000 });
   if (!TK.length) return;
   $('tk').innerHTML = TK.map(function (x, n) {
     var pic = x.img ? '<img src="' + esc(x.img) + '" alt="" loading="lazy">' : '<i class="ph"><img src="' + SITE + 'charte/sigle-montecarlo-invert@3x.png" alt=""></i>';
     var when = ago(x.d);
     return '<span class="ts' + (n ? '' : ' on') + '" style="--c:' + x.c + '">' + pic + '<span><em>' + esc(x.lab) + (when ? ' · ' + when : '') + '</em><b>' + esc(x.t) + '</b></span></span>';
   }).join('');
-  $('tkd').innerHTML = TK.slice(0, 6).map(function (x, n) { return '<i' + (n ? '' : ' class="on"') + '></i>'; }).join('');
-  $('tkw').style.display = ''; tkLink(); setInterval(tkNext, 4000);
+  $('tkd').innerHTML = TK.map(function (x, n) { return '<i' + (n ? '' : ' class="on"') + '></i>'; }).join('');
+  $('tkw').style.display = ''; tkLink(); tkPlan();
 }).catch(function () {});
 function tkLink() { var s = SEC[TK[tkI].k]; $('tkw').setAttribute('href', link(s[0])); $('tkw').setAttribute('data-slug', s[1]); }
+function tkPlan() { setTimeout(function () { tkNext(); tkPlan(); }, TK[tkI].ms || 4000); }
 function tkNext() {
   if (tkHold || document.hidden || TK.length < 2) return;
   var sl = $('tk').children, cur = sl[tkI], n = (tkI + 1) % TK.length, nx = sl[n];

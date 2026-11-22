@@ -16,5 +16,6 @@ export async function GET() {
   eps.sort((a, b) => (a.d < b.d ? 1 : -1));
   const today = new Date().toISOString().slice(0, 10);
   const jeux = JEUX.filter((j) => !j.fin || j.fin >= today);
-  return new Response(JSON.stringify({ built: new Date().toISOString(), news, pods: eps.slice(0, 4), jeux }), { headers: { 'Content-Type': 'application/json; charset=utf-8' } });
+  const pod = eps.find((e) => !e.mix) || null, mix = eps.find((e) => e.mix) || null;   // dernière émission, dernier mix
+  return new Response(JSON.stringify({ built: new Date().toISOString(), news, pods: eps.slice(0, 4), pod, mix, jeux }), { headers: { 'Content-Type': 'application/json; charset=utf-8' } });
 }
