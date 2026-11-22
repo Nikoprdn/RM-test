@@ -9,38 +9,38 @@
 <style type="text/css">
 /* Lecteur de direct Radio Monaco — Custom Code (sans bouton d'achat). Une radio par section : voir RADIO plus bas. */
 *{box-sizing:border-box;margin:0;padding:0}
-html{background:#F6F3EE}
-html,body{min-height:100%;font-family:Barlow,system-ui,sans-serif;color:#141218;-webkit-tap-highlight-color:transparent}
-/* fond clair (22 novembre) : la pochette du titre en cours, floutée et très atténuée, teinte le haut de la page puis s'efface vers le crème */
-.bgc{position:fixed;inset:-80px;z-index:0;background-size:cover;background-position:center;filter:blur(60px) saturate(1.5);transform:scale(1.2);opacity:.75;transition:opacity .8s}
+html{background:#121015}
+html,body{min-height:100%;font-family:Barlow,system-ui,sans-serif;color:#fff;-webkit-tap-highlight-color:transparent}
+/* fond sombre (22 novembre, « assombris-le, limite mode dark ») : la pochette floutée, assourdie, qui se fond dans l'encre */
+.bgc{position:fixed;inset:-80px;z-index:0;background-size:cover;background-position:center;filter:blur(70px) saturate(1.45) brightness(.72);transform:scale(1.2);transition:opacity .8s}
 .bgc.out{opacity:0}
-.bgs{position:fixed;inset:0;z-index:0;background:linear-gradient(180deg,rgba(246,243,238,.12) 0%,rgba(246,243,238,.42) 34%,rgba(246,243,238,.86) 62%,#F6F3EE 82%)}
+.bgs{position:fixed;inset:0;z-index:0;background:radial-gradient(120% 70% at 50% 28%,rgba(18,16,21,0) 0%,rgba(18,16,21,.35) 60%,rgba(18,16,21,.75) 100%),linear-gradient(180deg,rgba(18,16,21,.1) 0%,rgba(18,16,21,.4) 55%,#121015 96%)}
 button:focus,button:focus-visible{outline:none}
 body>*:not(.bgc):not(.bgs){position:relative;z-index:1}
 body{padding:18px 24px calc(28px + env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center}
-.logo{height:46px;width:auto;margin:34px 0 28px}
-.cv{position:relative;width:min(78vw,320px);aspect-ratio:1;border-radius:22px;overflow:hidden;background:rgba(20,18,24,.06);box-shadow:0 30px 60px -28px rgba(20,18,24,.55)}
+.logo{height:46px;width:auto;margin:34px 0 28px;opacity:.95}
+.cv{position:relative;width:min(78vw,320px);aspect-ratio:1;border-radius:22px;overflow:hidden;background:rgba(255,255,255,.06);box-shadow:0 40px 80px -30px rgba(0,0,0,.85),0 0 0 1px rgba(255,255,255,.06)}
 .cv img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .5s}
 .cv img.out{opacity:0}
-.lv{margin-top:24px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--c);display:flex;gap:8px;align-items:center}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 0 3px var(--h)}
+.lv{margin-top:24px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.78);display:flex;gap:8px;align-items:center}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 0 3px var(--h),0 0 12px var(--c)}
 .on .dot{animation:pulse 1.8s ease-in-out infinite}
 @keyframes pulse{50%{box-shadow:0 0 0 6px transparent}}
 h1{margin-top:10px;font-size:24px;font-weight:700;line-height:1.15;text-align:center;letter-spacing:-.2px;max-width:100%}
-.ar{margin-top:4px;font-size:16px;color:#6A6570;text-align:center}
-.pl{margin-top:26px;width:76px;height:76px;border-radius:50%;border:0;background:var(--c);box-shadow:0 16px 30px -14px var(--c);display:grid;place-items:center;cursor:pointer;transition:transform .15s,background .2s}
+.ar{margin-top:4px;font-size:16px;color:rgba(255,255,255,.6);text-align:center}
+.pl{margin-top:26px;width:76px;height:76px;border-radius:50%;border:0;background:#fff;box-shadow:0 18px 40px -16px rgba(0,0,0,.75);display:grid;place-items:center;cursor:pointer;transition:transform .15s,background .2s}
 .pl:active{transform:scale(.94)}
-.pl i{display:block;border-left:22px solid #fff;border-top:13px solid transparent;border-bottom:13px solid transparent;margin-left:6px}
-.on .pl i{border:0;margin:0;width:24px;height:26px;border-left:8px solid #fff;border-right:8px solid #fff}
-.wait .pl i{border:3px solid rgba(255,255,255,.35);border-top-color:#fff;width:28px;height:28px;border-radius:50%;margin:0;animation:spin .8s linear infinite}
+.pl i{display:block;border-left:22px solid var(--c);border-top:13px solid transparent;border-bottom:13px solid transparent;margin-left:6px}
+.on .pl i{border:0;margin:0;width:24px;height:26px;border-left:8px solid var(--c);border-right:8px solid var(--c)}
+.wait .pl i{border:3px solid rgba(20,18,24,.12);border-top-color:var(--c);width:28px;height:28px;border-radius:50%;margin:0;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .hs{width:100%;max-width:420px;margin-top:34px}
-.hs h2{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#6A6570;margin-bottom:10px}
-.hs li{list-style:none;display:flex;gap:12px;align-items:center;padding:10px 0;border-top:1px solid rgba(20,18,24,.1)}
-.hs li img{width:44px;height:44px;border-radius:6px;object-fit:cover;background:rgba(20,18,24,.06);flex:0 0 44px}
+.hs h2{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:10px}
+.hs li{list-style:none;display:flex;gap:12px;align-items:center;padding:10px 0;border-top:1px solid rgba(255,255,255,.08)}
+.hs li img{width:44px;height:44px;border-radius:6px;object-fit:cover;background:rgba(255,255,255,.06);flex:0 0 44px}
 .hs li span{min-width:0}
 .hs b{display:block;font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hs em{display:block;font-style:normal;font-size:13px;color:#6A6570;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hs em{display:block;font-style:normal;font-size:13px;color:rgba(255,255,255,.55);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hs:empty{display:none}
 
 /* apparition de la page (22 novembre) : les blocs montent en fondu, l'un après l'autre */
@@ -65,10 +65,10 @@ h1{margin-top:10px;font-size:24px;font-weight:700;line-height:1.15;text-align:ce
 var RADIO = 'paris';
 var SITE = 'https://nikoprdn.github.io/RM-test/assets/';
 var RADIOS = {
-  montecarlo: { n: 'Monte-Carlo', st: 'https://radiomonaco.ice.infomaniak.ch/radiomonaco-128.mp3', logo: 'wr-montecarlo-ink.png', lab: 'Monte Carlo', sig: 'charte/sigle-montecarlo-invert@3x.png', c: '#E4032E', h: 'rgba(228,3,46,.25)' },
-  paris: { n: 'Paris', st: 'https://radiomonacoparis.ice.infomaniak.ch/radiomonacoparis-320.aac', meta: 'https://radiomonaco.ice.infomaniak.ch/radiomonaco-128.mp3', logo: 'wr-paris-ink.png', lab: 'Paris', sig: 'charte/sigle-montecarlo-invert@3x.png', c: '#E4032E', h: 'rgba(228,3,46,.25)' },
-  mixdj: { n: '100 % Mix DJ', st: 'https://mixdj.ice.infomaniak.ch/mixdj-128.aac', logo: 'wr-mixdj-ink.png', lab: '100% Mix', sig: 'charte/sigle-mixdj-invert@3x.png', c: '#F59C00', h: 'rgba(245,156,0,.25)', fixed: true },
-  nightmood: { n: 'Night Mood', st: 'https://nightmood.ice.infomaniak.ch/nightmood-128.aac', logo: 'wr-nightmood-ink.png', lab: 'Night Mood', sig: 'charte/sigle-nightmood-invert@3x.png', c: '#8A5AA1', h: 'rgba(138,90,161,.25)' }
+  montecarlo: { n: 'Monte-Carlo', st: 'https://radiomonaco.ice.infomaniak.ch/radiomonaco-128.mp3', logo: 'wr-montecarlo-allwhite.png', lab: 'Monte Carlo', sig: 'charte/sigle-montecarlo-invert@3x.png', c: '#E4032E', h: 'rgba(228,3,46,.25)' },
+  paris: { n: 'Paris', st: 'https://radiomonacoparis.ice.infomaniak.ch/radiomonacoparis-320.aac', meta: 'https://radiomonaco.ice.infomaniak.ch/radiomonaco-128.mp3', logo: 'wr-paris-allwhite.png', lab: 'Paris', sig: 'charte/sigle-montecarlo-invert@3x.png', c: '#E4032E', h: 'rgba(228,3,46,.25)' },
+  mixdj: { n: '100 % Mix DJ', st: 'https://mixdj.ice.infomaniak.ch/mixdj-128.aac', logo: 'wr-mixdj-allwhite.png', lab: '100% Mix', sig: 'charte/sigle-mixdj-invert@3x.png', c: '#F59C00', h: 'rgba(245,156,0,.25)', fixed: true },
+  nightmood: { n: 'Night Mood', st: 'https://nightmood.ice.infomaniak.ch/nightmood-128.aac', logo: 'wr-nightmood-allwhite.png', lab: 'Night Mood', sig: 'charte/sigle-nightmood-invert@3x.png', c: '#8A5AA1', h: 'rgba(138,90,161,.25)' }
 };
 var R = RADIOS[RADIO], meta = R.meta || R.st, sig = SITE + R.sig;
 var $ = function (id) { return document.getElementById(id); };
