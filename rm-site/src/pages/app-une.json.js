@@ -3,7 +3,19 @@
 import { getPosts, getPodcasts, ausImg } from '../lib/data.js';
 
 // Jeux à l'antenne : à tenir à jour à la main tant qu'aucune source ne les publie (WordPress n'a pas de rubrique jeux).
-// Exemple : { t: 'Gagnez vos places pour…', fin: '2026-12-15' }
+// Lus par la ligne défilante de l'accueil et par la page Jeux de l'application (app/jeux.html, piste H « la vitrine »).
+// Un jeu dont « debut » est à venir s'affiche en « Bientôt » ; il passe « En cours » à cette date, et disparaît après « fin ».
+// {
+//   t: 'Deux nuits à Monte-Carlo',                  // titre (obligatoire)
+//   sous: 'Suite vue mer, dîner étoilé…',            // une phrase sur le lot
+//   img: 'assets/jeux/monte-carlo.jpg',              // photo du lot (chemin du site ou adresse complète)
+//   valeur: '2 400 €', gagnants: 1,
+//   debut: '2026-11-22', fin: '2026-11-30T23:59', tirage: '2026-12-01',
+//   question: 'Quelle émission vous réveille chaque matin ?', choix: ['Le Morning', 'L’Écho du Rocher', 'Switch On'],
+//   envoi: 'https://…',   // adresse qui reçoit les participations (POST) : Formspree, Jotform, Make…
+//   form: 'https://…',    // sinon : lien vers un formulaire externe, ouvert tel quel
+//   reglement: 'https://radio-monaco.com/reglement-jeux-concours/'
+// }
 const JEUX = [];
 
 export async function GET() {

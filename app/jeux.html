@@ -4,28 +4,253 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Jeux</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style type="text/css">
-/* Section « Jeux » (22 novembre 2026) : page d'attente, à remplir avec les jeux à l'antenne. */
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{min-height:100%;background:#F6F3EE;font-family:Barlow,system-ui,sans-serif;color:#141218}
-.w{min-height:70vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 32px}
-.w img{width:64px;height:64px;border-radius:16px;margin-bottom:22px}
-h1{font-size:30px;font-weight:300;letter-spacing:-.03em;line-height:1.05}
-h1 b{display:block;font-weight:600}
-p{margin-top:14px;font-size:15px;line-height:1.45;color:#6A6570;max-width:300px}
+/* Section « Jeux », piste H « la vitrine » choisie par Nicolas le 22 novembre 2026 :
+   le jeu en cours en grande carte photo, les prochains annoncés dessous, le formulaire monte en feuille.
+   Les jeux viennent d'app-une.json (liste JEUX de rm-site/src/pages/app-une.json.js). */
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;background:#F6F3EE;font-family:Barlow,system-ui,sans-serif;color:#141218;-webkit-font-smoothing:antialiased}
+button,input{font:inherit;color:inherit}
+.pg{padding:14px 16px calc(40px + env(safe-area-inset-bottom))}
+.hd{padding:0 6px}.hd h1{font-size:34px;font-weight:700;letter-spacing:-.03em;line-height:1}
+.hd p{font-size:14px;color:#6A6570;margin-top:6px}
 
-/* apparition de la page (22 novembre) : les blocs montent en fondu, l'un après l'autre */
+/* la grande carte */
+.cv{position:relative;display:block;margin-top:18px;height:min(470px,62vh);min-height:380px;border-radius:26px;overflow:hidden;background:#2a2630;color:#fff;text-decoration:none;transform:translateZ(0)}
+.cv>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .9s cubic-bezier(.2,.8,.2,1)}
+.cv:active>img{transform:scale(1.03)}
+.cv:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.18) 0%,rgba(0,0,0,0) 26%,rgba(0,0,0,0) 42%,rgba(0,0,0,.84) 100%)}
+.bd{position:absolute;top:16px;left:16px;z-index:2;height:28px;padding:0 12px;border-radius:14px;background:#fff;color:#141218;font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;display:flex;align-items:center;gap:7px}
+.bd i{width:6px;height:6px;border-radius:50%;background:#E4032E;animation:pulse 2s infinite}
+@keyframes pulse{50%{opacity:.35}}
+.tm{position:absolute;top:16px;right:16px;z-index:2;height:28px;padding:0 12px;border-radius:14px;background:rgba(0,0,0,.42);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);font-size:12.5px;font-weight:600;display:flex;align-items:center;font-variant-numeric:tabular-nums}
+.ex{position:absolute;top:52px;left:16px;z-index:2;height:22px;padding:0 9px;border-radius:11px;background:rgba(0,0,0,.42);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center}
+.cx{position:absolute;left:20px;right:20px;bottom:20px;z-index:2}
+.cx small{font-size:11px;letter-spacing:.2em;text-transform:uppercase;opacity:.75;font-weight:700}
+.cx h2{font-size:30px;font-weight:700;letter-spacing:-.03em;line-height:1.02;margin-top:6px}
+.rw{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px}
+.rw span{font-size:13px;opacity:.78}
+.rw b{flex:none;height:46px;padding:0 22px;border-radius:23px;background:#fff;color:#141218;display:flex;align-items:center;font-size:15px;font-weight:600}
+
+/* les prochains */
+.nx{display:flex;align-items:center;gap:14px;margin-top:12px;height:80px;border-radius:20px;background:#fff;padding:0 16px 0 10px;text-decoration:none;color:inherit}
+.nx img{width:60px;height:60px;border-radius:14px;object-fit:cover;filter:grayscale(.3);flex:none}
+.nx div{flex:1;min-width:0}.nx small{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#6A6570;font-weight:700}
+.nx b{display:block;font-size:15.5px;font-weight:600;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.vd{margin-top:18px;border-radius:26px;background:#fff;padding:44px 28px;text-align:center}
+.vd img{width:56px;height:56px;border-radius:14px;margin:0 auto 18px;display:block}
+.vd h2{font-size:24px;font-weight:300;letter-spacing:-.02em;line-height:1.1}.vd h2 b{display:block;font-weight:600}
+.vd p{font-size:14px;color:#6A6570;margin-top:10px;line-height:1.45}
+.rg{display:block;text-align:center;margin-top:22px;font-size:12px;color:#6A6570}
+
+/* la feuille du formulaire */
+.dim{position:fixed;inset:0;z-index:20;background:rgba(20,18,24,.5);opacity:0;pointer-events:none;transition:opacity .35s}
+.sh{position:fixed;left:0;right:0;bottom:0;z-index:21;top:max(48px,env(safe-area-inset-top));background:#F6F3EE;border-radius:28px 28px 0 0;transform:translateY(105%);transition:transform .5s cubic-bezier(.2,.85,.2,1);display:flex;flex-direction:column;overflow:hidden}
+.op .dim{opacity:1;pointer-events:auto}.op .sh{transform:none}
+.sc{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:20px}
+.ph{position:relative;height:170px;flex:none}.ph img{width:100%;height:100%;object-fit:cover}
+.ph:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(246,243,238,0) 40%,#F6F3EE)}
+.x{position:absolute;top:14px;right:14px;z-index:2;width:34px;height:34px;border-radius:50%;border:0;background:rgba(255,255,255,.92);display:grid;place-items:center}
+.ct{position:relative;margin-top:-26px;padding:0 22px}
+.ct h3{font-size:24px;font-weight:700;letter-spacing:-.02em;line-height:1.08}
+.ct .s{font-size:13px;color:#6A6570;margin-top:6px;line-height:1.4}
+.mt{display:flex;margin-top:16px;border-top:1px solid rgba(20,18,24,.1);border-bottom:1px solid rgba(20,18,24,.1)}
+.mt div{flex:1;padding:10px 0;text-align:center}.mt div+div{border-left:1px solid rgba(20,18,24,.1)}
+.mt small{display:block;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:#6A6570;font-weight:600}.mt b{display:block;font-size:14.5px;font-weight:600;margin-top:2px}
+.qq{margin-top:20px;font-size:14px;font-weight:600}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.seg button{flex:1 1 auto;min-height:42px;padding:0 14px;border-radius:21px;border:0;background:#fff;font-size:13.5px;transition:background .2s,color .2s}
+.seg button.on{background:#141218;color:#fff}
+.f{display:flex;align-items:center;margin-top:10px;height:52px;border-radius:26px;background:#fff;padding:0 20px;border:1.5px solid transparent;transition:border-color .2s}
+.f span{width:84px;flex:none;font-size:12px;color:#6A6570}
+.f input{flex:1;min-width:0;border:0;outline:0;background:none;font-size:16px}
+.f:focus-within{border-color:#141218}
+.f.ko,.seg.ko button{border-color:#E4032E;box-shadow:0 0 0 1.5px #E4032E inset}
+.ck{display:flex;gap:12px;align-items:flex-start;margin-top:16px;font-size:12.5px;color:#6A6570;line-height:1.4}
+.ck input{appearance:none;-webkit-appearance:none;flex:none;width:20px;height:20px;border-radius:6px;border:1.5px solid rgba(20,18,24,.3);background:#fff;margin-top:1px;display:grid;place-items:center}
+.ck input:checked{background:#141218;border-color:#141218}
+.ck input:checked:after{content:"";width:6px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.ck.ko input{border-color:#E4032E}
+.ck a{color:#141218}
+.ft{flex:none;padding:12px 22px calc(14px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(246,243,238,0),#F6F3EE 30%)}
+.go{display:flex;width:100%;height:56px;border-radius:28px;border:0;background:#E4032E;color:#fff;align-items:center;justify-content:center;font-size:16px;font-weight:700;text-decoration:none;transition:transform .15s}
+.go:active{transform:scale(.98)}
+.go[disabled]{opacity:.6}
+.er{font-size:12.5px;color:#E4032E;text-align:center;margin-bottom:8px;min-height:0}
+/* confirmation */
+.ok{padding:30px 26px 0;text-align:center}
+.ok i{width:64px;height:64px;border-radius:50%;background:#141218;display:grid;place-items:center;margin:6px auto 18px;animation:pop .5s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes pop{from{transform:scale(.4);opacity:0}}
+.ok h3{font-size:26px;font-weight:300;letter-spacing:-.02em}.ok h3 b{display:block;font-weight:700}
+.ok p{font-size:14px;color:#6A6570;margin-top:10px;line-height:1.45}
+
 @keyframes rmIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 .rm-in{animation:rmIn .7s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0) * 70ms + 60ms)}
-@media (prefers-reduced-motion:reduce){.rm-in{animation:none}}
+@media (prefers-reduced-motion:reduce){.rm-in,.ok i{animation:none}.sh,.dim{transition:none}}
 </style>
 </head>
 <body>
-<div class="w rm-in">
-  <img src="https://nikoprdn.github.io/RM-test/assets/charte/sigle-montecarlo-invert@3x.png" alt="">
-  <h1>Les jeux <b>à l’antenne.</b></h1>
-  <p>Bientôt ici : tous les jeux de Radio Monaco, pour tenter votre chance en direct.</p>
+<div class="pg" id="pg">
+  <div class="hd rm-in"><h1>Jeux</h1><p>Des lots d’exception, réservés aux auditeurs.</p></div>
+  <div id="ls"></div>
+  <a class="rg rm-in" style="--i:4" href="https://radio-monaco.com/reglement-jeux-concours/" target="_blank" rel="noopener">Règlement des jeux-concours</a>
 </div>
+<div id="md"><div class="dim" id="dim"></div><div class="sh" id="sh" role="dialog" aria-modal="true" aria-label="Participer au jeu"></div></div>
+
+<script>
+(function () {
+var BASE = 'https://nikoprdn.github.io/RM-test/';
+var REGLEMENT = 'https://radio-monaco.com/reglement-jeux-concours/';
+/* Montré tant qu'aucun jeu n'est saisi dans JEUX (app-une.json.js) : la page garde son allure, marquée « Exemple ». */
+var EXEMPLE = [
+  { id: 'exemple', t: 'Deux nuits à Monte-Carlo', sous: 'Suite vue mer, dîner étoilé pour deux et accès au spa.',
+    img: BASE + 'assets/rm-casino.jpg', valeur: '2 400 €', gagnants: 1, fin: plusJours(8, 14), tirage: plusJours(9, 0),
+    question: 'Quelle émission vous réveille chaque matin ?', choix: ['Le Morning', 'L’Écho du Rocher', 'Switch On'], exemple: true },
+  { id: 'exemple-2', t: 'Une soirée au studio', sous: 'Vivez une émission en direct, aux côtés de l’équipe.',
+    img: BASE + 'assets/rm-studio-2.jpg', debut: plusJours(12, 0), exemple: true }
+];
+var JEUX = [], cur = null, rep = null, timer = 0;
+
+function plusJours(j, h) { var d = new Date(Date.now() + j * 864e5 + h * 36e5); return d.toISOString(); }
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+function dt(s) { if (!s) return null; var d = new Date(s.length === 10 ? s + 'T23:59:59' : s); return isNaN(d) ? null : d; }
+var MOIS = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+var MOISL = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+function jour(d, long) { var n = d.getDate(); return (n === 1 ? '1er' : n) + ' ' + (long ? MOISL : MOIS)[d.getMonth()]; }
+function reste(d) {
+  var s = Math.max(0, d - Date.now()) / 1000, j = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60);
+  return j ? j + ' j ' + h + ' h' : h ? h + ' h ' + (m < 10 ? '0' : '') + m : m + ' min';
+}
+function img(s) { return s && !/^https?:/.test(s) ? BASE + s.replace(/^\//, '') : s; }
+
+/* ---------- la page ---------- */
+function render() {
+  var now = Date.now();
+  var enCours = JEUX.filter(function (j) { var d = dt(j.debut), f = dt(j.fin); return (!d || d <= now) && (!f || f > now); });
+  var bientot = JEUX.filter(function (j) { var d = dt(j.debut); return d && d > now; })
+    .sort(function (a, b) { return dt(a.debut) - dt(b.debut); });
+  var h = '', i = 1;
+  enCours.forEach(function (j) {
+    var f = dt(j.fin), tr = dt(j.tirage);
+    h += '<a class="cv rm-in" style="--i:' + (i++) + '" href="#" data-id="' + esc(j.id) + '"><img src="' + esc(img(j.img)) + '" alt="">' +
+      '<span class="bd"><i></i>En cours</span>' + (f ? '<span class="tm" data-fin="' + f.toISOString() + '">' + reste(f) + '</span>' : '') +
+      (j.exemple ? '<span class="ex">Exemple</span>' : '') +
+      '<div class="cx">' + (j.valeur ? '<small>Valeur ' + esc(j.valeur) + '</small>' : '<small>À gagner</small>') + '<h2>' + esc(j.t) + '</h2>' +
+      '<div class="rw"><span>' + (tr ? 'Tirage le ' + jour(tr, 1) : f ? 'Jusqu’au ' + jour(f, 1) : '') + '</span><b>Participer</b></div></div></a>';
+  });
+  bientot.forEach(function (j) {
+    var d = dt(j.debut);
+    h += '<a class="nx rm-in" style="--i:' + (i++) + '" href="#" data-id="' + esc(j.id) + '"><img src="' + esc(img(j.img)) + '" alt=""><div><small>Bientôt · ' + MOISL[d.getMonth()] + '</small><b>' + esc(j.t) + '</b></div>' +
+      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6A6570" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></a>';
+  });
+  if (!enCours.length) {
+    h = '<div class="vd rm-in" style="--i:1"><img src="' + BASE + 'assets/charte/sigle-montecarlo-invert@3x.png" alt=""><h2>Pas de jeu <b>en ce moment.</b></h2><p>' +
+      (bientot.length ? 'Le prochain arrive très vite : rendez-vous ci-dessous.' : 'Restez à l’écoute : le prochain jeu sera annoncé à l’antenne.') + '</p></div>' + h;
+  }
+  document.getElementById('ls').innerHTML = h;
+}
+function tick() {
+  [].forEach.call(document.querySelectorAll('.tm[data-fin]'), function (e) { e.textContent = reste(new Date(e.getAttribute('data-fin'))); });
+  if (cur && document.getElementById('cd')) document.getElementById('cd').textContent = reste(dt(cur.fin));
+}
+
+/* ---------- la feuille ---------- */
+var memo = {};
+try { memo = JSON.parse(localStorage.getItem('rmJeuxCoord') || '{}'); } catch (e) {}
+function champ(k, lab, type, ac) {
+  return '<label class="f" data-k="' + k + '"><span>' + lab + '</span><input name="' + k + '" type="' + type + '" autocomplete="' + ac + '" value="' + esc(memo[k] || '') + '"' + (k === 'tel' ? ' inputmode="tel"' : '') + '></label>';
+}
+function ouvrir(j) {
+  cur = j; rep = null;
+  var now = Date.now(), d = dt(j.debut), f = dt(j.fin), tr = dt(j.tirage), avenir = d && d > now;
+  var top = '<div class="ph"><img src="' + esc(img(j.img)) + '" alt=""><button class="x" id="x" aria-label="Fermer"><svg width="14" height="14" viewBox="0 0 24 24" stroke="#141218" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>';
+  var h = '<div class="sc">' + top + '<div class="ct"><h3>' + esc(j.t) + '</h3>' + (j.sous ? '<div class="s">' + esc(j.sous) + '</div>' : '');
+  var foot;
+  if (avenir) {
+    h += '<div class="mt"><div><small>Ouverture</small><b>' + jour(d, 1) + '</b></div>' + (j.valeur ? '<div><small>Valeur</small><b>' + esc(j.valeur) + '</b></div>' : '') + '</div>' +
+      '<p class="s" style="margin-top:16px">Le jeu ouvrira ici même. Écoutez Radio Monaco pour ne pas le manquer.</p></div></div>';
+    foot = '<div class="ft"><button class="go" id="ferme" style="background:#141218">J’ai compris</button></div>';
+  } else {
+    h += '<div class="mt">' + (j.valeur ? '<div><small>Valeur</small><b>' + esc(j.valeur) + '</b></div>' : '') +
+      (f ? '<div><small>Clôture</small><b id="cd">' + reste(f) + '</b></div>' : '') + (tr ? '<div><small>Tirage</small><b>' + jour(tr) + '</b></div>' : '') + '</div>';
+    if (j.form && !j.envoi) {
+      /* formulaire tenu ailleurs (Jotform, Google Forms…) : on y envoie l'auditeur par un vrai lien */
+      h += '<p class="s" style="margin-top:16px">La participation se fait sur le formulaire officiel du jeu.</p></div></div>';
+      foot = '<div class="ft"><a class="go" href="' + esc(j.form) + '" target="_blank" rel="noopener">Ouvrir le formulaire</a></div>';
+    } else {
+      if (j.question) {
+        h += '<div class="qq">' + esc(j.question) + '</div><div class="seg" id="seg">' +
+          (j.choix || []).map(function (c, n) { return '<button type="button" data-n="' + n + '">' + esc(c) + '</button>'; }).join('') + '</div>';
+      }
+      h += '<div class="qq">Vos coordonnées</div>' + champ('prenom', 'Prénom', 'text', 'given-name') + champ('nom', 'Nom', 'text', 'family-name') +
+        champ('email', 'E-mail', 'email', 'email') + champ('tel', 'Téléphone', 'tel', 'tel') +
+        '<label class="ck" id="ck"><input type="checkbox" id="ok"><span>J’accepte le <a href="' + esc(j.reglement || REGLEMENT) + '" target="_blank" rel="noopener">règlement du jeu</a> et d’être contacté par Radio Monaco si je gagne.</span></label></div></div>';
+      foot = '<div class="ft"><div class="er" id="er"></div><button class="go" id="go">Participer</button></div>';
+    }
+  }
+  var sh = document.getElementById('sh');
+  sh.innerHTML = h + foot; sh.scrollTop = 0;
+  document.getElementById('md').className = 'op';
+  document.documentElement.style.overflow = 'hidden';
+}
+function fermer() { document.getElementById('md').className = ''; document.documentElement.style.overflow = ''; cur = null; }
+function valider() {
+  var sh = document.getElementById('sh'), bad = [], v = {};
+  ['prenom', 'nom', 'email', 'tel'].forEach(function (k) {
+    var inp = sh.querySelector('input[name="' + k + '"]'), s = inp.value.trim(); v[k] = s;
+    var ko = !s || (k === 'email' && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(s)) || (k === 'tel' && s.replace(/\D/g, '').length < 8);
+    inp.parentNode.classList.toggle('ko', ko); if (ko) bad.push(inp);
+  });
+  var seg = document.getElementById('seg');
+  if (seg) { seg.classList.toggle('ko', rep === null); if (rep === null) bad.unshift(seg); }
+  var ok = document.getElementById('ok'); document.getElementById('ck').classList.toggle('ko', !ok.checked);
+  var er = document.getElementById('er');
+  if (bad.length || !ok.checked) {
+    er.textContent = bad.length ? 'Merci de compléter les champs en rouge.' : 'Merci d’accepter le règlement du jeu.';
+    (bad[0] || ok).scrollIntoView({ block: 'center', behavior: 'smooth' });
+    return;
+  }
+  er.textContent = '';
+  try { localStorage.setItem('rmJeuxCoord', JSON.stringify(v)); memo = v; } catch (e) {}
+  v.jeu = cur.t; v.id = cur.id; if (seg) v.reponse = cur.choix[rep]; v.date = new Date().toISOString();
+  var go = document.getElementById('go'); go.disabled = true; go.textContent = 'Envoi…';
+  if (cur.envoi) {
+    var fd = new FormData(); Object.keys(v).forEach(function (k) { fd.append(k, v[k]); });
+    fetch(cur.envoi, { method: 'POST', body: fd, mode: 'no-cors' }).then(function () { merci(false); }, function () {
+      go.disabled = false; go.textContent = 'Participer'; er.textContent = 'L’envoi a échoué. Vérifiez votre connexion et réessayez.';
+    });
+  } else setTimeout(function () { merci(true); }, 500);
+}
+function merci(exemple) {
+  var sh = document.getElementById('sh'), tr = dt(cur.tirage);
+  sh.innerHTML = '<div class="sc"><div class="ph"><img src="' + esc(img(cur.img)) + '" alt=""><button class="x" id="x" aria-label="Fermer"><svg width="14" height="14" viewBox="0 0 24 24" stroke="#141218" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>' +
+    '<div class="ok"><i><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i>' +
+    '<h3>C’est noté, <b>' + esc(memo.prenom || '') + '.</b></h3><p>Votre participation à « ' + esc(cur.t) + ' » est enregistrée.' + (tr ? ' Tirage au sort le ' + jour(tr, 1) + ' : nous vous prévenons par e-mail si vous gagnez.' : '') +
+    (exemple ? '<br><br><em>Jeu d’exemple : rien n’a été envoyé.</em>' : '') + '</p></div></div><div class="ft"><button class="go" id="ferme" style="background:#141218">Fermer</button></div>';
+}
+
+/* ---------- les touchers ---------- */
+document.addEventListener('click', function (e) {
+  var a = e.target.closest('[data-id]');
+  if (a && a.closest('#ls')) { e.preventDefault(); var id = a.getAttribute('data-id'); ouvrir(JEUX.filter(function (j) { return j.id === id; })[0]); return; }
+  if (e.target.closest('#x,#ferme,#dim')) { e.preventDefault(); fermer(); return; }
+  var b = e.target.closest('#seg button');
+  if (b) { rep = +b.getAttribute('data-n'); [].forEach.call(b.parentNode.children, function (c) { c.classList.toggle('on', c === b); }); b.parentNode.classList.remove('ko'); return; }
+  if (e.target.closest('#go')) { e.preventDefault(); valider(); }
+});
+document.addEventListener('input', function (e) { var f = e.target.closest('.f'); if (f) f.classList.remove('ko'); });
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && cur) fermer(); });
+
+/* ---------- les données ---------- */
+function charge(list) {
+  JEUX = (list && list.length ? list : EXEMPLE).map(function (j, n) { j.id = j.id || 'jeu-' + n; return j; });
+  render(); clearInterval(timer); timer = setInterval(tick, 30000);
+}
+fetch(BASE + 'app-une.json?' + Math.floor(Date.now() / 6e5)).then(function (r) { return r.json(); })
+  .then(function (d) { charge(d.jeux); }, function () { charge(null); });
+})();
+</script>
 </body>
 </html>
