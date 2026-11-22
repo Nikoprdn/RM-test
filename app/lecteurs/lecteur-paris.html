@@ -42,17 +42,24 @@ h1{margin-top:10px;font-size:24px;font-weight:700;line-height:1.15;text-align:ce
 .hs b{display:block;font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hs em{display:block;font-style:normal;font-size:13px;color:#6A6570;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hs:empty{display:none}
+
+/* apparition de la page (22 novembre) : les blocs montent en fondu, l'un après l'autre */
+@keyframes rmIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.rm-in{animation:rmIn .7s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0) * 70ms + 60ms)}
+@keyframes rmCv{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+.cv.rm-in{animation-name:rmCv}
+@media (prefers-reduced-motion:reduce){.rm-in{animation:none}}
 </style>
 </head>
 <body>
 <div class="bgc" id="bgc"></div><div class="bgs"></div>
-<img class="logo" id="logo" alt="">
-<div class="cv"><img id="cover" alt="Pochette du titre en cours"></div>
-<div class="lv"><span class="dot"></span><span id="st">En direct</span></div>
-<h1 id="ti"></h1>
-<div class="ar" id="ar"></div>
-<button class="pl" id="pl" type="button" aria-label="Écouter"><i></i></button>
-<div class="hs" id="hs"></div>
+<img class="logo rm-in" id="logo" alt="" style="--i:0">
+<div class="cv rm-in" style="--i:1"><img id="cover" alt="Pochette du titre en cours"></div>
+<div class="lv rm-in" style="--i:2"><span class="dot"></span><span id="st">En direct</span></div>
+<h1 id="ti" class="rm-in" style="--i:3"></h1>
+<div class="ar rm-in" id="ar" style="--i:3"></div>
+<button class="pl rm-in" style="--i:4" id="pl" type="button" aria-label="Écouter"><i></i></button>
+<div class="hs rm-in" id="hs" style="--i:5"></div>
 <script>
 // ——— Réglage de la radio de cette section ———
 var RADIO = 'paris';

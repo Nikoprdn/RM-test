@@ -22,13 +22,14 @@ img{display:block}
 
 /* les quatre radios */
 .ls{display:flex;flex-direction:column;gap:8px}
-.r{position:relative;display:flex;align-items:center;gap:14px;width:100%;height:84px;padding:0 12px 0 9px;border-radius:22px;background:rgba(255,255,255,.88);box-shadow:0 1px 2px rgba(20,18,24,.05);transition:background .45s,color .45s}
+.r{position:relative;display:flex;align-items:center;gap:14px;width:100%;height:84px;padding:0 12px 0 9px;border-radius:22px;background:rgba(255,255,255,.88);box-shadow:0 1px 2px rgba(20,18,24,.05);transition:color .3s .12s,transform .25s cubic-bezier(.2,.8,.2,1)}
+.r:active{transform:scale(.97)}
 .cv{width:66px;height:66px;flex:none;border-radius:15px;object-fit:cover;background:rgba(20,18,24,.06);transition:opacity .25s}
 .cv.out{opacity:0}
 .mid{flex:1;min-width:0;position:relative;height:100%}
-.lg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transition:opacity .35s}
+.lg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transition:opacity .25s,transform .4s cubic-bezier(.2,.8,.2,1)}
 .lg img{height:46px;width:auto}
-.tx{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;opacity:0;transition:opacity .35s}
+.tx{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;opacity:0;transform:translateY(8px);transition:opacity .35s .18s,transform .5s .18s cubic-bezier(.2,.8,.2,1)}
 .tx em{display:flex;align-items:center;font-style:normal;font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;opacity:.8;white-space:nowrap}
 .tx b{margin-top:3px;font-size:17px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tx i{font-style:normal;font-size:13.5px;opacity:.62;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -41,14 +42,21 @@ img{display:block}
 .pl svg{display:block}
 .r{overflow:hidden}
 .r>*{position:relative;z-index:1}
-.r>.blr{position:absolute;z-index:0;inset:-30px;background-size:cover;background-position:center;filter:blur(26px) saturate(1.5) brightness(.6);opacity:0;transition:opacity .6s}
-.r.on>.blr{opacity:1}
-.r.on{background:#141218;color:#fff}
+.r>.ink{position:absolute;z-index:0;inset:0;background:#141218;clip-path:circle(0 at calc(100% - 34px) 50%);transition:clip-path .6s cubic-bezier(.65,0,.25,1)}
+.r.on>.ink{clip-path:circle(150% at calc(100% - 34px) 50%)}
+.r>.blr{position:absolute;z-index:0;inset:-30px;background-size:cover;background-position:center;filter:blur(26px) saturate(1.5) brightness(.6);opacity:0;transition:opacity .5s}
+.r.on>.blr{opacity:1;transition:opacity .7s .3s}
+.r.on{color:#fff}
 .r.on .pl{background:#fff;color:var(--c)}
 .r.on .eq s{background:#fff}
-.r.on .lg{opacity:0}.r.on .tx{opacity:1}
-.r.wait .pl{animation:bl 1s ease-in-out infinite}
-@keyframes bl{50%{opacity:.45}}
+.r.on .lg{opacity:0;transform:scale(.92)}.r.on .tx{opacity:1;transform:none}
+/* en attente du son : un anneau tourne dans le bouton */
+.r.wait .pl svg{display:none}
+.r.wait .pl:after{content:"";width:18px;height:18px;border-radius:50%;border:2.5px solid rgba(20,18,24,.15);border-top-color:var(--c);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* au toucher : la carte s'encre depuis le bouton, puis rebondit légèrement */
+.r.pop{animation:pop .55s cubic-bezier(.2,.8,.2,1)}
+@keyframes pop{0%{transform:scale(.97)}55%{transform:scale(1.015)}100%{transform:none}}
 
 /* le sommaire */
 .ed{margin:22px 8px 0;flex:1;display:flex;flex-direction:column;max-height:300px}
@@ -57,6 +65,11 @@ img{display:block}
 .ed b{font-size:32px;font-weight:300;letter-spacing:-.03em;line-height:1}
 .ed small{display:flex;align-items:center;gap:9px;font-size:12.5px;color:#9B969F;white-space:nowrap}
 .ed button:active b{opacity:.6}
+
+/* apparition de la page (22 novembre) : les blocs montent en fondu, l'un après l'autre */
+@keyframes rmIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.rm-in{animation:rmIn .7s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0) * 70ms + 60ms)}
+@media (prefers-reduced-motion:reduce){.rm-in{animation:none}}
 </style>
 </head>
 <body>
@@ -107,9 +120,9 @@ function go(slug, sec) {
 }
 
 /* ——— les quatre lignes ——— */
-$('ls').innerHTML = R.map(function (r) {
-  return '<div class="r" data-k="' + r.k + '" style="--c:' + r.c + '" role="button" tabindex="0">' +
-    '<span class="blr"></span><img class="cv" alt="">' +
+$('ls').innerHTML = R.map(function (r, i) {
+  return '<div class="r rm-in" data-k="' + r.k + '" style="--c:' + r.c + ';--i:' + i + '" role="button" tabindex="0">' +
+    '<span class="ink"></span><span class="blr"></span><img class="cv" alt="">' +
     '<span class="mid"><span class="lg"><img src="' + SITE + 'wr-' + r.k + '-ink.png" alt="Radio Monaco ' + r.n + '"></span>' +
     '<span class="tx"><em><span class="eq"><s></s><s></s><s></s></span>En direct – ' + r.lab + '</em><b></b><i></i></span></span>' +
     '<button class="pl" type="button" aria-label="Écouter"></button></div>';
@@ -118,7 +131,7 @@ var rows = {}; [].forEach.call($('ls').children, function (b) { rows[b.getAttrib
 
 /* ——— le sommaire ——— */
 $('ed').innerHTML = MENU.map(function (m, i) {
-  return '<button type="button" data-i="' + i + '"><b>' + m.t + '</b><small><span id="ms' + i + '">' + m.s + '</span>' + IC_ARROW + '</small></button>';
+  return '<button type="button" class="rm-in" style="--i:' + (i + 4) + '" data-i="' + i + '"><b>' + m.t + '</b><small><span id="ms' + i + '">' + m.s + '</span>' + IC_ARROW + '</small></button>';
 }).join('');
 
 function paintBg() {}   /* plus de fond de page : la pochette floutée vit dans la carte (paintRow) */
@@ -148,6 +161,7 @@ function paintState() {
 function play(r) {
   if (live() === r.k || waitK === r.k) { au.pause(); au.removeAttribute('src'); au.load(); H.__rmRadio = ''; waitK = ''; paintState(); return; }
   H.__rmRadio = r.k; H.__rmSel = r.k; waitK = r.k; paintState();
+  var row = rows[r.k]; row.classList.remove('rm-in', 'pop'); void row.offsetWidth; row.classList.add('pop'); setTimeout(function () { row.classList.remove('pop'); }, 600);
   au.src = r.st + '?r=' + Date.now();
   au.play().catch(function () { setTimeout(function () { au.play().catch(function () { H.__rmRadio = ''; waitK = ''; paintState(); }); }, 500); });
 }

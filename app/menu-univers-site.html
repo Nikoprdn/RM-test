@@ -57,6 +57,11 @@ button:focus,button:focus-visible{outline:none}
 .dots i{width:6px;height:6px;border-radius:3px;background:#D5CEC5;transition:width .3s,background .3s}
 .dots i.on{width:20px;background:#141218}
 @media (max-height:620px){.uxq{margin-top:14px;padding-top:12px}.tx{font-size:13px}}
+
+/* apparition de la page (22 novembre) : les blocs montent en fondu, l'un après l'autre */
+@keyframes rmIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.rm-in{animation:rmIn .7s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0) * 70ms + 60ms)}
+@media (prefers-reduced-motion:reduce){.rm-in{animation:none}}
 </style>
 </head>
 <body>
@@ -85,8 +90,8 @@ var waitK = '';
 function live() { return au.src && !au.paused && H.__rmRadio ? H.__rmRadio : ''; }
 
 // ——— Les cartes ———
-$('row').innerHTML = R.map(function (r) {
-  return '<div class="sl"><article class="ux" data-k="' + r.k + '" style="--c:' + r.c + ';--ink:' + r.ink + ';--w:' + r.w + '">' +
+$('row').innerHTML = R.map(function (r, i) {
+  return '<div class="sl rm-in" style="--i:' + i + '"><article class="ux" data-k="' + r.k + '" style="--c:' + r.c + ';--ink:' + r.ink + ';--w:' + r.w + '">' +
     '<img class="uxp" src="' + SITE + r.ph + '" style="object-position:' + r.pos + '" alt="">' +
     '<span class="uxs"></span><span class="uxbar"></span>' +
     '<span class="uxb"><span class="uxh"><img class="uxl" src="' + SITE + r.logo + '" alt="Radio Monaco ' + r.n + '">' +

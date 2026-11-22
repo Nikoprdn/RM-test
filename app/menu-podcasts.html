@@ -111,13 +111,18 @@ img{display:block}
 .sh-o div{display:flex;flex-wrap:wrap;gap:8px}
 .sh-o button{height:34px;padding:0 14px;border-radius:999px;border:1px solid rgba(20,18,24,.18);font-size:13.5px;font-weight:500}
 svg{display:block}
+
+/* apparition de la page (22 novembre) : les blocs montent en fondu, l'un après l'autre */
+@keyframes rmIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.rm-in{animation:rmIn .7s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0) * 70ms + 60ms)}
+@media (prefers-reduced-motion:reduce){.rm-in{animation:none}}
 </style>
 </head>
 <body>
 <section class="bd">
   <img class="bd-im" src="https://nikoprdn.github.io/RM-test/assets/rm-studio.jpg" alt="">
   <span class="bd-sc"></span>
-  <div class="bd-in">
+  <div class="bd-in rm-in" style="--i:0">
     <h1>Écoutez vos <b>podcasts préférés.</b></h1>
     <form class="q" id="qf" role="search" onsubmit="return false">
       <input id="q" type="search" autocomplete="off" placeholder="Rechercher une émission, un épisode…" aria-label="Rechercher">
@@ -181,8 +186,10 @@ function showCard(s) {
     '<span class="t-v"><img src="' + e.img + '" alt="" loading="lazy"><span class="t-p">' + IC_RIGHT + '</span></span>' +
     '<em>' + esc(s.genre) + '</em><b>' + esc(s.name) + '</b><small>' + esc(s.feed === 'mixdj' ? s.sub.replace(/^by\s+/i, '') : s.sub) + '</small></button>';
 }
+var railN = 0;
 function rail(title, count, html) {
-  return '<section class="rl"><div class="rl-h"><h2>' + title + '</h2><i>›</i><em>' + count + '</em></div><div class="rr">' + html + '</div></section>';
+  railN++;
+  return '<section class="rl rm-in" style="--i:' + railN + '"><div class="rl-h"><h2>' + title + '</h2><i>›</i><em>' + count + '</em></div><div class="rr">' + html + '</div></section>';
 }
 
 function build(j) {
